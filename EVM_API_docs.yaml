@@ -3,7 +3,7 @@ info:
   title: ''
   version: 1.0.0
 servers:
-  - url: '{baseurl}'
+  - url: https://web3.nodit.io/v1/
 components:
   securitySchemes:
     api_key:
@@ -19,7 +19,7 @@ paths:
         - NFT API
       description: 해당 Account가 보유한 NFT의 목록을 조회합니다.
       summary: Get NFTs Owned By Account
-      operationId: getNFTsOwnedByAccount
+      operationId: getNftsOwnedByAccount
       parameters:
         - name: protocol
           in: path
@@ -50,15 +50,20 @@ paths:
                     accountAddress:
                       type: string
                       description: 조회하고자 하는 계정의 주소를 지정하는 파라미터입니다.
-                    contractAddress:
-                      type: string
-                      description: 조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다.
+                      default: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    contractAddresses:
+                      type: array
+                      items:
+                        type: string
+                        description: 조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다.
                     withMetadata:
                       type: boolean
                       description: >-
                         응답에 NFT 토큰 메타데이터 관련 필드(rawMetadata, metadata, media,
                         metadataSyncedAt)의 포함 여부를 지정하는 파라미터입니다. 이 파라미터에 true를
                         입력한 경우, 응답속도가 느려질 수 있습니다.
+                  required:
+                    - accountAddress
                 - type: object
                   properties:
                     page:
@@ -67,7 +72,7 @@ paths:
                         page 파라미터는 조회하려는 데이터 페이지를 지정하는 데 사용됩니다. 이 파라미터는 100 이하의
                         값을 받으며, 100을 초과하는 페이지가 필요한 경우 cursor 페이지네이션 방식을 사용해야
                         합니다.
-                         * 주의: page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
+                         [참고] page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
                     rpp:
                       type: integer
                       description: >-
@@ -79,7 +84,7 @@ paths:
                         cursor 파라미터는 페이지네이션을 위한 파라미터로, 이전 페이지와 다음 페이지 간의 데이터 이동을
                         지원합니다. 이전 페이지에서 얻은 cursor 값을 다음 요청에 제공하면 다음 페이지의 데이터를
                         로드할 수 있습니다.
-                         * 주의: page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
+                         [참고] page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
                     withCount:
                       type: boolean
                       description: >-
@@ -94,56 +99,56 @@ paths:
               schema:
                 type: object
                 properties:
-                  count:
+                  page:
                     type: integer
                     description: >-
-                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
-                      경우에만 응답에 포함됩니다.
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
                   cursor:
                     type: string
                     description: >-
                       cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
                       값입니다.
-                  page:
+                  count:
                     type: integer
-                    description: page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다.
-                  rpp:
-                    type: integer
-                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
                   items:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        ownerAddress:
-                          type: string
-                          description: 소유자 주소를 나타내는 필드입니다.
-                        balance:
-                          type: string
-                          description: 잔고 나타내는 필드입니다.
-                        contractAddress:
-                          type: string
-                          description: 컨트랙트 주소를 나타내는 필드입니다.
-                        tokenId:
-                          type: string
-                          description: NFT의 토큰 ID를 나타내는 필드입니다.
-                        rawMetadata:
-                          type: string
-                          description: >-
-                            NFT의 rawMetadata를 나타내는 필드입니다. withMetadata 파라미터에
-                            true를 입력한 경우에만 응답에 포함됩니다.
-                        metadata:
-                          type: object
-                          description: >-
-                            NFT의 metadata를 나타내는 필드입니다. withMetadata 파라미터에 true를
-                            입력한 경우에만 응답에 포함됩니다.
-                        media:
-                          type: object
-                          description: >-
-                            NFT의 media를 나타내는 필드입니다. withMetadata 파라미터에 true를 입력한
-                            경우에만 응답에 포함됩니다.
-                        metadataSyncedAt:
-                          type: string
-                          description: >-
-                            NFT의 metadataSyncedAt을 나타내는 필드입니다. withMetadata
-                            파라미터에 true를 입력한 경우에만 응답에 포함됩니다.
+                    type: object
+                    properties:
+                      ownerAddress:
+                        type: string
+                        description: 소유자 주소를 나타내는 필드입니다.
+                      balance:
+                        type: string
+                        description: 잔고 나타내는 필드입니다.
+                      contractAddress:
+                        type: string
+                        description: 컨트랙트 주소를 나타내는 필드입니다.
+                      tokenId:
+                        type: string
+                        description: NFT의 토큰 ID를 나타내는 필드입니다.
+                      rawMetadata:
+                        type: string
+                        description: >-
+                          NFT의 rawMetadata를 나타내는 필드입니다. withMetadata 파라미터에 true를
+                          입력한 경우에만 응답에 포함됩니다.
+                      metadata:
+                        type: object
+                        description: >-
+                          NFT의 metadata를 나타내는 필드입니다. withMetadata 파라미터에 true를
+                          입력한 경우에만 응답에 포함됩니다.
+                      media:
+                        type: object
+                        description: >-
+                          NFT의 media를 나타내는 필드입니다. withMetadata 파라미터에 true를 입력한
+                          경우에만 응답에 포함됩니다.
+                      metadataSyncedAt:
+                        type: string
+                        description: >-
+                          NFT의 metadata가 동기화 된 시점을 나타내는 필드입니다. withMetadata
+                          파라미터에 true를 입력한 경우에만 응답에 포함됩니다.
