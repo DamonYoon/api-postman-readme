@@ -1,9 +1,8 @@
-import { OpenAPIV3_1 } from "openapi-types";
+import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "js-yaml";
 import * as fs from "fs";
-import { WEB3_API_BASE_URL } from "../../utils/urls.utils";
-import { getNftsOwnedByAccount } from "./nft/getNftsOwnedByAccount";
-import { getNftContractsByAccount } from "./nft/getNftContractsByAccount";
+import { WEB3_DATA_API_BASE_URL } from "../../utils/urls.utils";
+import NFT_APIs from "./nft";
 
 const NFT_PATHS = {
 	GET_NFTS_OWNED_BY_ACCOUNT: "getNftsOwnedByAccount",
@@ -21,15 +20,15 @@ const NFT_PATHS = {
 	SYNC_NFT_METADATA: "syncNftMetadata",
 };
 
-const EVM_API_docs: OpenAPIV3_1.Document = {
+const EVM_API_docs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
 	info: {
-		title: "",
+		title: "Web3 Data API Test",
 		version: "1.0.0",
 	},
 	servers: [
 		{
-			url: WEB3_API_BASE_URL,
+			url: WEB3_DATA_API_BASE_URL,
 		},
 	],
 	components: {
@@ -43,9 +42,9 @@ const EVM_API_docs: OpenAPIV3_1.Document = {
 	},
 	paths: {
 		// NFT
-		[`/{protocol}/{network}/nft/${NFT_PATHS.GET_NFTS_OWNED_BY_ACCOUNT}`]: getNftsOwnedByAccount,
-		[`/{protocol}/{network}/nft/${NFT_PATHS.GET_NFTS_CONTRACTS_BY_ACCOUNT}`]: getNftContractsByAccount,
-		[`/{protocol}/{network}/nft/${NFT_PATHS.GET_NFT_METADATA_BY_CONTRACT}`]: getNftMetadataByContract,
+		[`/{protocol}/{network}/nft/${NFT_PATHS.GET_NFTS_OWNED_BY_ACCOUNT}`]: NFT_APIs.getNftsOwnedByAccount,
+		[`/{protocol}/{network}/nft/${NFT_PATHS.GET_NFTS_CONTRACTS_BY_ACCOUNT}`]: NFT_APIs.getNftContractsByAccount,
+		[`/{protocol}/{network}/nft/${NFT_PATHS.GET_NFT_METADATA_BY_CONTRACT}`]: NFT_APIs.getNftMetadataByContract,
 
 		// Token
 

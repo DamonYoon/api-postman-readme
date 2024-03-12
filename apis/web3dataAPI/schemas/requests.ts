@@ -1,6 +1,7 @@
 import { OpenAPIV3 } from "openapi-types";
+import { Patterns } from "../../../utils/patterns.utils";
 
-namespace Parameters {
+namespace Requests {
 	/* Path Parameters */
 	export const protocol: OpenAPIV3.ParameterObject = {
 		name: "protocol",
@@ -32,12 +33,14 @@ namespace Parameters {
 		type: "integer",
 		description:
 			"page 파라미터는 조회하려는 데이터 페이지를 지정하는 데 사용됩니다. 이 파라미터는 100 이하의 값을 받으며, 100을 초과하는 페이지가 필요한 경우 cursor 페이지네이션 방식을 사용해야 합니다.\n [참고] page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.",
+		pattern: Patterns.page,
 	};
 
 	export const rpp: OpenAPIV3.SchemaObject = {
 		type: "integer",
 		description:
 			"rpp는 results per page의 약자로, 한 페이지의 사이즈를 지정하는 파라미터입니다. 0보다 크고 1000 이하의 숫자를 지정할 수 있습니다.",
+		pattern: Patterns.rpp,
 	};
 
 	export const cursor: OpenAPIV3.SchemaObject = {
@@ -52,7 +55,7 @@ namespace Parameters {
 			"응답에 count 필드의 포함 여부를 지정하는 파라미터이며, count 필드는 요청한 데이터의 총 개수를 나타냅니다. 이 파라미터에 true를 입력한 경우, 응답에 count 필드가 포함되며 응답속도가 느려질 수 있습니다.",
 	};
 
-	export const paginationSet: OpenAPIV3.SchemaObject = {
+	export const PaginationSet: OpenAPIV3.SchemaObject = {
 		type: "object",
 		properties: {
 			page,
@@ -67,11 +70,13 @@ namespace Parameters {
 	export const accountAddress: OpenAPIV3.SchemaObject = {
 		type: "string",
 		description: "조회하고자 하는 계정의 주소를 지정하는 파라미터입니다.",
+		pattern: Patterns.ethereumAddress,
 	};
 
 	export const contractAddress: OpenAPIV3.SchemaObject = {
 		type: "string",
 		description: "조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다.",
+		pattern: Patterns.ethereumAddress,
 	};
 
 	// with options
@@ -88,4 +93,4 @@ namespace Parameters {
 	};
 }
 
-export default Parameters;
+export default Requests;

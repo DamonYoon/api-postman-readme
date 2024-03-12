@@ -4,10 +4,10 @@ import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 
-const endpoint = "getNftsOwnedByAccount";
-const summary = "Get NFTs Owned By Account";
+const endpoint = "getNftMetadataByContract";
+const summary = "Get NFT Metadata by Contract";
 
-export const getNftsOwnedByAccount: OpenAPIV3.PathItemObject = {
+export const getNftMetadataByContract: OpenAPIV3.PathItemObject = {
 	post: {
 		security: [
 			{
@@ -15,7 +15,7 @@ export const getNftsOwnedByAccount: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["NFT API"],
-		description: "해당 Account가 보유한 NFT의 목록을 조회합니다.",
+		description: "특정 주소를 입력하여 해당 컨트랙트가 발행한 NFT의 메타데이터를 조회합니다.",
 		summary: summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -28,21 +28,12 @@ export const getNftsOwnedByAccount: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									accountAddress: {
-										...Requests.accountAddress,
-										default: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-									},
-									contractAddresses: {
-										type: "array",
-										items: {
-											...Requests.contractAddress,
-										},
-									},
-									withMetadata: {
-										...Requests.withMetadata,
+									contractAddress: {
+										...Requests.contractAddress,
+										default: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
 									},
 								},
-								required: ["accountAddress"],
+								required: ["contractAddress"],
 							},
 							Requests.PaginationSet,
 						],
@@ -58,8 +49,6 @@ export const getNftsOwnedByAccount: OpenAPIV3.PathItemObject = {
 						schema: DataDomains.Pagination({
 							type: "object",
 							properties: {
-								...DataDomains.Balance.properties,
-								...DataDomains.NftHolder.properties,
 								...DataDomains.NftMeta.properties,
 								contract: {
 									type: "object",

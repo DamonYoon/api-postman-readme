@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: ''
+  title: Web3 Data API Test
   version: 1.0.0
 servers:
   - url: https://web3.nodit.io/v1/
@@ -21,7 +21,8 @@ paths:
       summary: Get NFTs Owned By Account
       operationId: getNftsOwnedByAccount
       parameters:
-        - name: protocol
+        - &ref_0
+          name: protocol
           in: path
           required: true
           schema:
@@ -30,7 +31,8 @@ paths:
           description: >-
             조회 대상 Chain 프로토콜을 지정하기 위한 파라미터입니다. 지원되는 프로토콜에 대한 정보는 Supported
             Chains 페이지를 참고하거나, Protocol 조회 API를 활용하세요.
-        - name: network
+        - &ref_1
+          name: network
           in: path
           required: true
           schema:
@@ -50,12 +52,14 @@ paths:
                     accountAddress:
                       type: string
                       description: 조회하고자 하는 계정의 주소를 지정하는 파라미터입니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
                       default: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
                     contractAddresses:
                       type: array
                       items:
                         type: string
                         description: 조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다.
+                        pattern: ^0[xX][0-9a-fA-F]{40}$
                     withMetadata:
                       type: boolean
                       description: >-
@@ -64,7 +68,8 @@ paths:
                         입력한 경우, 응답속도가 느려질 수 있습니다.
                   required:
                     - accountAddress
-                - type: object
+                - &ref_2
+                  type: object
                   properties:
                     page:
                       type: integer
@@ -73,11 +78,13 @@ paths:
                         값을 받으며, 100을 초과하는 페이지가 필요한 경우 cursor 페이지네이션 방식을 사용해야
                         합니다.
                          [참고] page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
+                      pattern: ^(?:[1-9][0-9]?|100)$
                     rpp:
                       type: integer
                       description: >-
                         rpp는 results per page의 약자로, 한 페이지의 사이즈를 지정하는 파라미터입니다.
                         0보다 크고 1000 이하의 숫자를 지정할 수 있습니다.
+                      pattern: ^(?:[1-9][0-9]{0,2}?|1000)$
                     cursor:
                       type: string
                       description: >-
@@ -118,37 +125,1240 @@ paths:
                       요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
                       경우에만 응답에 포함됩니다.
                   items:
-                    type: object
-                    properties:
-                      ownerAddress:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      type: object
+                      properties:
+                        ownerAddress:
+                          type: string
+                          description: 소유자 주소를 나타내는 필드입니다.
+                          pattern: ^0[xX][0-9a-fA-F]{40}$
+                        balance:
+                          type: string
+                          description: 잔고 나타내는 필드입니다.
+                          pattern: ^[0-9]+$
+                        totalBalance: &ref_13
+                          type: string
+                          description: |-
+                            해당 컨트랙트의 잔고 수량을 모두 더한 값을 반환합니다.
+                             [참고] contract type에 따라 수량 계산 방법이 다를 수 있습니다. ERC721는 uniqueBalance와 동일하며, ERC1155는 모든 수량을 더한 값을 반환합니다.
+                             (예시) 1. ERC721의 경우: #100, #200, #300을 보유했다면 3을 반환 2. ERC1155의 경우: #1을 100개, #200, #300을 각각 200개씩 보유했다면 600을 반환
+                        uniqueBalance: &ref_14
+                          type: string
+                          description: |-
+                            해당 컨트랙트가 보유한 NFT 중 각기 다른 token ID의 수를 반환합니다.
+                             [참고] contract type에 따라 수량 계산 방법이 다를 수 있습니다. ERC721은 totalBalance와 동일하며, ERC1155는 유니크한 token ID의 수를 반환합니다.  
+                             (예시) 1. ERC721의 경우: #100, #200, #300을 보유했다면 3을 반환 2. ERC1155의 경우: #1을 100개, #200, #300을 각각 200개씩 보유했다면 3을 반환
+                        tokenId: &ref_20
+                          type: string
+                          description: >-
+                            NFT 토큰의 고유 ID를 나타내는 필드입니다. 이 ID는 해당 NFT를 식별하는 데
+                            사용됩니다.
+                        tokenUri: &ref_21
+                          type: string
+                          description: >-
+                            NFT의 원본 메타데이터가 위치한 URI를 나타냅니다. 컨트랙트 구현에 따라 다르지만,
+                            일반적으로 IPFS 주소나 웹 URL 형식으로 제공됩니다.
+                        tokenUriSyncedAt: &ref_22
+                          type: string
+                          description: NFT의 tokenUri가 동기화 된 시점을 나타내는 필드입니다.
+                        rawMetadata: &ref_23
+                          type: string
+                          description: >-
+                            NFT의 rawMetadata를 나타내는 필드입니다. 이 필드는 withMetadata
+                            파라미터에 true를 입력한 경우에만 응답에 포함됩니다.
+                        metadataSyncedAt: &ref_24
+                          type: string
+                          description: >-
+                            NFT의 metadata가 동기화 된 시점을 나타내는 필드입니다. 이 필드는
+                            withMetadata 파라미터에 true를 입력한 경우에만 응답에 포함됩니다.
+                        media: &ref_25
+                          type: object
+                          properties:
+                            originUrl:
+                              type: string
+                              description: >-
+                                NFT metadata에서 가져온 원본 미디어 URL을 나타냅니다. 이 URL은 미디어
+                                파일의 원본 위치를 가리킵니다.
+                            cachedUrl:
+                              type: string
+                              description: >-
+                                NFT의 캐시된 이미지 URL을 나타내는 필드입니다. 이 URL은 미디어 파일의 캐시된
+                                위치를 가리키며, 빠른 로딩을 위해 사용됩니다.
+                            thumbnailUrl:
+                              type: string
+                              description: >-
+                                NFT의 썸네일 이미지 URL을 나타내는 필드입니다. 이 URL은 미디어 파일의 축소된
+                                이미지를 가리키며, 미리보기 등에 사용됩니다.
+                            updatedAt:
+                              type: string
+                              description: >-
+                                NFT의 미디어 파일이 업데이트된 시간을 나타내는 필드입니다. 이 필드는 ISO
+                                8601 형식으로 제공됩니다.
+                        contract:
+                          type: object
+                          properties:
+                            address: &ref_3
+                              type: string
+                              description: 컨트랙트 주소를 나타내는 필드입니다.
+                            deployedTransactionHash: &ref_4
+                              type: string
+                              description: 컨트랙트가 배포된 트랜잭션의 해시를 나타내는 필드입니다.
+                            deployedAt: &ref_5
+                              type: string
+                              description: >-
+                                컨트랙트가 배포된 시간을 나타내는 필드입니다. 이 필드는 ISO 8601 형식의 날짜와
+                                시간으로 제공됩니다.
+                            deployerAddress: &ref_6
+                              type: string
+                              description: 컨트랙트를 배포한 주소를 나타내는 필드입니다.
+                            logoUrl: &ref_7
+                              type: string
+                              description: >-
+                                컨트랙트의 로고 URL을 나타내는 필드입니다. 이 URL은 컨트랙트를 시각적으로
+                                식별하는 데 사용될 수 있습니다.
+                                 [참고] 모든 컨트랙트의 로고 이미지가 제공되는 것은 아닙니다. 컨트랙트 로고가 없는 경우, 이 필드는 null로 제공됩니다.
+                              default: null
+                            type: &ref_8
+                              type: string
+                              description: >-
+                                컨트랙트의 타입을 나타내는 필드입니다. 컨트랙트 타입은 표준 규격의 이름이 표기됩니다.
+                                (e.g., ERC721, ERC1155, ERC20, ERC721, ERC1155,
+                                ERC20)
+                            name: &ref_9
+                              type: string
+                              description: >-
+                                컨트랙트의 이름을 나타내는 필드입니다. 표준을 따르지 않거나, 컨트랙트 생성 단계에서
+                                name을 입력하지 않은 경우 빈 문자열을 반환합니다.
+                              default: ''
+                            symbol: &ref_10
+                              type: string
+                              description: >-
+                                컨트랙트의 심볼을 나타내는 필드입니다. 표준을 따르지 않거나, 컨트랙트 생성 단계에서
+                                symbol을 입력하지 않은 경우 빈 문자열을 반환합니다.
+                            totalSupply: &ref_11
+                              type: string
+                              description: >-
+                                컨트랙트의 총 공급량을 나타내는 필드입니다. 이 값은 토큰의 총 발행량을 의미하며,
+                                10진수 문자열 형태로 제공됩니다. 컨트랙트 타입이 ERC20인 경우에만 응답에
+                                포함됩니다.
+                            decimals: &ref_12
+                              type: integer
+                              description: 컨트랙트의 소수점 자리수를 나타내는 필드입니다.
+              example:
+                rpp: 10
+                count: 777
+                cursor: >-
+                  W3sia2V5IjoidmFsdWUiLCJvcmRlciI6IkRFU0MiLCJlcXVhbCI6dHJ1ZSwicG9pbnQiOiIxIn0seyJrZXkiOiJ0b2tlbklkIiwib3JkZXIiOiJBU0MiLCJlcXVhbCI6ZmFsc2UsInBvaW50IjoiMzE3In1d
+                items:
+                  - tokenId: '20'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/20
+                    tokenUriSyncedAt: '2024-02-20T00:51:51.772Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmYEHLvbKK8WQn151A4VkDxULPvFE6UQB16Jtp5yysmZq2","attributes":[{"trait_type":"Background","value":"M1
+                      Orange"},{"trait_type":"Fur","value":"M1
+                      Blue"},{"trait_type":"Eyes","value":"M1
+                      3d"},{"trait_type":"Clothes","value":"M1
+                      Tanktop"},{"trait_type":"Hat","value":"M1 Seaman's
+                      Hat"},{"trait_type":"Mouth","value":"M1 Bored Cigar"}]}
+                    metadataSyncedAt: '2024-02-20T00:51:52.171Z'
+                    media:
+                      originUrl: ipfs://QmYEHLvbKK8WQn151A4VkDxULPvFE6UQB16Jtp5yysmZq2
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/20/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/20/medium.png
+                      updatedAt: '2024-02-20T00:52:01.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '24'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/24
+                    tokenUriSyncedAt: '2024-02-20T00:51:58.921Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmWpQpRNdGByj1Qbkwr3oSUcZ8LXJoFPsabpkkahDyg982","attributes":[{"trait_type":"Background","value":"M1
+                      Blue"},{"trait_type":"Fur","value":"M1
+                      Cream"},{"trait_type":"Eyes","value":"M1
+                      Sunglasses"},{"trait_type":"Clothes","value":"M1 Bone
+                      Tee"},{"trait_type":"Mouth","value":"M1 Dumbfounded"}]}
+                    metadataSyncedAt: '2024-02-20T00:51:59.349Z'
+                    media:
+                      originUrl: ipfs://QmWpQpRNdGByj1Qbkwr3oSUcZ8LXJoFPsabpkkahDyg982
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/24/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/24/medium.png
+                      updatedAt: '2024-02-20T00:52:05.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '66'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/66
+                    tokenUriSyncedAt: '2024-02-20T00:52:11.484Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmQHuRJSPqqVeUy41AG7hJzJYjfrJCjsrm3YzS9QycanP6","attributes":[{"trait_type":"Background","value":"M2
+                      Purple"},{"trait_type":"Fur","value":"M2
+                      Pink"},{"trait_type":"Eyes","value":"M2
+                      Zombie"},{"trait_type":"Hat","value":"M2 Commie
+                      Hat"},{"trait_type":"Mouth","value":"M2 Bored Unshaven
+                      Cigarette"}]}
+                    metadataSyncedAt: '2024-02-20T00:52:11.955Z'
+                    media:
+                      originUrl: ipfs://QmQHuRJSPqqVeUy41AG7hJzJYjfrJCjsrm3YzS9QycanP6
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/66/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/66/medium.png
+                      updatedAt: '2024-02-20T00:52:14.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '95'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/95
+                    tokenUriSyncedAt: '2024-02-20T00:52:17.475Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmNfmbJdb6fZAUBSjnGXyT2xhaX3fJ6Qrjpy3umhvPxVw9","attributes":[{"trait_type":"Background","value":"M2
+                      Gray"},{"trait_type":"Fur","value":"M2 Dark
+                      Brown"},{"trait_type":"Eyes","value":"M2
+                      Coins"},{"trait_type":"Clothes","value":"M2 Striped
+                      Tee"},{"trait_type":"Hat","value":"M2 Sushi Chef
+                      Headband"},{"trait_type":"Mouth","value":"M2 Phoneme
+                      L"},{"trait_type":"Earring","value":"M2 Silver Stud"}]}
+                    metadataSyncedAt: '2024-02-20T00:52:18.048Z'
+                    media:
+                      originUrl: ipfs://QmNfmbJdb6fZAUBSjnGXyT2xhaX3fJ6Qrjpy3umhvPxVw9
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/95/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/95/medium.png
+                      updatedAt: '2024-02-20T00:52:20.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '110'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/110
+                    tokenUriSyncedAt: '2024-02-20T00:52:23.584Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmaBxGRSQmhbdaX4gJQpCpjXiGuXmCdMxmq7CLc1N3WUQj","attributes":[{"trait_type":"Background","value":"M1
+                      Gray"},{"trait_type":"Fur","value":"M1
+                      Robot"},{"trait_type":"Eyes","value":"M1
+                      Sleepy"},{"trait_type":"Clothes","value":"M1 Lab
+                      Coat"},{"trait_type":"Hat","value":"M1
+                      Horns"},{"trait_type":"Mouth","value":"M1 Grin"}]}
+                    metadataSyncedAt: '2024-02-20T00:52:24.047Z'
+                    media:
+                      originUrl: ipfs://QmaBxGRSQmhbdaX4gJQpCpjXiGuXmCdMxmq7CLc1N3WUQj
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/110/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/110/medium.png
+                      updatedAt: '2024-02-20T00:52:26.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '155'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/155
+                    tokenUriSyncedAt: '2024-02-20T00:44:23.474Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://Qme3W87p23cBSu71UgCmCEznmTfM4NGe52RGYpdMotNsC5","attributes":[{"trait_type":"Background","value":"M2
+                      Gray"},{"trait_type":"Fur","value":"M2
+                      Gray"},{"trait_type":"Eyes","value":"M2
+                      Sad"},{"trait_type":"Clothes","value":"M2 Tie
+                      Dye"},{"trait_type":"Hat","value":"M2 Prussian
+                      Helmet"},{"trait_type":"Mouth","value":"M2 Bored
+                      Unshaven"}]}
+                    metadataSyncedAt: '2024-02-20T00:44:23.909Z'
+                    media:
+                      originUrl: ipfs://Qme3W87p23cBSu71UgCmCEznmTfM4NGe52RGYpdMotNsC5
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/155/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/155/medium.png
+                      updatedAt: '2024-02-20T00:44:29.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '184'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/184
+                    tokenUriSyncedAt: '2024-02-20T00:52:33.464Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmUBeA27KaYfSkYTa1S1EBFU2CHohaVJJmopPFhSQmidTJ","attributes":[{"trait_type":"Background","value":"M1
+                      Yellow"},{"trait_type":"Fur","value":"M1 Dark
+                      Brown"},{"trait_type":"Eyes","value":"M1
+                      Sleepy"},{"trait_type":"Clothes","value":"M1 Black
+                      T"},{"trait_type":"Hat","value":"M1 Party Hat
+                      2"},{"trait_type":"Mouth","value":"M1 Bored"}]}
+                    metadataSyncedAt: '2024-02-20T00:52:33.902Z'
+                    media:
+                      originUrl: ipfs://QmUBeA27KaYfSkYTa1S1EBFU2CHohaVJJmopPFhSQmidTJ
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/184/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/184/medium.png
+                      updatedAt: '2024-02-20T00:52:37.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '230'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/230
+                    tokenUriSyncedAt: '2024-02-20T00:52:39.615Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmTR3gczyHGGsf7XFPdEUfrGV2LCaUsMDyTd2vrHw6bZKv","attributes":[{"trait_type":"Background","value":"M2
+                      Yellow"},{"trait_type":"Fur","value":"M2
+                      Blue"},{"trait_type":"Eyes","value":"M2
+                      Eyepatch"},{"trait_type":"Clothes","value":"M2 Biker
+                      Vest"},{"trait_type":"Hat","value":"M2 Baby's
+                      Bonnet"},{"trait_type":"Mouth","value":"M2 Bored Pipe"}]}
+                    metadataSyncedAt: '2024-02-20T00:52:40.010Z'
+                    media:
+                      originUrl: ipfs://QmTR3gczyHGGsf7XFPdEUfrGV2LCaUsMDyTd2vrHw6bZKv
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/230/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/230/medium.png
+                      updatedAt: '2024-02-20T00:52:42.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '249'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/249
+                    tokenUriSyncedAt: '2024-02-20T00:52:44.619Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmYwoPcJM6BhH42Vexr8dSs6FyDPbq7ELraK9isMraw4pX","attributes":[{"trait_type":"Background","value":"M1
+                      Aquamarine"},{"trait_type":"Fur","value":"M1
+                      Cream"},{"trait_type":"Eyes","value":"M1
+                      Blindfold"},{"trait_type":"Clothes","value":"M1
+                      Toga"},{"trait_type":"Hat","value":"M1 King's
+                      Crown"},{"trait_type":"Mouth","value":"M1 Bored
+                      Unshaven"}]}
+                    metadataSyncedAt: '2024-02-20T00:52:44.992Z'
+                    media:
+                      originUrl: ipfs://QmYwoPcJM6BhH42Vexr8dSs6FyDPbq7ELraK9isMraw4pX
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/249/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/249/medium.png
+                      updatedAt: '2024-02-20T00:52:47.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+                  - tokenId: '317'
+                    tokenUri: https://boredapeyachtclub.com/api/mutants/317
+                    tokenUriSyncedAt: '2024-02-20T00:52:49.859Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmSorbC4UvLA6s92myE7CMog9htep9J5TXi4mUTFckc4mU","attributes":[{"trait_type":"Background","value":"M1
+                      Army Green"},{"trait_type":"Fur","value":"M1 Dark
+                      Brown"},{"trait_type":"Eyes","value":"M1
+                      Closed"},{"trait_type":"Clothes","value":"M1 Bayc T
+                      Black"},{"trait_type":"Hat","value":"M1
+                      Fez"},{"trait_type":"Mouth","value":"M1 Phoneme
+                      Vuh"},{"trait_type":"Earring","value":"M1 Gold Hoop"}]}
+                    metadataSyncedAt: '2024-02-20T00:52:50.320Z'
+                    media:
+                      originUrl: ipfs://QmSorbC4UvLA6s92myE7CMog9htep9J5TXi4mUTFckc4mU
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/317/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0x60e4d786628fea6478f785a6d7e704777c86a7c6/317/medium.png
+                      updatedAt: '2024-02-20T00:52:53.000Z'
+                    ownerAddress: '0x50d9090D6ce6307b7EC8904cD3dCa17b4Da56353'
+                    balance: '1'
+                    contract:
+                      address: '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'
+                      deployedTransactionHash: >-
+                        0x025f185262da3c52bf9b87f09a1fea815a27fd8c32a363da72cac0c9cae27436
+                      deployedAt: '2021-08-28T23:59:15.000Z'
+                      deployerAddress: '0x9056D15C49B19dF52FfaD1E6C11627f035C0C960'
+                      logoUrl: null
+                      type: ERC721
+                      name: MutantApeYachtClub
+                      symbol: MAYC
+        '400':
+          description: Bad Request
+          content: &ref_15
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  value:
+                    code: INVALID_PARAMETER
+                    message: >-
+                      Invalid parameter: { PARAMETER1_NAME = PARAMETER1_VALUE,
+                      PARAMETER2_NAME = PARAMETER2_VALUE, ... }
+        '401':
+          description: Unauthorized
+          content: &ref_16
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  value:
+                    code: AUTHENTICATION_FAILED
+                    message: Authentication failed
+        '403':
+          description: Forbidden
+          content: &ref_17
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  value:
+                    code: PERMISSION_DENIED
+                    message: Permission denied
+        '404':
+          description: Not Found
+          content: &ref_18
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  value:
+                    code: RESOURCE_NOT_FOUND
+                    message: >-
+                      Resource not found: { RESOURCE1_NAME = RESOURCE1_VALUE,
+                      RESOURCE2_NAME = RESOURCE2_VALUE, ... }
+        '429':
+          description: Too Many Requests
+          content: &ref_19
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  value:
+                    code: TOO_MANY_REQUESTS
+                    message: Too many requests
+  /{protocol}/{network}/nft/getNftContractsByAccount:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - NFT API
+      description: 해당 Account가 보유한 NFT의 목록을 조회합니다.
+      summary: Get NFT Contracts by Account
+      operationId: getNftContractsByAccount
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    accountAddress:
+                      type: string
+                      description: 조회하고자 하는 계정의 주소를 지정하는 파라미터입니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    contractAddresses:
+                      type: array
+                      items:
                         type: string
-                        description: 소유자 주소를 나타내는 필드입니다.
-                      balance:
-                        type: string
-                        description: 잔고 나타내는 필드입니다.
-                      contractAddress:
-                        type: string
-                        description: 컨트랙트 주소를 나타내는 필드입니다.
-                      tokenId:
-                        type: string
-                        description: NFT의 토큰 ID를 나타내는 필드입니다.
-                      rawMetadata:
-                        type: string
-                        description: >-
-                          NFT의 rawMetadata를 나타내는 필드입니다. withMetadata 파라미터에 true를
-                          입력한 경우에만 응답에 포함됩니다.
-                      metadata:
-                        type: object
-                        description: >-
-                          NFT의 metadata를 나타내는 필드입니다. withMetadata 파라미터에 true를
-                          입력한 경우에만 응답에 포함됩니다.
-                      media:
-                        type: object
-                        description: >-
-                          NFT의 media를 나타내는 필드입니다. withMetadata 파라미터에 true를 입력한
-                          경우에만 응답에 포함됩니다.
-                      metadataSyncedAt:
-                        type: string
-                        description: >-
-                          NFT의 metadata가 동기화 된 시점을 나타내는 필드입니다. withMetadata
-                          파라미터에 true를 입력한 경우에만 응답에 포함됩니다.
+                        description: 조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다.
+                        pattern: ^0[xX][0-9a-fA-F]{40}$
+                  required:
+                    - accountAddress
+                - *ref_2
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      type: object
+                      properties:
+                        contract:
+                          type: object
+                          properties:
+                            address: *ref_3
+                            deployedTransactionHash: *ref_4
+                            deployedAt: *ref_5
+                            deployerAddress: *ref_6
+                            logoUrl: *ref_7
+                            type: *ref_8
+                            name: *ref_9
+                            symbol: *ref_10
+                            totalSupply: *ref_11
+                            decimals: *ref_12
+                        totalBalance: *ref_13
+                        uniqueBalance: *ref_14
+              example:
+                rpp: 20
+                cursor: null
+                items:
+                  - contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                    totalBalance: '5'
+                    uniqueBalance: '5'
+        '400':
+          description: Bad Request
+          content: *ref_15
+        '401':
+          description: Unauthorized
+          content: *ref_16
+        '403':
+          description: Forbidden
+          content: *ref_17
+        '404':
+          description: Not Found
+          content: *ref_18
+        '429':
+          description: Too Many Requests
+          content: *ref_19
+  /{protocol}/{network}/nft/getNftMetadataByContract:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - NFT API
+      description: 특정 주소를 입력하여 해당 컨트랙트가 발행한 NFT의 메타데이터를 조회합니다.
+      summary: Get NFT Metadata by Contract
+      operationId: getNftMetadataByContract
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    contractAddress:
+                      type: string
+                      description: 조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                  required:
+                    - contractAddress
+                - *ref_2
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      type: object
+                      properties:
+                        tokenId: *ref_20
+                        tokenUri: *ref_21
+                        tokenUriSyncedAt: *ref_22
+                        rawMetadata: *ref_23
+                        metadataSyncedAt: *ref_24
+                        media: *ref_25
+                        contract:
+                          type: object
+                          properties:
+                            address: *ref_3
+                            deployedTransactionHash: *ref_4
+                            deployedAt: *ref_5
+                            deployerAddress: *ref_6
+                            logoUrl: *ref_7
+                            type: *ref_8
+                            name: *ref_9
+                            symbol: *ref_10
+                            totalSupply: *ref_11
+                            decimals: *ref_12
+              example:
+                rpp: 20
+                cursor: >-
+                  W3sia2V5IjoidG9rZW5JZCIsIm9yZGVyIjoiQVNDIiwiZXF1YWwiOmZhbHNlLCJwb2ludCI6IjE5In1d
+                items:
+                  - tokenId: '0'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/0
+                    tokenUriSyncedAt: '2023-05-24T05:04:34.482Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ","attributes":[{"trait_type":"Earring","value":"Silver
+                      Hoop"},{"trait_type":"Background","value":"Orange"},{"trait_type":"Fur","value":"Robot"},{"trait_type":"Clothes","value":"Striped
+                      Tee"},{"trait_type":"Mouth","value":"Discomfort"},{"trait_type":"Eyes","value":"X
+                      Eyes"}]}
+                    metadataSyncedAt: '2023-05-24T05:04:34.482Z'
+                    media:
+                      originUrl: ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/0/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/0/medium.png
+                      updatedAt: '2024-02-19T11:38:22.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '1'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1
+                    tokenUriSyncedAt: '2023-05-24T05:04:34.383Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi","attributes":[{"trait_type":"Mouth","value":"Grin"},{"trait_type":"Clothes","value":"Vietnam
+                      Jacket"},{"trait_type":"Background","value":"Orange"},{"trait_type":"Eyes","value":"Blue
+                      Beams"},{"trait_type":"Fur","value":"Robot"}]}
+                    metadataSyncedAt: '2023-05-24T05:04:34.383Z'
+                    media:
+                      originUrl: ipfs://QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/1/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/1/medium.png
+                      updatedAt: '2023-08-29T09:23:45.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '2'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/2
+                    tokenUriSyncedAt: '2023-05-24T05:04:34.453Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmcJYkCKK7QPmYWjp4FD2e3Lv5WCGFuHNUByvGKBaytif4","attributes":[{"trait_type":"Eyes","value":"3d"},{"trait_type":"Mouth","value":"Bored
+                      Cigarette"},{"trait_type":"Fur","value":"Robot"},{"trait_type":"Hat","value":"Sea
+                      Captain's
+                      Hat"},{"trait_type":"Background","value":"Aquamarine"}]}
+                    metadataSyncedAt: '2023-05-24T05:04:34.453Z'
+                    media:
+                      originUrl: ipfs://QmcJYkCKK7QPmYWjp4FD2e3Lv5WCGFuHNUByvGKBaytif4
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/2/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/2/medium.png
+                      updatedAt: '2024-02-19T11:38:21.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '3'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/3
+                    tokenUriSyncedAt: '2023-05-24T05:00:55.121Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmYxT4LnK8sqLupjbS6eRvu1si7Ly2wFQAqFebxhWntcf6","attributes":[{"trait_type":"Background","value":"Purple"},{"trait_type":"Eyes","value":"Bored"},{"trait_type":"Mouth","value":"Tongue
+                      Out"},{"trait_type":"Clothes","value":"Bone
+                      Necklace"},{"trait_type":"Fur","value":"Cheetah"}]}
+                    metadataSyncedAt: '2023-05-24T05:00:55.121Z'
+                    media:
+                      originUrl: ipfs://QmYxT4LnK8sqLupjbS6eRvu1si7Ly2wFQAqFebxhWntcf6
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/3/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/3/medium.png
+                      updatedAt: '2024-02-19T11:38:25.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '4'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/4
+                    tokenUriSyncedAt: '2023-05-24T05:01:17.540Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmSg9bPzW9anFYc3wWU5KnvymwkxQTpmqcRSfYj7UmiBa7","attributes":[{"trait_type":"Clothes","value":"Navy
+                      Striped Tee"},{"trait_type":"Mouth","value":"Phoneme
+                      L"},{"trait_type":"Hat","value":"Party Hat
+                      2"},{"trait_type":"Fur","value":"Golden
+                      Brown"},{"trait_type":"Eyes","value":"Closed"},{"trait_type":"Background","value":"Blue"}]}
+                    metadataSyncedAt: '2023-05-24T05:01:17.540Z'
+                    media:
+                      originUrl: ipfs://QmSg9bPzW9anFYc3wWU5KnvymwkxQTpmqcRSfYj7UmiBa7
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/4/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/4/medium.png
+                      updatedAt: '2024-02-19T11:38:21.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '5'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/5
+                    tokenUriSyncedAt: '2023-05-24T05:00:59.838Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmNwbd7ctEhGpVkP8nZvBBQfiNeFKRdxftJAxxEdkUKLcQ","attributes":[{"trait_type":"Hat","value":"Bayc
+                      Flipped Brim"},{"trait_type":"Eyes","value":"X
+                      Eyes"},{"trait_type":"Fur","value":"Brown"},{"trait_type":"Background","value":"Army
+                      Green"},{"trait_type":"Clothes","value":"Bayc T
+                      Red"},{"trait_type":"Mouth","value":"Dumbfounded"}]}
+                    metadataSyncedAt: '2023-05-24T05:00:59.838Z'
+                    media:
+                      originUrl: ipfs://QmNwbd7ctEhGpVkP8nZvBBQfiNeFKRdxftJAxxEdkUKLcQ
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/5/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/5/medium.png
+                      updatedAt: '2024-02-19T11:38:30.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '6'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/6
+                    tokenUriSyncedAt: '2023-05-24T05:00:03.479Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmWBgfBhyVmHNhBfEQ7p1P4Mpn7pm5b8KgSab2caELnTuV","attributes":[{"trait_type":"Clothes","value":"Tweed
+                      Suit"},{"trait_type":"Mouth","value":"Bored"},{"trait_type":"Fur","value":"Cream"},{"trait_type":"Eyes","value":"Crazy"},{"trait_type":"Background","value":"Yellow"},{"trait_type":"Hat","value":"S&m
+                      Hat"}]}
+                    metadataSyncedAt: '2023-05-24T05:00:03.479Z'
+                    media:
+                      originUrl: ipfs://QmWBgfBhyVmHNhBfEQ7p1P4Mpn7pm5b8KgSab2caELnTuV
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/6/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/6/medium.png
+                      updatedAt: '2024-02-19T11:38:26.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '7'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/7
+                    tokenUriSyncedAt: '2023-05-24T05:04:13.848Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmRsJLrg27GQ1ZWyrXZFuJFdU5bapfzsyBfm3CAX1V1bw6","attributes":[{"trait_type":"Background","value":"Gray"},{"trait_type":"Hat","value":"Stuntman
+                      Helmet"},{"trait_type":"Eyes","value":"Angry"},{"trait_type":"Mouth","value":"Bored"},{"trait_type":"Clothes","value":"Wool
+                      Turtleneck"},{"trait_type":"Fur","value":"Golden Brown"}]}
+                    metadataSyncedAt: '2023-05-24T05:04:13.848Z'
+                    media:
+                      originUrl: ipfs://QmRsJLrg27GQ1ZWyrXZFuJFdU5bapfzsyBfm3CAX1V1bw6
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/7/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/7/medium.png
+                      updatedAt: '2024-02-19T11:38:23.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '8'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/8
+                    tokenUriSyncedAt: '2023-05-24T05:01:42.656Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmXEqPbvM4aq1SQSXN8DSuEcSo5SseYW1izYQbsGB8yn9x","attributes":[{"trait_type":"Mouth","value":"Bored"},{"trait_type":"Background","value":"Aquamarine"},{"trait_type":"Hat","value":"Beanie"},{"trait_type":"Earring","value":"Gold
+                      Stud"},{"trait_type":"Eyes","value":"Robot"},{"trait_type":"Fur","value":"Zombie"}]}
+                    metadataSyncedAt: '2023-05-24T05:01:42.656Z'
+                    media:
+                      originUrl: ipfs://QmXEqPbvM4aq1SQSXN8DSuEcSo5SseYW1izYQbsGB8yn9x
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/8/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/8/medium.png
+                      updatedAt: '2024-02-19T11:38:29.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '9'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/9
+                    tokenUriSyncedAt: '2023-05-24T05:02:11.410Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmUQgKka8EW7exiUHnMwZ4UoXA11wV7NFjHAogVAbasSYy","attributes":[{"trait_type":"Earring","value":"Silver
+                      Stud"},{"trait_type":"Eyes","value":"Sleepy"},{"trait_type":"Mouth","value":"Small
+                      Grin"},{"trait_type":"Fur","value":"Brown"},{"trait_type":"Hat","value":"Seaman's
+                      Hat"},{"trait_type":"Clothes","value":"Stunt
+                      Jacket"},{"trait_type":"Background","value":"Purple"}]}
+                    metadataSyncedAt: '2023-05-24T05:02:11.410Z'
+                    media:
+                      originUrl: ipfs://QmUQgKka8EW7exiUHnMwZ4UoXA11wV7NFjHAogVAbasSYy
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/9/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/9/medium.png
+                      updatedAt: '2024-02-19T11:38:27.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '10'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/10
+                    tokenUriSyncedAt: '2023-05-24T05:03:02.300Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmPQdVU1riwzijhCs1Lk6CHmDo4LpmwPPLuDauY3i8gSzL","attributes":[{"trait_type":"Clothes","value":"Navy
+                      Striped
+                      Tee"},{"trait_type":"Background","value":"Aquamarine"},{"trait_type":"Hat","value":"Bayc
+                      Hat
+                      Red"},{"trait_type":"Fur","value":"Dmt"},{"trait_type":"Eyes","value":"Eyepatch"},{"trait_type":"Mouth","value":"Bored"}]}
+                    metadataSyncedAt: '2023-05-24T05:03:02.300Z'
+                    media:
+                      originUrl: ipfs://QmPQdVU1riwzijhCs1Lk6CHmDo4LpmwPPLuDauY3i8gSzL
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/10/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/10/medium.png
+                      updatedAt: '2024-02-19T11:38:23.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '11'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/11
+                    tokenUriSyncedAt: '2023-05-24T05:03:21.279Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmVvdAbabZ2awja88uUhYHFuq67iEiroFuwLGM6HyiWcc8","attributes":[{"trait_type":"Background","value":"Gray"},{"trait_type":"Fur","value":"Dark
+                      Brown"},{"trait_type":"Hat","value":"Laurel
+                      Wreath"},{"trait_type":"Mouth","value":"Bored Unshaven
+                      Cigarette"},{"trait_type":"Clothes","value":"Smoking
+                      Jacket"},{"trait_type":"Eyes","value":"Bloodshot"}]}
+                    metadataSyncedAt: '2023-05-24T05:03:21.279Z'
+                    media:
+                      originUrl: ipfs://QmVvdAbabZ2awja88uUhYHFuq67iEiroFuwLGM6HyiWcc8
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/11/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/11/medium.png
+                      updatedAt: '2024-02-19T11:38:23.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '12'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/12
+                    tokenUriSyncedAt: '2023-05-24T05:04:33.267Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmexFWUtmFNGQwVuRN8dLLwcucSFoLYjeHkv2uAyan5H8t","attributes":[{"trait_type":"Background","value":"Army
+                      Green"},{"trait_type":"Clothes","value":"Black Holes
+                      T"},{"trait_type":"Hat","value":"Seaman's
+                      Hat"},{"trait_type":"Eyes","value":"Wide
+                      Eyed"},{"trait_type":"Fur","value":"Brown"},{"trait_type":"Mouth","value":"Discomfort"}]}
+                    metadataSyncedAt: '2023-05-24T05:04:33.267Z'
+                    media:
+                      originUrl: ipfs://QmexFWUtmFNGQwVuRN8dLLwcucSFoLYjeHkv2uAyan5H8t
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/12/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/12/medium.png
+                      updatedAt: '2024-02-19T11:38:27.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '13'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/13
+                    tokenUriSyncedAt: '2023-05-24T05:02:51.817Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmaZLhanFj41yfXY3Ux1JNv6ZAnzsWXfbJmo7qbJzZjh4s","attributes":[{"trait_type":"Fur","value":"Black"},{"trait_type":"Mouth","value":"Bored"},{"trait_type":"Clothes","value":"Bone
+                      Tee"},{"trait_type":"Background","value":"Yellow"},{"trait_type":"Eyes","value":"Coins"},{"trait_type":"Hat","value":"Police
+                      Motorcycle Helmet"}]}
+                    metadataSyncedAt: '2023-05-24T05:02:51.817Z'
+                    media:
+                      originUrl: ipfs://QmaZLhanFj41yfXY3Ux1JNv6ZAnzsWXfbJmo7qbJzZjh4s
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/13/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/13/medium.png
+                      updatedAt: '2024-02-19T11:38:26.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '14'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/14
+                    tokenUriSyncedAt: '2023-05-24T05:04:04.162Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmbcWzteFsAvdwiaZyC1YJVNsApDaPRmqkQDyrYAvP4u48","attributes":[{"trait_type":"Mouth","value":"Small
+                      Grin"},{"trait_type":"Earring","value":"Diamond
+                      Stud"},{"trait_type":"Fur","value":"Cheetah"},{"trait_type":"Background","value":"Orange"},{"trait_type":"Eyes","value":"3d"},{"trait_type":"Clothes","value":"Tanktop"}]}
+                    metadataSyncedAt: '2023-05-24T05:04:04.162Z'
+                    media:
+                      originUrl: ipfs://QmbcWzteFsAvdwiaZyC1YJVNsApDaPRmqkQDyrYAvP4u48
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/14/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/14/medium.png
+                      updatedAt: '2024-02-19T11:38:30.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '15'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/15
+                    tokenUriSyncedAt: '2023-05-24T05:01:55.976Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmeGWaFNJyVpkr1LmkKye7qfUGwK9jTRW2sMxKnMDrJKtr","attributes":[{"trait_type":"Background","value":"Gray"},{"trait_type":"Fur","value":"Gray"},{"trait_type":"Eyes","value":"Zombie"},{"trait_type":"Mouth","value":"Phoneme
+                      L"},{"trait_type":"Clothes","value":"Black
+                      T"},{"trait_type":"Hat","value":"Girl's Hair Pink"}]}
+                    metadataSyncedAt: '2023-05-24T05:01:55.976Z'
+                    media:
+                      originUrl: ipfs://QmeGWaFNJyVpkr1LmkKye7qfUGwK9jTRW2sMxKnMDrJKtr
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/15/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/15/medium.png
+                      updatedAt: '2024-02-19T11:38:21.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '16'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/16
+                    tokenUriSyncedAt: '2023-05-24T05:03:20.603Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmapGf8z7u7f1SQv7P9r1LhjZh9B2BmmmCUS68kBjR8Fsa","attributes":[{"trait_type":"Mouth","value":"Dumbfounded"},{"trait_type":"Clothes","value":"Bone
+                      Necklace"},{"trait_type":"Background","value":"Purple"},{"trait_type":"Hat","value":"Horns"},{"trait_type":"Earring","value":"Silver
+                      Hoop"},{"trait_type":"Fur","value":"Dark
+                      Brown"},{"trait_type":"Eyes","value":"Bored"}]}
+                    metadataSyncedAt: '2023-05-24T05:03:20.603Z'
+                    media:
+                      originUrl: ipfs://QmapGf8z7u7f1SQv7P9r1LhjZh9B2BmmmCUS68kBjR8Fsa
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/16/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/16/medium.png
+                      updatedAt: '2024-02-19T11:38:25.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '17'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/17
+                    tokenUriSyncedAt: '2023-05-24T05:02:00.668Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmdLhb2BktLpSuTYyWRywRoJMFpy3hQG8RA1KJtVXj7wUf","attributes":[{"trait_type":"Mouth","value":"Bored
+                      Unshaven"},{"trait_type":"Background","value":"New Punk
+                      Blue"},{"trait_type":"Eyes","value":"Closed"},{"trait_type":"Clothes","value":"Bayc
+                      T Black"},{"trait_type":"Earring","value":"Gold
+                      Stud"},{"trait_type":"Hat","value":"Commie
+                      Hat"},{"trait_type":"Fur","value":"Tan"}]}
+                    metadataSyncedAt: '2023-05-24T05:02:00.668Z'
+                    media:
+                      originUrl: ipfs://QmdLhb2BktLpSuTYyWRywRoJMFpy3hQG8RA1KJtVXj7wUf
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/17/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/17/medium.png
+                      updatedAt: '2024-02-19T11:38:30.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '18'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/18
+                    tokenUriSyncedAt: '2023-05-24T05:02:10.500Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmbUzseZbeM3nU6SUTQm979q7FGCMNWEqDKSZvaNUTodDk","attributes":[{"trait_type":"Mouth","value":"Bored
+                      Cigarette"},{"trait_type":"Fur","value":"Robot"},{"trait_type":"Eyes","value":"Cyborg"},{"trait_type":"Background","value":"Purple"},{"trait_type":"Clothes","value":"Vietnam
+                      Jacket"}]}
+                    metadataSyncedAt: '2023-05-24T05:02:10.500Z'
+                    media:
+                      originUrl: ipfs://QmbUzseZbeM3nU6SUTQm979q7FGCMNWEqDKSZvaNUTodDk
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/18/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/18/medium.png
+                      updatedAt: '2024-02-19T11:38:28.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+                  - tokenId: '19'
+                    tokenUri: ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/19
+                    tokenUriSyncedAt: '2023-05-24T05:01:06.258Z'
+                    rawMetadata: >-
+                      {"image":"ipfs://QmRcuopgwX16miSpLtEkY5kzZS96iwwNMWjMUaqUeyA619","attributes":[{"trait_type":"Eyes","value":"Eyepatch"},{"trait_type":"Fur","value":"Tan"},{"trait_type":"Background","value":"Army
+                      Green"},{"trait_type":"Hat","value":"Bayc Hat
+                      Black"},{"trait_type":"Mouth","value":"Rage"}]}
+                    metadataSyncedAt: '2023-05-24T05:01:06.258Z'
+                    media:
+                      originUrl: ipfs://QmRcuopgwX16miSpLtEkY5kzZS96iwwNMWjMUaqUeyA619
+                      cachedUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/19/raw.png
+                      thumbnailUrl: >-
+                        https://cdn.luniverse.io/media/ethereum/mainnet/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/19/medium.png
+                      updatedAt: '2024-02-19T11:38:25.000Z'
+                    contract:
+                      address: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
+                      deployedTransactionHash: >-
+                        0x22199329b0aa1aa68902a78e3b32ca327c872fab166c7a2838273de6ad383eba
+                      deployedAt: '2021-04-22T03:03:16.000Z'
+                      deployerAddress: '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03'
+                      logoUrl: null
+                      type: ERC721
+                      name: BoredApeYachtClub
+                      symbol: BAYC
+        '400':
+          description: Bad Request
+          content: *ref_15
+        '401':
+          description: Unauthorized
+          content: *ref_16
+        '403':
+          description: Forbidden
+          content: *ref_17
+        '404':
+          description: Not Found
+          content: *ref_18
+        '429':
+          description: Too Many Requests
+          content: *ref_19

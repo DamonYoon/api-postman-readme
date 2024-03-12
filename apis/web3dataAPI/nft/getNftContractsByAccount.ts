@@ -1,11 +1,13 @@
-import { OpenAPIV3_1 } from "openapi-types";
-import Parameters from "../schemas/parameters";
+import { OpenAPIV3 } from "openapi-types";
+import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
+import DataDomains from "../schemas/dataDomains";
+import Examples from "../examples";
 
 const endpoint = "getNftContractsByAccount";
 const summary = "Get NFT Contracts by Account";
 
-export const getNftContractsByAccount: OpenAPIV3_1.PathItemObject = {
+export const getNftContractsByAccount: OpenAPIV3.PathItemObject = {
 	post: {
 		security: [
 			{
@@ -16,7 +18,7 @@ export const getNftContractsByAccount: OpenAPIV3_1.PathItemObject = {
 		description: "해당 Account가 보유한 NFT의 목록을 조회합니다.",
 		summary: summary,
 		operationId: endpoint,
-		parameters: [Parameters.protocol, Parameters.network],
+		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
 			required: true,
 			content: {
@@ -27,19 +29,19 @@ export const getNftContractsByAccount: OpenAPIV3_1.PathItemObject = {
 								type: "object",
 								properties: {
 									accountAddress: {
-										...Parameters.accountAddress,
+										...Requests.accountAddress,
 										default: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
 									},
 									contractAddresses: {
 										type: "array",
 										items: {
-											...Parameters.contractAddress,
+											...Requests.contractAddress,
 										},
 									},
 								},
 								required: ["accountAddress"],
 							},
-							Parameters.paginationSet,
+							Requests.PaginationSet,
 						],
 					},
 				},
@@ -50,27 +52,30 @@ export const getNftContractsByAccount: OpenAPIV3_1.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: {
+						schema: DataDomains.Pagination({
 							type: "object",
 							properties: {
-								...Responses.paginationSet({
+								contract: {
 									type: "object",
 									properties: {
-										ownerAddress: Responses.ownerAddress,
-										balance: Responses.balance,
-										contractAddress: Responses.contractAddress,
-										tokenId: Responses.tokenId,
-										rawMetadata: Responses.rawMetadata,
-										metadata: Responses.metadata,
-										media: Responses.media,
-										metadataSyncedAt: Responses.metadataSyncedAt,
+										...DataDomains.ContractMeta.properties,
+										...DataDomains.AssetMeta.properties,
 									},
-								}),
+								},
+								...DataDomains.NftBalance.properties,
 							},
+						}),
+						example: {
+							...Examples[endpoint],
 						},
 					},
 				},
 			},
+			"400": { ...Responses.Error400 },
+			"401": { ...Responses.Error401 },
+			"403": { ...Responses.Error403 },
+			"404": { ...Responses.Error404 },
+			"429": { ...Responses.Error429 },
 		},
 	},
 };
