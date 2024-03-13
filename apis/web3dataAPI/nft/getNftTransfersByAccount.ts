@@ -5,8 +5,8 @@ import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFTs Owned By Account";
-const endpoint = "getNftsOwnedByAccount";
+const title = "Get NFT Transfers By Account";
+const endpoint = "getNftTransfersByAccount";
 const hide = false;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -18,7 +18,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags: ["NFT API"],
 		description:
-			"특정 Account가 보유한 NFT의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰의 메타데이터가 포함됩니다.",
+			"특정 주소가 전송 혹은 수신한 NFT 전송 목록을 조회합니다. 조회 결과에는 컨트랙트 메타데이터와 NFT 메타데이터가 포함됩니다.",
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,14 +31,15 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									accountAddress: {
-										...Requests.accountAddress,
-										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
-									},
+									accountAddress: { ...Requests.accountAddress, default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS },
 									contractAddresses: {
 										type: "array",
 										items: Requests.contractAddress,
 									},
+									fromBlock: Requests.fromBlock,
+									toBlock: Requests.toBlock,
+									fromDate: Requests.fromDate,
+									toDate: Requests.toDate,
 								},
 								required: ["accountAddress"],
 							},
@@ -47,6 +48,7 @@ const info: OpenAPIV3.PathItemObject = {
 								type: "object",
 								properties: {
 									withMetadata: Requests.withMetadata,
+									withZeroValue: Requests.withZeroValue,
 								},
 							},
 						],
@@ -61,8 +63,7 @@ const info: OpenAPIV3.PathItemObject = {
 					"application/json": {
 						schema: DataDomains.Pagination({
 							allOf: [
-								DataDomains.Balance,
-								DataDomains.NftMeta,
+								DataDomains.Transfer,
 								{
 									type: "object",
 									properties: {
@@ -70,6 +71,7 @@ const info: OpenAPIV3.PathItemObject = {
 											...DataDomains.ContractMeta,
 											...DataDomains.AssetMeta,
 										},
+										nft: DataDomains.NftMeta,
 									},
 								},
 							],

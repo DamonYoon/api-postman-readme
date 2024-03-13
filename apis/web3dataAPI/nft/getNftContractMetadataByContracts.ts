@@ -5,8 +5,8 @@ import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFTs Owned By Account";
-const endpoint = "getNftsOwnedByAccount";
+const title = "Get NFT Contract Metadata by Contracts";
+const endpoint = "getNftContractMetadataByContracts";
 const hide = false;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -17,8 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["NFT API"],
-		description:
-			"특정 Account가 보유한 NFT의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰의 메타데이터가 포함됩니다.",
+		description: `특정 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,23 +30,16 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									accountAddress: {
-										...Requests.accountAddress,
-										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
-									},
 									contractAddresses: {
 										type: "array",
-										items: Requests.contractAddress,
+										items: {
+											...Requests.contractAddress,
+										},
+										default: [Constants.BAYC_CONTRACT_ADDRESS, Constants.MAYC_CONTRACT_ADDRESS],
 									},
 								},
-								required: ["accountAddress"],
-							},
-							Requests.PaginationSet,
-							{
-								type: "object",
-								properties: {
-									withMetadata: Requests.withMetadata,
-								},
+								required: ["contractAddresses"],
+								maximum: Constants.INPUT_ITEM_MAX,
 							},
 						],
 					},
@@ -59,24 +51,13 @@ const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [
-								DataDomains.Balance,
-								DataDomains.NftMeta,
-								{
-									type: "object",
-									properties: {
-										contract: {
-											...DataDomains.ContractMeta,
-											...DataDomains.AssetMeta,
-										},
-									},
-								},
-							],
-						}),
-						example: {
-							...Examples[endpoint],
+						schema: {
+							type: "array",
+							items: {
+								allOf: [DataDomains.ContractMeta, DataDomains.AssetMeta],
+							},
 						},
+						example: Examples[endpoint],
 					},
 				},
 			},

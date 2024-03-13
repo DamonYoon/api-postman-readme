@@ -5,8 +5,8 @@ import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFTs Owned By Account";
-const endpoint = "getNftsOwnedByAccount";
+const title = "Get NFT Holders by Contract";
+const endpoint = "getNftHoldersByContract";
 const hide = false;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -18,7 +18,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags: ["NFT API"],
 		description:
-			"특정 Account가 보유한 NFT의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰의 메타데이터가 포함됩니다.",
+			"특정 NFT 컨트랙트의 홀더 리스트를 조회합니다. 홀더 리스트에는 홀더의 주소와 홀더가 보유한 NFT의 수량이 포함됩니다.",
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,24 +31,14 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									accountAddress: {
-										...Requests.accountAddress,
-										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
-									},
-									contractAddresses: {
-										type: "array",
-										items: Requests.contractAddress,
+									contractAddress: {
+										...Requests.contractAddress,
+										default: Constants.BAYC_CONTRACT_ADDRESS,
 									},
 								},
-								required: ["accountAddress"],
+								required: ["contractAddress"],
 							},
 							Requests.PaginationSet,
-							{
-								type: "object",
-								properties: {
-									withMetadata: Requests.withMetadata,
-								},
-							},
 						],
 					},
 				},
@@ -59,21 +49,7 @@ const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [
-								DataDomains.Balance,
-								DataDomains.NftMeta,
-								{
-									type: "object",
-									properties: {
-										contract: {
-											...DataDomains.ContractMeta,
-											...DataDomains.AssetMeta,
-										},
-									},
-								},
-							],
-						}),
+						schema: DataDomains.Pagination(DataDomains.NftHolder),
 						example: {
 							...Examples[endpoint],
 						},

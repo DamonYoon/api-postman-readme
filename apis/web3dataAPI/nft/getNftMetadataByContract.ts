@@ -3,11 +3,13 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
+import Constants from "../../../utils/constants.utils";
 
+const title = "Get NFT Metadata by Contract";
 const endpoint = "getNftMetadataByContract";
-const summary = "Get NFT Metadata by Contract";
+const hide = false;
 
-export const getNftMetadataByContract: OpenAPIV3.PathItemObject = {
+export const info: OpenAPIV3.PathItemObject = {
 	post: {
 		security: [
 			{
@@ -15,8 +17,8 @@ export const getNftMetadataByContract: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["NFT API"],
-		description: "특정 주소를 입력하여 해당 컨트랙트가 발행한 NFT의 메타데이터를 조회합니다.",
-		summary: summary,
+		description: "특정 컨트랙트에서 발행된 NFT의 메타데이터 목록을 조회합니다.",
+		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -30,7 +32,7 @@ export const getNftMetadataByContract: OpenAPIV3.PathItemObject = {
 								properties: {
 									contractAddress: {
 										...Requests.contractAddress,
-										default: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+										default: Constants.BAYC_CONTRACT_ADDRESS,
 									},
 								},
 								required: ["contractAddress"],
@@ -47,17 +49,18 @@ export const getNftMetadataByContract: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.Pagination({
-							type: "object",
-							properties: {
-								...DataDomains.NftMeta.properties,
-								contract: {
+							allOf: [
+								DataDomains.NftMeta,
+								{
 									type: "object",
 									properties: {
-										...DataDomains.ContractMeta.properties,
-										...DataDomains.AssetMeta.properties,
+										contract: {
+											...DataDomains.ContractMeta,
+											...DataDomains.AssetMeta,
+										},
 									},
 								},
-							},
+							],
 						}),
 						example: {
 							...Examples[endpoint],
@@ -72,4 +75,11 @@ export const getNftMetadataByContract: OpenAPIV3.PathItemObject = {
 			"429": { ...Responses.Error429 },
 		},
 	},
+};
+
+export default {
+	title,
+	endpoint,
+	hide,
+	info,
 };

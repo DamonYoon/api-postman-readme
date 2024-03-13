@@ -3,11 +3,13 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
+import Constants from "../../../utils/constants.utils";
 
+const title = "Get NFT Contracts by Account";
 const endpoint = "getNftContractsByAccount";
-const summary = "Get NFT Contracts by Account";
+const hide = false;
 
-export const getNftContractsByAccount: OpenAPIV3.PathItemObject = {
+const info: OpenAPIV3.PathItemObject = {
 	post: {
 		security: [
 			{
@@ -15,8 +17,9 @@ export const getNftContractsByAccount: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["NFT API"],
-		description: "해당 Account가 보유한 NFT의 목록을 조회합니다.",
-		summary: summary,
+		description:
+			"특정 Account가 보유한 NFT를 컨트랙트 별로 그룹핑하여 조회합니다. 조회 결과에는 컨트랙트별 NFT의 수량과 컨트랙트의 메타데이터가 포함됩니다.",
+		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -29,14 +32,11 @@ export const getNftContractsByAccount: OpenAPIV3.PathItemObject = {
 								type: "object",
 								properties: {
 									accountAddress: {
-										...Requests.accountAddress,
-										default: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
 									},
 									contractAddresses: {
 										type: "array",
-										items: {
-											...Requests.contractAddress,
-										},
+										items: Requests.contractAddress,
 									},
 								},
 								required: ["accountAddress"],
@@ -53,17 +53,18 @@ export const getNftContractsByAccount: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.Pagination({
-							type: "object",
-							properties: {
-								contract: {
+							allOf: [
+								DataDomains.NftBalance,
+								{
 									type: "object",
 									properties: {
-										...DataDomains.ContractMeta.properties,
-										...DataDomains.AssetMeta.properties,
+										contract: {
+											...DataDomains.ContractMeta,
+											...DataDomains.AssetMeta,
+										},
 									},
 								},
-								...DataDomains.NftBalance.properties,
-							},
+							],
 						}),
 						example: {
 							...Examples[endpoint],
@@ -78,4 +79,11 @@ export const getNftContractsByAccount: OpenAPIV3.PathItemObject = {
 			"429": { ...Responses.Error429 },
 		},
 	},
+};
+
+export default {
+	title,
+	endpoint,
+	hide,
+	info,
 };

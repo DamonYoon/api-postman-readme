@@ -16,11 +16,9 @@ namespace Responses {
 						},
 					},
 					example: {
-						value: {
-							code: "INVALID_PARAMETER",
-							message:
-								"Invalid parameter: { PARAMETER1_NAME = PARAMETER1_VALUE, PARAMETER2_NAME = PARAMETER2_VALUE, ... }",
-						},
+						code: "INVALID_PARAMETER",
+						message:
+							"Invalid parameter: { PARAMETER1_NAME = PARAMETER1_VALUE, PARAMETER2_NAME = PARAMETER2_VALUE, ... }",
 					},
 				},
 			},
@@ -42,10 +40,8 @@ namespace Responses {
 						},
 					},
 					example: {
-						value: {
-							code: "AUTHENTICATION_FAILED",
-							message: "Authentication failed",
-						},
+						code: "AUTHENTICATION_FAILED",
+						message: "Authentication failed",
 					},
 				},
 			},
@@ -67,10 +63,8 @@ namespace Responses {
 						},
 					},
 					example: {
-						value: {
-							code: "PERMISSION_DENIED",
-							message: "Permission denied",
-						},
+						code: "PERMISSION_DENIED",
+						message: "Permission denied",
 					},
 				},
 			},
@@ -92,11 +86,8 @@ namespace Responses {
 						},
 					},
 					example: {
-						value: {
-							code: "RESOURCE_NOT_FOUND",
-							message:
-								"Resource not found: { RESOURCE1_NAME = RESOURCE1_VALUE, RESOURCE2_NAME = RESOURCE2_VALUE, ... }",
-						},
+						code: "RESOURCE_NOT_FOUND",
+						message: "Resource not found: { RESOURCE1_NAME = RESOURCE1_VALUE, RESOURCE2_NAME = RESOURCE2_VALUE, ... }",
 					},
 				},
 			},
@@ -118,10 +109,8 @@ namespace Responses {
 						},
 					},
 					example: {
-						value: {
-							code: "TOO_MANY_REQUESTS",
-							message: "Too many requests",
-						},
+						code: "TOO_MANY_REQUESTS",
+						message: "Too many requests",
 					},
 				},
 			},

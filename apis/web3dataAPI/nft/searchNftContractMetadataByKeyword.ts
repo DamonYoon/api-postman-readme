@@ -3,10 +3,9 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
-import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFTs Owned By Account";
-const endpoint = "getNftsOwnedByAccount";
+const title = "Search NFT Contract Metadata By Keyword";
+const endpoint = "searchNftContractMetadataByKeyword";
 const hide = false;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -18,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags: ["NFT API"],
 		description:
-			"특정 Account가 보유한 NFT의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰의 메타데이터가 포함됩니다.",
+			"특정 주소를 입력하여 해당 컨트랙트가 발행한 NFT 목록 조회합니다. 컨트랙트의 name 혹은 symbol과 일치하는 NFT를 조회합니다.",
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,24 +30,11 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									accountAddress: {
-										...Requests.accountAddress,
-										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
-									},
-									contractAddresses: {
-										type: "array",
-										items: Requests.contractAddress,
-									},
+									keyword: { ...Requests.keyword, default: "BAYC" },
 								},
-								required: ["accountAddress"],
+								required: ["keyword"],
 							},
 							Requests.PaginationSet,
-							{
-								type: "object",
-								properties: {
-									withMetadata: Requests.withMetadata,
-								},
-							},
 						],
 					},
 				},
@@ -60,19 +46,7 @@ const info: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.Pagination({
-							allOf: [
-								DataDomains.Balance,
-								DataDomains.NftMeta,
-								{
-									type: "object",
-									properties: {
-										contract: {
-											...DataDomains.ContractMeta,
-											...DataDomains.AssetMeta,
-										},
-									},
-								},
-							],
+							allOf: [DataDomains.ContractMeta, DataDomains.AssetMeta],
 						}),
 						example: {
 							...Examples[endpoint],
