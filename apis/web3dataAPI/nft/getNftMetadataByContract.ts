@@ -7,7 +7,7 @@ import Constants from "../../../utils/constants.utils";
 
 const title = "Get NFT Metadata by Contract";
 const endpoint = "getNftMetadataByContract";
-const hide = false;
+const isPublic = true;
 
 export const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -26,6 +26,7 @@ export const info: OpenAPIV3.PathItemObject = {
 			content: {
 				"application/json": {
 					schema: {
+						additionalProperties: false,
 						allOf: [
 							{
 								type: "object",
@@ -80,6 +81,6 @@ export const info: OpenAPIV3.PathItemObject = {
 export default {
 	title,
 	endpoint,
-	hide,
+	isPublic,
 	info,
 };

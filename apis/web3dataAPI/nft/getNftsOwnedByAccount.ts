@@ -7,7 +7,7 @@ import Constants from "../../../utils/constants.utils";
 
 const title = "Get NFTs Owned By Account";
 const endpoint = "getNftsOwnedByAccount";
-const hide = false;
+const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -92,6 +92,6 @@ const info: OpenAPIV3.PathItemObject = {
 export default {
 	title,
 	endpoint,
-	hide,
+	isPublic,
 	info,
 };

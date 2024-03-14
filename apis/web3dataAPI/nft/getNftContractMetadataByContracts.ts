@@ -7,7 +7,7 @@ import Constants from "../../../utils/constants.utils";
 
 const title = "Get NFT Contract Metadata by Contracts";
 const endpoint = "getNftContractMetadataByContracts";
-const hide = false;
+const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -17,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["NFT API"],
-		description: `특정 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
+		description: `특정 NFT 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -26,6 +26,7 @@ const info: OpenAPIV3.PathItemObject = {
 			content: {
 				"application/json": {
 					schema: {
+						additionalProperties: false,
 						allOf: [
 							{
 								type: "object",
@@ -73,6 +74,6 @@ const info: OpenAPIV3.PathItemObject = {
 export default {
 	title,
 	endpoint,
-	hide,
+	isPublic,
 	info,
 };

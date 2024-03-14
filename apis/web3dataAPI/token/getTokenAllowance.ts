@@ -1,11 +1,11 @@
 import { OpenAPIV3 } from "openapi-types";
 import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
-import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
+import Constants from "../../../utils/constants.utils";
 
-const title = "Search NFT Contract Metadata By Keyword";
-const endpoint = "searchNftContractMetadataByKeyword";
+const title = "Get Token Allowance";
+const endpoint = "getTokenAllowance";
 const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -15,8 +15,8 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description: "NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
+		tags: ["Token API"],
+		description: "Spender에게 Owner가 Approve한 Token의 수량을 조회합니다.",
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -30,11 +30,21 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									keyword: { ...Requests.keyword, default: "BAYC" },
+									contractAddress: {
+										...Requests.contractAddress,
+										default: Constants.USDT_CONTRACT_ADDRESS,
+									},
+									ownerAddress: {
+										...Requests.accountAddress,
+										default: "0x14d06788090769f669427b6aea1c0240d2321f34",
+									},
+									spenderAddress: {
+										...Requests.accountAddress,
+										default: "0x61e2523f3e7895670be632600bf0d139453642f7",
+									},
 								},
-								required: ["keyword"],
+								required: ["contractAddress", "ownerAddress", "spenderAddress"],
 							},
-							Requests.PaginationSet,
 						],
 					},
 				},
@@ -45,9 +55,14 @@ const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [DataDomains.ContractMeta, DataDomains.AssetMeta],
-						}),
+						schema: {
+							type: "object",
+							properties: {
+								allowance: {
+									type: "string",
+								},
+							},
+						},
 						example: {
 							...Examples[endpoint],
 						},

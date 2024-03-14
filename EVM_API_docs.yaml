@@ -17,7 +17,9 @@ paths:
         - api_key: []
       tags:
         - NFT API
-      description: 특정 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 100개의 컨트랙트를 조회할 수 있습니다.
+      description: >-
+        특정 NFT 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 100개의 컨트랙트를 조회할 수
+        있습니다.
       summary: Get NFT Contract Metadata by Contracts
       operationId: getNftContractMetadataByContracts
       parameters:
@@ -46,6 +48,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -277,8 +280,11 @@ paths:
                         값을 받으며, 100을 초과하는 페이지가 필요한 경우 cursor 페이지네이션 방식을 사용해야
                         합니다.
 
-                         [참고]
-                         page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
+
+                        [참고]
+
+                        page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두
+                        빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
                       pattern: ^(?:[1-9][0-9]?|100)$
                     rpp:
                       type: integer
@@ -288,13 +294,7 @@ paths:
                       pattern: ^(?:[1-9][0-9]{0,2}?|1000)$
                     cursor:
                       type: string
-                      description: >-
-                        cursor 파라미터는 페이지네이션을 위한 파라미터로, 이전 페이지와 다음 페이지 간의 데이터 이동을
-                        지원합니다. 이전 페이지에서 얻은 cursor 값을 다음 요청에 제공하면 다음 페이지의 데이터를
-                        로드할 수 있습니다.
-
-                         [참고]
-                         page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다.
+                      description: "cursor 파라미터는 페이지네이션을 위한 파라미터로, 이전 페이지와 다음 페이지 간의 데이터 이동을 지원합니다. 이전 페이지에서 얻은 cursor 값을 다음 요청에 제공하면 다음 페이지의 데이터를 로드할 수 있습니다.\n\t\t\t\n[참고]\npage 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다. page와 cursor에 모두 빈 값을 입력한 경우, cursor 페이지네이션을 사용하는 것으로 간주합니다."
                     withCount:
                       type: boolean
                       description: >-
@@ -415,6 +415,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -569,6 +570,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -662,6 +664,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -1326,6 +1329,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -1457,6 +1461,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -1467,19 +1472,27 @@ paths:
                         형태로 입력할 수 있습니다.
                       pattern: ^0[xX][0-9a-fA-F]{40}$
                       default: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    relation: &ref_26
+                      type: string
+                      description: >-
+                        이 파라미터는 조회하고자 하는 계정이 트랜잭션 혹은 토큰 전송에서의 관계를 지정하는 파라미터입니다.
+                        이 파라미터에는 from, to, both 중 하나의 값을 입력할 수 있습니다.
+
+                         `from`: 조회하고자 하는 계정이 발신자인 경우
+                         `to`: 조회하고자 하는 계정이 수신자인 경우
+                         `both`: 조회하고자 하는 계정이 발신자 혹은 수신자인 경우
+                      enum:
+                        - from
+                        - to
+                        - both
                     contractAddresses:
                       type: array
                       items: *ref_14
                     fromBlock: &ref_15
                       type: string
-                      description: >-
-                        조회 시작 블록을 지정하는 파라미터입니다. 이 파라미터의 기본 값은 0이며, 블록 번호(10진수
-                        문자열), 블록 해시(0x로 시작하는 64자리 16진수 문자열) 또는 블록
-                        태그("earliest")를 입력할 수 있습니다.
-
-                         [참고]
-                         toBlock 없이 fromBlock만 제공되는 경우, fromBlock에 입력한 시점부터 최근 block까지의 결과가 조회됩니다. fromBlock은 toBlock보다 크거나 같아야 합니다. fromBlock과 toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다.
+                      description: "조회 시작 블록을 지정하는 파라미터입니다. 이 파라미터의 기본 값은 0이며, 블록 번호(10진수 문자열), 블록 해시(0x로 시작하는 64자리 16진수 문자열) 또는 블록 태그(\"earliest\")를 입력할 수 있습니다.\n\t\t\n[참고]\ntoBlock 없이 fromBlock만 제공되는 경우, fromBlock에 입력한 시점부터 최근 block까지의 결과가 조회됩니다. fromBlock은 toBlock보다 크거나 같아야 합니다. fromBlock과 toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다."
                       pattern: ^[0-9]+$
+                      default: '19431126'
                     toBlock: &ref_16
                       type: string
                       description: >-
@@ -1487,17 +1500,25 @@ paths:
                         번호(10진수 문자열), 블록 해시(0x로 시작하는 64자리 16진수 문자열) 또는 블록
                         태그("latest")를 입력할 수 있습니다. 
 
-                         [참고]
-                         fromBlock 없이 toBlock만 제공되는 경우, 최초 block부터 toBlock까지의 결과가 조회됩니다. toBlock은 fromBlock보다 작거나 같아야 합니다. fromBlock과 toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다.
+
+                        [참고]
+
+                        fromBlock 없이 toBlock만 제공되는 경우, 최초 block부터 toBlock까지의 결과가
+                        조회됩니다. toBlock은 fromBlock보다 작거나 같아야 합니다. fromBlock과
+                        toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다.
                       pattern: ^[0-9]+$
+                      default: latest
                     fromDate: &ref_17
                       type: string
                       description: >-
                         조회 시작 날짜를 지정하는 파라미터입니다. 이 파라미터는 ISO 8601 형식의 날짜 문자열을 입력할
                         수 있습니다. (예: 2021-01-01T00:00:00Z)
 
-                         [참고]
-                         toDate 없이 fromDate만 제공되는 경우, fromDate에 입력한 시점부터 최근 날짜까지의 결과가 조회됩니다. fromDate은 toDate보다 이전이어야 합니다. fromDate과 toDate에 동일한 값이 입력된 경우, 입력된 날짜의 결과만 조회됩니다.
+                        [참고]
+
+                        toDate 없이 fromDate만 제공되는 경우, fromDate에 입력한 시점부터 최근 날짜까지의
+                        결과가 조회됩니다. fromDate은 toDate보다 이전이어야 합니다. fromDate과
+                        toDate에 동일한 값이 입력된 경우, 입력된 날짜의 결과만 조회됩니다.
                       pattern: >-
                         ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]{1,3})?Z$
                     toDate: &ref_18
@@ -1506,8 +1527,12 @@ paths:
                         조회 종료 날짜를 지정하는 파라미터입니다. 이 파라미터는 ISO 8601 형식의 날짜 문자열을 입력할
                         수 있습니다. (예: 2021-01-01T00:00:00Z)
 
-                         [참고]
-                         fromDate 없이 toDate만 제공되는 경우, 최초 날짜부터 toDate까지의 결과가 조회됩니다. toDate은 fromDate보다 이후이어야 합니다. fromDate과 toDate에 동일한 값이 입력된 경우, 입력된 날짜의 결과만 조회됩니다.
+
+                        [참고]
+
+                        fromDate 없이 toDate만 제공되는 경우, 최초 날짜부터 toDate까지의 결과가
+                        조회됩니다. toDate은 fromDate보다 이후이어야 합니다. fromDate과 toDate에
+                        동일한 값이 입력된 경우, 입력된 날짜의 결과만 조회됩니다.
                       pattern: >-
                         ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]{1,3})?Z$
                   required:
@@ -2113,6 +2138,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -2672,6 +2698,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -2803,9 +2830,10 @@ paths:
         - api_key: []
       tags:
         - NFT API
-      description: >-
-        특정 기간동안 발생한 NFT Transfer 리스트를 조회합니다. 조회 결과에는 컨트랙트 메타데이터와 NFT 메타데이터가
-        포함됩니다.
+      description: |-
+        특정 기간동안 발생한 NFT 전송 목록을 조회합니다. 조회 결과에는 컨트랙트 메타데이터와 NFT 메타데이터가 포함됩니다. 
+        > 💡 기간 설정 팁 
+        > 설정한 기간이 길 경우 응답시간이 길어질 수 있습니다. 빠른 응답을 원한다면 필요한 기간만큼만 설정하는 것을 권장합니다.
       summary: Get NFT Transfers Within Range
       operationId: getNftTransfersWithinRange
       parameters:
@@ -2816,6 +2844,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -3402,7 +3431,8 @@ paths:
                     description: 조회된 데이터의 목록을 나타내는 필드입니다.
                     items:
                       allOf:
-                        - type: object
+                        - &ref_25
+                          type: object
                           required:
                             - ownerAddress
                             - balance
@@ -3749,9 +3779,7 @@ paths:
         - api_key: []
       tags:
         - NFT API
-      description: >-
-        특정 주소를 입력하여 해당 컨트랙트가 발행한 NFT 목록 조회합니다. 컨트랙트의 name 혹은 symbol과 일치하는 NFT를
-        조회합니다.
+      description: NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.
       summary: Search NFT Contract Metadata By Keyword
       operationId: searchNftContractMetadataByKeyword
       parameters:
@@ -3762,6 +3790,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -4026,6 +4055,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               allOf:
                 - type: object
                   properties:
@@ -4075,6 +4105,1897 @@ paths:
                 message: >-
                   NFT Metadata synchronization request has been successfully
                   submitted.
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokenAllowance:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: Spender에게 Owner가 Approve한 Token의 수량을 조회합니다.
+      summary: Get Token Allowance
+      operationId: getTokenAllowance
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    contractAddress:
+                      type: string
+                      description: >-
+                        조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열
+                        형태로 입력할 수 있습니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                    ownerAddress:
+                      type: string
+                      description: >-
+                        조회하고자 하는 계정의 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열
+                        형태로 입력할 수 있습니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0x14d06788090769f669427b6aea1c0240d2321f34'
+                    spenderAddress:
+                      type: string
+                      description: >-
+                        조회하고자 하는 계정의 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열
+                        형태로 입력할 수 있습니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0x61e2523f3e7895670be632600bf0d139453642f7'
+                  required:
+                    - contractAddress
+                    - ownerAddress
+                    - spenderAddress
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  allowance:
+                    type: string
+              example:
+                allowance: >-
+                  115792089237316195423570985008687907853269984665640564039457584007913129639935
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokenContractMetadataByContracts:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: >-
+        특정 ERC20 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 100개의 컨트랙트를 조회할 수
+        있습니다.
+      summary: Get Token Contract Metadata by Contracts
+      operationId: getTokenContractMetadataByContracts
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    contractAddresses:
+                      type: array
+                      items:
+                        type: string
+                        description: >-
+                          조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수
+                          문자열 형태로 입력할 수 있습니다.
+                        pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default:
+                        - '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                        - '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+                  required:
+                    - contractAddresses
+                  maximum: 100
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - *ref_23
+                    - *ref_24
+              example:
+                - address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                  deployedTransactionHash: >-
+                    0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                  deployedAt: '2017-11-28T00:41:21.000Z'
+                  deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                  logoUrl: >-
+                    https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                  type: ERC20
+                  name: Tether USD
+                  symbol: USDT
+                  totalSupply: '44005847706828943'
+                  decimals: 18
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokenHoldersByContract:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: 특정 NFT 컨트랙트의 홀더 리스트를 조회합니다. 홀더 리스트에는 홀더의 주소와 홀더가 보유한 NFT의 수량이 포함됩니다.
+      summary: Get Token Holders By Contract
+      operationId: getTokenHoldersByContract
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    contractAddress:
+                      type: string
+                      description: >-
+                        조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열
+                        형태로 입력할 수 있습니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                  required:
+                    - contractAddress
+                - *ref_9
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items: *ref_25
+              example:
+                rpp: 10
+                cursor: >-
+                  W3sia2V5IjoidmFsdWUiLCJvcmRlciI6IkRFU0MiLCJlcXVhbCI6dHJ1ZSwicG9pbnQiOiI0NDAwNDgyMTA2MzUzMTkifSx7ImtleSI6ImFkZHJlc3MiLCJvcmRlciI6IkFTQyIsImVxdWFsIjpmYWxzZSwicG9pbnQiOiIweDY4ODQxYTE4MDZmZjI5MTMxNDk0NmVlYmQwY2RhOGIzNDhlNzNkNmQifV0=
+                items:
+                  - ownerAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    balance: '5624398504620253'
+                  - ownerAddress: '0xcEe284F754E854890e311e3280b767F80797180d'
+                    balance: '1672750387832964'
+                  - ownerAddress: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503'
+                    balance: '1420000115495224'
+                  - ownerAddress: '0xA7A93fd0a276fc1C0197a5B5623eD117786eeD06'
+                    balance: '1076676385111773'
+                  - ownerAddress: '0xD6216fC19DB775Df9774a6E33526131dA7D19a2c'
+                    balance: '874404534348583'
+                  - ownerAddress: '0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf'
+                    balance: '742493379663592'
+                  - ownerAddress: '0x3CC936b795A188F0e246cBB2D74C5Bd190aeCF18'
+                    balance: '669829200729638'
+                  - ownerAddress: '0x5041ed759Dd4aFc3a72b8192C143F72f4724081A'
+                    balance: '440234616158447'
+                  - ownerAddress: '0x3D55CCb2a943d88D39dd2E62DAf767C69fD0179F'
+                    balance: '440070505827183'
+                  - ownerAddress: '0x68841a1806fF291314946EebD0cdA8b348E73d6D'
+                    balance: '440048210635319'
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokenPricesByContracts:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: >-
+        특정 ERC20 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 100개의 컨트랙트를 조회할 수
+        있습니다.
+      summary: Get Token Prices by Contracts
+      operationId: getTokenPricesByContracts
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    contractAddresses:
+                      type: array
+                      items:
+                        type: string
+                        description: >-
+                          조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수
+                          문자열 형태로 입력할 수 있습니다.
+                        pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default:
+                        - '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                        - '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+                  required:
+                    - contractAddresses
+                  maximum: 100
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - type: object
+                      properties:
+                        currency:
+                          type: string
+                          description: 거래에 사용되는 통화의 종류를 나타냅니다. ISO 4217 통화코드 형식으로 제공됩니다.
+                          pattern: ^[A-Z]{3}$
+                        price:
+                          type: string
+                          description: 토큰의 현재 가격을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.
+                          pattern: ^[0-9]+$
+                        volumeFor24h:
+                          type: string
+                          description: >-
+                            지난 24시간 동안의 총 거래량을 나타내는 필드입니다. 이 필드는 활발한 거래 활동을 나타내는
+                            지표로 사용됩니다. 10진수 문자열 형태로 제공됩니다.
+                          pattern: ^[0-9]+$
+                        volumeChangeFor24h:
+                          type: string
+                          description: >-
+                            지난 24시간 동안의 거래량 변동을 나타내는 필드입니다. 이 필드는 시장의 변동성을 나타내는
+                            지표로 사용됩니다. 10진수 문자열 형태로 제공됩니다.
+                          pattern: ^[0-9]+$
+                        percentChangeFor1h:
+                          type: string
+                          description: >-
+                            지난 1시간 동안의 가격 변화 비율을 나타내는 필드입니다. 이 필드는 단기적 시장 동향을
+                            나태는 지표로 사용됩니다.
+                          pattern: ^[0-9]+(?:\.[0-9]+)?%$
+                        percentChangeFor24h:
+                          type: string
+                          description: >-
+                            지난 24시간 동안의 가격 변화 비율을 나타내는 필드입니다. 이 필드는 중기적 시장 동향을
+                            나태는 지표로 사용됩니다.
+                          pattern: ^[0-9]+(?:\.[0-9]+)?%$
+                        percentChangeFor7d:
+                          type: string
+                          description: >-
+                            지난 7일 동안의 가격 변화 비율을 나타내는 필드입니다. 이 필드는 장기적 시장 동향을 나태는
+                            지표로 사용됩니다.
+                          pattern: ^[0-9]+(?:\.[0-9]+)?%$
+                        marketCap:
+                          type: string
+                          description: >-
+                            토큰의 시가총액을 나타내는 필드입니다. 이 필드는 자산의 총 시장 가치를 반영합니다. 10진수
+                            문자열 형태로 제공됩니다.
+                          pattern: ^[0-9]+$
+                        updatedAt:
+                          type: string
+                          description: >-
+                            데이터가 업데이트된 시간을 나타내는 필드입니다. 이 필드는 ISO 8601 형식으로
+                            제공됩니다.
+                          pattern: >-
+                            ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]{1,3})?Z$
+                    - type: object
+                      properties:
+                        contract:
+                          type: object
+                          required: *ref_2
+                          properties: *ref_3
+              example:
+                - currency: USD
+                  price: '0.9997708912871944'
+                  volumeFor24h: '254513524909.0086'
+                  volumeChangeFor24h: '-4.9727'
+                  percentChangeFor1h: '-0.00498687'
+                  percentChangeFor24h: '-4.9727'
+                  percentChangeFor7d: '-0.05514233'
+                  marketCap: '97685078513.14922'
+                  updatedAt: '2024-02-20T07:03:00.000Z'
+                  contract:
+                    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                    deployedTransactionHash: >-
+                      0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                    deployedAt: '2017-11-28T00:41:21.000Z'
+                    deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                    logoUrl: >-
+                      https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                    type: ERC20
+                    name: Tether USD
+                    symbol: USDT
+                    totalSupply: '44005847706828943'
+                    decimals: 18
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokenTransfersByAccount:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: >-
+        특정 주소가 전송 혹은 수신한 ERC20 토큰 전송 목록을 조회합니다. 조회 결과에는 토큰 컨트랙트의 메타데이터와 전송된 토큰의
+        수량이 포함됩니다.
+      summary: Get Token Transfers by Account
+      operationId: getTokenTransfersByAccount
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    accountAddress:
+                      type: string
+                      description: >-
+                        조회하고자 하는 계정의 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열
+                        형태로 입력할 수 있습니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    relation: *ref_26
+                    contractAddresses:
+                      type: array
+                      items: *ref_14
+                    fromBlock: *ref_15
+                    toBlock: *ref_16
+                    fromDate: *ref_17
+                    toDate: *ref_18
+                  required:
+                    - accountAddress
+                - *ref_9
+                - type: object
+                  properties:
+                    withMetadata: *ref_19
+                    withZeroValue: *ref_20
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      allOf:
+                        - *ref_21
+                        - type: object
+                          properties:
+                            contract:
+                              type: object
+                              required: *ref_2
+                              properties: *ref_3
+              example:
+                rpp: 10
+                page: 1
+                count: 373
+                items:
+                  - from: '0x28C6c06298d514Db089934071355E5743bf21d60'
+                    to: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    value: '299200151844000'
+                    timestamp: 1708030943
+                    blockNumber: 19235883
+                    transactionHash: >-
+                      0x0e261328be8f75ab072feecda190434a27f1b90637991e3649a139bd793d9728
+                    logIndex: 130
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xAd0d341071454037E5E66Cb42A75366c82fbD10c'
+                    to: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    value: '7666253'
+                    timestamp: 1707954731
+                    blockNumber: 19229585
+                    transactionHash: >-
+                      0x613e1116581334868c0d6d52c3aeeec97f781ab28040e152fb20ec3e2e69ed1e
+                    logIndex: 54
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x28C6c06298d514Db089934071355E5743bf21d60'
+                    to: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    value: '325198345110000'
+                    timestamp: 1707505427
+                    blockNumber: 19192527
+                    transactionHash: >-
+                      0xbdbf4e7726cd9031649bf06aac0811575aff4577d930c8b834be70da8049013d
+                    logIndex: 326
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    to: '0x28C6c06298d514Db089934071355E5743bf21d60'
+                    value: '400000000000000'
+                    timestamp: 1707228359
+                    blockNumber: 19169677
+                    transactionHash: >-
+                      0x1b43ee28b0b3f4889e47e9ae926c6d2e36c83e4272020612460d060e01907044
+                    logIndex: 175
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    to: '0x28C6c06298d514Db089934071355E5743bf21d60'
+                    value: '347307038543830'
+                    timestamp: 1706709347
+                    blockNumber: 19126898
+                    transactionHash: >-
+                      0x0f837cd94dd110c8c70b4501946fecafad47865faa1b271a2e85a9bc9bae2d94
+                    logIndex: 170
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    to: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503'
+                    value: '200000000000000'
+                    timestamp: 1705481567
+                    blockNumber: 19025535
+                    transactionHash: >-
+                      0x3c6e7eaeb5213495235f8c2e4f9ddaaac601cc1acea9ec7d26911f9cf462b8c2
+                    logIndex: 38
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x3D55CCb2a943d88D39dd2E62DAf767C69fD0179F'
+                    to: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    value: '2000000'
+                    timestamp: 1705225343
+                    blockNumber: 19004301
+                    transactionHash: >-
+                      0x98ae8d206735486d405f204e897c8a26b49cd28aee6a586216184be62c9a9e6b
+                    logIndex: 86
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xA9D1e08C7793af67e9d92fe308d5697FB81d3E43'
+                    to: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    value: '3294'
+                    timestamp: 1704914171
+                    blockNumber: 18978575
+                    transactionHash: >-
+                      0xeff8028f346448156af5549068735295ab8ddd3c0fb1c7530ada9afa1fe49840
+                    logIndex: 107
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x28C6c06298d514Db089934071355E5743bf21d60'
+                    to: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    value: '300027616759000'
+                    timestamp: 1704513791
+                    blockNumber: 18945682
+                    transactionHash: >-
+                      0x38b257ae33750618f1d1757115df7d5d696b9d8ef7c206f42565dc5d688003fd
+                    logIndex: 226
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x28C6c06298d514Db089934071355E5743bf21d60'
+                    to: '0xF977814e90dA44bFA03b6295A0616a897441aceC'
+                    value: '338130305969000'
+                    timestamp: 1704312215
+                    blockNumber: 18929079
+                    transactionHash: >-
+                      0x1de159cb4712b759a3a85a8e2e76e7d48e9e48a4f603cf7567e23e04659149a5
+                    logIndex: 122
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokenTransfersByContract:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: >-
+        특정 컨트랙트에서 발생된 ERC20 토큰 전송 목록을 조회합니다. 조회 결과에는 토큰 컨트랙트의 메타데이터와 전송된 토큰의 수량이
+        포함됩니다.
+      summary: Get Token Transfers by Contract
+      operationId: getTokenTransfersByContract
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    contractAddress:
+                      type: string
+                      description: >-
+                        조회하고자 하는 컨트랙트 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열
+                        형태로 입력할 수 있습니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                    fromBlock: *ref_15
+                    toBlock: *ref_16
+                    fromDate: *ref_17
+                    toDate: *ref_18
+                  required:
+                    - contractAddress
+                - *ref_9
+                - type: object
+                  properties:
+                    withMetadata: *ref_19
+                    withZeroValue: *ref_20
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      allOf:
+                        - *ref_21
+                        - type: object
+                          properties:
+                            contract:
+                              type: object
+                              required: *ref_2
+                              properties: *ref_3
+              example:
+                rpp: 10
+                count: 228024532
+                cursor: >-
+                  eyJzb3J0IjpbImJsb2NrX3RpbWVzdGFtcDpkZXNjIiwibG9nX2luZGV4OmRlc2MiXSwic2VhcmNoQWZ0ZXIiOlsxNzA4NDEyOTYzMDAwLCIxMzE4Il19
+                items:
+                  - from: '0xB20bd5D04BE54f870D5C0d3cA85d82b34B836405'
+                    to: '0x0665d1D8Fb8aC1a5D759549eBeB6b4E09114bEA4'
+                    value: '131285866'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0x398bf38a8fb78639627b447b132ec89fef10c354cea71aea227610148df66056
+                    logIndex: 46
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x436fc3De174256799F91952050F4a226D44fC5fb'
+                    to: '0xc7704012D42f2ED1Df016bB43dc9b607A625E307'
+                    value: '164800000000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0xc9ef9696957bbc4857e4dc0189df1e3211d5082d289c9b8520920dc5304bf298
+                    logIndex: 40
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x0B4059980A36c2495f50Eb094B91b9cb90d9a5B0'
+                    to: '0x47d7e1fcF12368e07891f7D7F8516C316a8cd984'
+                    value: '150000000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0x3687e6234ca638fe3ddd94f3604e47d863f25d75dbc6f2f4b75139bfc64639df
+                    logIndex: 3
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xB3169C9a33c5f2c5699B72782994Fc12aD9a60b0'
+                    to: '0x6Cd70aaa3F7Ff5d075F2D8144A9c1bD37c30eDfA'
+                    value: '33410000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0x01774edb7e6cee65d883eb958d38657ca3a0cb835b2449a71b667688b6ae9601
+                    logIndex: 20
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xDd153f53330567a05fCFf79ADBb670d0eb5574aA'
+                    to: '0xBb0F9eA5D9EEc59A55EE4a491B2A0a26912E6694'
+                    value: '150000000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0xefa109c1be6c2f8d6e85bd50f33e24456855abff2a96921a743752d8a05d9f4a
+                    logIndex: 19
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x974CaA59e49682CdA0AD2bbe82983419A2ECC400'
+                    to: '0x520AEE5106939f20439f2FCDfbdf3a0024b1a017'
+                    value: '1034000000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0x22d078b4dd911f87cd1960cd686994305bdc593661ea81380a5fc9233c4358cd
+                    logIndex: 17
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x0b5c4a7FcDA49e0a8661419Bb55B86161a86db2a'
+                    to: '0xAbE517D29F1D359405A59440F97f17FaebfAb95a'
+                    value: '69190000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0xa51e13fe263f35fa7ca61c7dd17b8937349c8c83419428c8f098ace511bf646a
+                    logIndex: 16
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xaB782bc7D4a2b306825de5a7730034F8F63ee1bC'
+                    to: '0x360D0B98315d0296757a0fb514cA776533bD3f9b'
+                    value: '56000000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0x02c330fdc1ed277d07e6e927604e3dda6824408069530489e8a838eefa98b3c6
+                    logIndex: 15
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x92D47B6E3dce6471F42021Db650A611Af4257771'
+                    to: '0x502589F6b08813F1a99D5E5CEe307A8632046489'
+                    value: '10000000'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0xc351f156d7d8790be740fe381f105b92804a01e0c0d974ad99120efe5d83efb2
+                    logIndex: 14
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xb445035AC2c29Cc1f1057aCC2556FBff23b73529'
+                    to: '0xe20A906A7770aEEf1249e926f6515ABD9E0DA2Ec'
+                    value: '9252534822'
+                    timestamp: 1708412963
+                    blockNumber: 19267339
+                    transactionHash: >-
+                      0xa06d97a73cda2431f91c8731084277007e97f9aed9ca052b039003309bc74363
+                    logIndex: 1318
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokenTransfersWithinRange:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: >-
+        특정 기간동안 발생한 ERC20 토큰 전송 목록을 조회합니다. 조회 결과에는 토큰 컨트랙트의 메타데이터와 전송된 토큰의 수량이
+        포함됩니다.
+
+        > 💡 기간 설정 팁 
+
+        > 설정한 기간이 길 경우 응답시간이 길어질 수 있습니다. 빠른 응답을 원한다면 필요한 기간만큼만 설정하는 것을 권장합니다.
+      summary: Get Token Transfers Within Range
+      operationId: getTokenTransfersWithinRange
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    fromBlock: *ref_15
+                    toBlock: *ref_16
+                    fromDate: *ref_17
+                    toDate: *ref_18
+                - *ref_9
+                - type: object
+                  properties:
+                    withMetadata: *ref_19
+                    withZeroValue: *ref_20
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      allOf:
+                        - *ref_21
+                        - type: object
+                          properties:
+                            contract:
+                              type: object
+                              required: *ref_2
+                              properties: *ref_3
+              example:
+                rpp: 10
+                count: 1523499808
+                cursor: >-
+                  eyJzb3J0IjpbImJsb2NrX3RpbWVzdGFtcDpkZXNjIiwibG9nX2luZGV4OmRlc2MiXSwic2VhcmNoQWZ0ZXIiOlsxNzA4NDEzMDExMDAwLCI3OSJdfQ==
+                items:
+                  - from: '0xa7Ca2C8673bcFA5a26d8ceeC2887f2CC2b0Db22A'
+                    to: '0xeb4Af8a64070Ef0dEa6260e0Bf2310748f014d88'
+                    value: '1731882610835790'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0xcd6e76521578f480c6ae6321777f1cf5cd0a3a43559a71f45bae55da3765c12a
+                    logIndex: 96
+                    contract:
+                      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+                      deployedTransactionHash: >-
+                        0xb95343413e459a0f97461812111254163ae53467855c0d73e0f1e7c5b8442fa3
+                      deployedAt: '2017-12-12T11:17:35.000Z'
+                      deployerAddress: '0x4F26FfBe5F04ED43630fdC30A87638d53D0b0876'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/64x64.png
+                      type: ERC20
+                      name: Wrapped Ether
+                      symbol: WETH
+                      totalSupply: '3135207732032036316174365'
+                      decimals: 18
+                  - from: '0xa7Ca2C8673bcFA5a26d8ceeC2887f2CC2b0Db22A'
+                    to: '0xc7bBeC68d12a0d1830360F8Ec58fA599bA1b0e9b'
+                    value: '725000000'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0xcd6e76521578f480c6ae6321777f1cf5cd0a3a43559a71f45bae55da3765c12a
+                    logIndex: 94
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xc7bBeC68d12a0d1830360F8Ec58fA599bA1b0e9b'
+                    to: '0xa7Ca2C8673bcFA5a26d8ceeC2887f2CC2b0Db22A'
+                    value: '247411801547970012'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0xcd6e76521578f480c6ae6321777f1cf5cd0a3a43559a71f45bae55da3765c12a
+                    logIndex: 93
+                    contract:
+                      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+                      deployedTransactionHash: >-
+                        0xb95343413e459a0f97461812111254163ae53467855c0d73e0f1e7c5b8442fa3
+                      deployedAt: '2017-12-12T11:17:35.000Z'
+                      deployerAddress: '0x4F26FfBe5F04ED43630fdC30A87638d53D0b0876'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/64x64.png
+                      type: ERC20
+                      name: Wrapped Ether
+                      symbol: WETH
+                      totalSupply: '3135207732032036316174365'
+                      decimals: 18
+                  - from: '0x77aC18058e0F86e7e762202bf9A414e7D77f5bB5'
+                    to: '0x73a8a6F5d9762EA5f1de193eC19CdF476C7e86b1'
+                    value: '2522304801'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0x03ec4ffea24224d28112b7430eaddface088d40757dc32c5880190071ee64f27
+                    logIndex: 9
+                    contract:
+                      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+                      deployedTransactionHash: >-
+                        0xe7e0fe390354509cd08c9a0168536938600ddc552b3f7cb96030ebef62e75895
+                      deployedAt: '2018-08-03T19:28:24.000Z'
+                      deployerAddress: '0x95Ba4cF87D6723ad9C0Db21737D862bE80e93911'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/64x64.png
+                      type: ERC20
+                      name: USD Coin
+                      symbol: USDC
+                      totalSupply: '24336518456611943'
+                      decimals: 18
+                  - from: '0xDc8730EE87b19dD389E33b55B62dA7FdF3ecf58A'
+                    to: '0xa7Ca2C8673bcFA5a26d8ceeC2887f2CC2b0Db22A'
+                    value: '725000000'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0xcd6e76521578f480c6ae6321777f1cf5cd0a3a43559a71f45bae55da3765c12a
+                    logIndex: 89
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x40Cc9Ae4cB43d3550Ef52DA00a21A4a3cB45F5D6'
+                    to: '0xa88f86E5685FCa7C5D6de0e4D944875b007137b5'
+                    value: '242007190'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0xadaae1b5a04c03413781982a48e3602ca2b813d7755b773d2da34e8cb39d0189
+                    logIndex: 88
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0xf983a9b05972A8a36069b94b8267EfCD6bce85B7'
+                    to: '0x39F9c060036cf2cAF45FB4E41c34Dc251DE2074c'
+                    value: '6930631125376000889790154511'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0x750a4d108483464f19f8f5f4bcb4c86beb0e116b20085e95bdf69b1828f2fe9e
+                    logIndex: 84
+                    contract:
+                      address: '0xCd5082D5Ab4ea7546C05AD80Fe2759826fdA4d0A'
+                      deployedTransactionHash: >-
+                        0xfb0fbd411c0a9411502ebdbffb1ac157eb44bc6a5c0bc66a2ed9f100fb16dffe
+                      deployedAt: '2024-02-20T05:03:47.000Z'
+                      deployerAddress: '0x495061F3b7F29082aEb5733bdEA97567C958b275'
+                      logoUrl: null
+                      type: ERC20
+                      name: BackPack
+                      symbol: BACKPACK
+                      totalSupply: '1000000000000000000000000000000'
+                      decimals: 18
+                  - from: '0x80a64c6D7f12C47B7c66c5B4E20E72bc1FCd5d9e'
+                    to: '0xf983a9b05972A8a36069b94b8267EfCD6bce85B7'
+                    value: '7000000000000000'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0x750a4d108483464f19f8f5f4bcb4c86beb0e116b20085e95bdf69b1828f2fe9e
+                    logIndex: 83
+                    contract:
+                      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+                      deployedTransactionHash: >-
+                        0xb95343413e459a0f97461812111254163ae53467855c0d73e0f1e7c5b8442fa3
+                      deployedAt: '2017-12-12T11:17:35.000Z'
+                      deployerAddress: '0x4F26FfBe5F04ED43630fdC30A87638d53D0b0876'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/64x64.png
+                      type: ERC20
+                      name: Wrapped Ether
+                      symbol: WETH
+                      totalSupply: '3135207732032036316174365'
+                      decimals: 18
+                  - from: '0x1A8f43e01B78979EB4Ef7feBEC60F32c9A72f58E'
+                    to: '0x674C0faFF702B5d25A94c3b7983c8203661567d8'
+                    value: '1257750745'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0x113e07d26ece3fd0111c6ce0d077aedd6a3724cdb1323728bedbf03db9281cdb
+                    logIndex: 80
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+                  - from: '0x1A8f43e01B78979EB4Ef7feBEC60F32c9A72f58E'
+                    to: '0x92c2eA2FAFE891758dA0eD2Ec2978ACf1D4162fb'
+                    value: '3784606'
+                    timestamp: 1708413011
+                    blockNumber: 19267343
+                    transactionHash: >-
+                      0x113e07d26ece3fd0111c6ce0d077aedd6a3724cdb1323728bedbf03db9281cdb
+                    logIndex: 79
+                    contract:
+                      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      deployedTransactionHash: >-
+                        0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190
+                      deployedAt: '2017-11-28T00:41:21.000Z'
+                      deployerAddress: '0x36928500Bc1dCd7af6a2B4008875CC336b927D57'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0xdac17f958d2ee523a2206206994597c13d831ec7/64x64.png
+                      type: ERC20
+                      name: Tether USD
+                      symbol: USDT
+                      totalSupply: '44005847706828943'
+                      decimals: 18
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/getTokensOwnedByAccount:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: >-
+        특정 Account가 보유한 ERC20 토큰의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰 컨트랙트의
+        메타데이터가 포함됩니다.
+      summary: Get Tokens Owned By Account
+      operationId: getTokensOwnedByAccount
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    accountAddress:
+                      type: string
+                      description: >-
+                        조회하고자 하는 계정의 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열
+                        형태로 입력할 수 있습니다.
+                      pattern: ^0[xX][0-9a-fA-F]{40}$
+                      default: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    contractAddresses:
+                      type: array
+                      items: *ref_14
+                  required:
+                    - accountAddress
+                - *ref_9
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      allOf:
+                        - *ref_25
+                        - type: object
+                          properties:
+                            contract:
+                              type: object
+                              required: *ref_2
+                              properties: *ref_3
+              example:
+                rpp: 20
+                cursor: >-
+                  W3sia2V5IjoidmFsdWUiLCJvcmRlciI6IkRFU0MiLCJlcXVhbCI6dHJ1ZSwicG9pbnQiOiIxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAifSx7ImtleSI6InRva2VuQWRkcmVzcyIsIm9yZGVyIjoiQVNDIiwiZXF1YWwiOmZhbHNlLCJwb2ludCI6IjB4MDVmMDRmYzY1MTY3ZDY1YjZjZGI5M2MxNDJjMTc0YmQ2NDMyM2MyZiJ9XQ==
+                items:
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: >-
+                      115792089237316195423570985008687907853269984665640564039457584007913129639935
+                    contract:
+                      address: '0x0027449Bf0887ca3E431D263FFDeFb244D95b555'
+                      deployedTransactionHash: >-
+                        0xce030065af7553fcca384cb1ff1926fdb7d96f8dac09ff92bdfe369dece19a6f
+                      deployedAt: '2018-05-10T19:38:42.000Z'
+                      deployerAddress: '0xE689F23aE131e18356Aeb130917Ca510Ee454033'
+                      logoUrl: null
+                      type: ERC20
+                      name: Not
+                      symbol: NOT
+                      totalSupply: >-
+                        115792089237316195423570985008687907853269984665640564039457584007913129639935
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '500000000000000000000000000000000000000000000'
+                    contract:
+                      address: '0xcd7cc75cdDF92F52D5e14BCa525a9B5C0933E856'
+                      deployedTransactionHash: >-
+                        0xa88902596fa2fc7f393820ef3e1afe325590ea413df93358676cc278b0c19c7b
+                      deployedAt: '2022-09-08T17:52:15.000Z'
+                      deployerAddress: '0x220B1ef6A84f8426f6F825F9748437720C647286'
+                      logoUrl: null
+                      type: ERC20
+                      name: HexPepe
+                      symbol: HPEPE
+                      totalSupply: '1000000000000000000000000000000000000000000000'
+                      decimals: 9
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '500000000000000000000000000000000'
+                    contract:
+                      address: '0x06942a18ECaC7607bF9278f02Ea68eB90861b8de'
+                      deployedTransactionHash: >-
+                        0x0409bc2f8ef67aa55f1d891cfe4923b7418e86f59db722ad9e04bc611a8bf388
+                      deployedAt: '2022-09-22T13:52:47.000Z'
+                      deployerAddress: '0x2e5F65D1932fB8C9615c88Dc044a2e6571256b75'
+                      logoUrl: null
+                      type: ERC20
+                      name: Robots
+                      symbol: 🤖🤖🤖
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '500000000000000000000000000000000'
+                    contract:
+                      address: '0x262ede479f56273CF146829F33d63c70a95D9037'
+                      deployedTransactionHash: >-
+                        0x2c5be7cf553c0126c624151ba23ae455b6b02909592d8c31bddabeea88f2b28a
+                      deployedAt: '2022-10-07T09:17:59.000Z'
+                      deployerAddress: '0xb840DE35eCB26DAbB32DaAE607821a358C904193'
+                      logoUrl: null
+                      type: ERC20
+                      name: Baby Proof of Memes
+                      symbol: BBETH2.0
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '500000000000000000000000000000000'
+                    contract:
+                      address: '0x36927B7666B9d215Fbe75B7Ed1870aFa33Ec3535'
+                      deployedTransactionHash: >-
+                        0x13441da7ee2417c93ae805dbed5550666cce4327ab115213444a5605b84ccff3
+                      deployedAt: '2022-09-21T14:56:59.000Z'
+                      deployerAddress: '0x2e5F65D1932fB8C9615c88Dc044a2e6571256b75'
+                      logoUrl: null
+                      type: ERC20
+                      name: Clover
+                      symbol: 🍀🍀🍀
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '500000000000000000000000000000000'
+                    contract:
+                      address: '0x5fD613De58561b84ba113f2E07FD8E8a10f6073a'
+                      deployedTransactionHash: >-
+                        0x7f731ad5ad80dca694d90d8f139f01b1e53aaabc76d5571669518139f602bf07
+                      deployedAt: '2021-05-14T14:36:53.000Z'
+                      deployerAddress: '0x2C03086F40ef344c5624925e334fa123C9f21C5a'
+                      logoUrl: null
+                      type: ERC20
+                      name: catcoin
+                      symbol: CAT
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '500000000000000000000000000000000'
+                    contract:
+                      address: '0xe6264d3cc0948675e81E59d0Fa2fd8e19ceBF1f0'
+                      deployedTransactionHash: >-
+                        0x24634b973459d58e893f3f76ac85f8f7e5669e4fc33dea454e1cac6606b5af6f
+                      deployedAt: '2023-04-13T17:13:35.000Z'
+                      deployerAddress: '0x5559AF40463D195CC0fEFA51c8624EC8158485c6'
+                      logoUrl: null
+                      type: ERC20
+                      name: CHUPACABRA
+                      symbol: CHUPA
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '420690000000069000000000000000000'
+                    contract:
+                      address: '0x8a7b7B9B2f7d0c63F66171721339705A6188a7D5'
+                      deployedTransactionHash: >-
+                        0xb07574d8335d61154db841c9311dba6e2de098729497f064ab38804293b68622
+                      deployedAt: '2017-10-08T02:23:20.000Z'
+                      deployerAddress: '0xE36c0B6f8E8460c998453b802EF0aF5d68B38f68'
+                      logoUrl: >-
+                        https://cdn.luniverse.io/img/crypto-currencies/ethereum/mainnet/0x8a7b7b9b2f7d0c63f66171721339705a6188a7d5/64x64.png
+                      type: ERC20
+                      name: EtherDoge
+                      symbol: EDOGE
+                      totalSupply: '100000001000100000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '250000000000000000000000000000000'
+                    contract:
+                      address: '0x12Fb828Ea8f5d8b8EC18980db5F48526cEd5574a'
+                      deployedTransactionHash: >-
+                        0x057b6208070665bf0f5fe0548626672f1bc75b8d1753741eeb05149a6ce1e393
+                      deployedAt: '2023-06-17T11:32:35.000Z'
+                      deployerAddress: '0x92Ec66EE88C4ae65d7e1b706E1468ABDA0f22750'
+                      logoUrl: null
+                      type: ERC20
+                      name: TOKYO
+                      symbol: TOKYO
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '250000000000000000000000000000000'
+                    contract:
+                      address: '0x9b991287f62A356C37E9EfA74969b9c5aDaFe3C8'
+                      deployedTransactionHash: >-
+                        0xc22f95f065b1469eb6baadf6d46f6108dec69f53f86479d284d7840b4ce1d9a6
+                      deployedAt: '2023-01-25T23:18:35.000Z'
+                      deployerAddress: '0xc616C356E57A84A19f25f19bB7deF3f228F4658D'
+                      logoUrl: null
+                      type: ERC20
+                      name: Bushido
+                      symbol: Bush
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '210345000000000000000000000000000'
+                    contract:
+                      address: '0x8200Abf23640ed95706251Fe574486D95CBa6D4e'
+                      deployedTransactionHash: >-
+                        0x9e0cc4935213f1cc8ac6abf44e78698ec8c4433e2e3d4a1c3a61c2e5b1ce47f2
+                      deployedAt: '2023-05-02T16:51:59.000Z'
+                      deployerAddress: '0xA2C2b4FD44605F4d8Dd0c1F0aB353697088D0fA9'
+                      logoUrl: null
+                      type: ERC20
+                      name: NYAN CAT
+                      symbol: NYAN
+                      totalSupply: '420690000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '210345000000000000000000000000000'
+                    contract:
+                      address: '0x9cD3f9A820c737E4937B8420a550897cF59Bb86F'
+                      deployedTransactionHash: >-
+                        0x43e7d82ceec453148339754c48191040d4be4317259706ac19bcfdb6c917d0c2
+                      deployedAt: '2023-05-22T12:36:35.000Z'
+                      deployerAddress: '0x5a5ADdeB2bC1eD3906213a6c583E03a0C6e0f1E6'
+                      logoUrl: null
+                      type: ERC20
+                      name: MT
+                      symbol: MT
+                      totalSupply: '420690000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '200000000000000000000000000000000'
+                    contract:
+                      address: '0x7F162273e1938C2E40423c289082A4eBa424c8B4'
+                      deployedTransactionHash: >-
+                        0x5d762094c2bda2c0740f5f3f032a0fbf483dc8251831cbd67ab786f933f7c2de
+                      deployedAt: '2022-10-21T23:14:59.000Z'
+                      deployerAddress: '0x189bA7dd67B461Df8A817731d43A76cb17BdFC1B'
+                      logoUrl: null
+                      type: ERC20
+                      name: VitalikTweet
+                      symbol: VB
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '150000000000000000000000000000000'
+                    contract:
+                      address: '0x1D711638558614dA2b5464Bfae9eE2d161caE56C'
+                      deployedTransactionHash: >-
+                        0x92b46ef52af4cb6edcca247a0595e1d9d2f4dde031c0c57cb38534c03d4e9e6a
+                      deployedAt: '2021-10-30T19:20:58.000Z'
+                      deployerAddress: '0x6057b5736A3797128a9399714D7b106e0068d249'
+                      logoUrl: null
+                      type: ERC20
+                      name: Sherpa Inu
+                      symbol: SHER
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '140000000000000000000000000000000'
+                    contract:
+                      address: '0x56772D4ce41Df6Ad9680308B1D4146915E2e5F7D'
+                      deployedTransactionHash: >-
+                        0x8ee098d6fef95c72fec9ddcbe91054db2730064e310233a5bf0048b54574b3e0
+                      deployedAt: '2023-07-08T20:22:11.000Z'
+                      deployerAddress: '0xc75526F6364782Aa6dF119b1127DdCcCa24Ffb6f'
+                      logoUrl: null
+                      type: ERC20
+                      name: Tatacoin
+                      symbol: TATA
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '120000000000000000000000000000000'
+                    contract:
+                      address: '0x0DAA504e5b145465a82199A8caD111273A79b313'
+                      deployedTransactionHash: >-
+                        0xd3d807d184aa7d73bc67dfec0cfa4f28d33d0a5ad072409b8f7b38de9c56f9c9
+                      deployedAt: '2023-07-07T04:21:11.000Z'
+                      deployerAddress: '0xc75526F6364782Aa6dF119b1127DdCcCa24Ffb6f'
+                      logoUrl: null
+                      type: ERC20
+                      name: Pitocoin
+                      symbol: PITO
+                      totalSupply: '420000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '102720597365740053100386202611007'
+                    contract:
+                      address: '0x38E6B83faAA3db99eC788866668081DA33ccD329'
+                      deployedTransactionHash: >-
+                        0xac1ec0f0680f038539001ef9f5687e47addb39f5a46a82bb4d70858fe3a4fff0
+                      deployedAt: '2022-10-25T07:41:59.000Z'
+                      deployerAddress: '0x5C03A530bddadF237536518a99c579579764964B'
+                      logoUrl: null
+                      type: ERC20
+                      name: Urgent
+                      symbol: Urgent
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '101165372024016207849838293114344'
+                    contract:
+                      address: '0x56ED3192f74A4Dca3c733Aebc63CE18e5F3dD33a'
+                      deployedTransactionHash: >-
+                        0x7bf6b56171ec8448072e8efb6508693dc3d7d6d05729a13e5fe4c6075eb2698e
+                      deployedAt: '2022-11-02T12:02:47.000Z'
+                      deployerAddress: '0x6b0A0aD53Fb743b137ceCD1bc33109C766b6B81b'
+                      logoUrl: null
+                      type: ERC20
+                      name: DogeSino
+                      symbol: DogeSino
+                      totalSupply: '1000000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '100000000000000000000000000000000'
+                    contract:
+                      address: '0x01DA0E7D29992a7fd2aABaC3c63893D04662769A'
+                      deployedTransactionHash: >-
+                        0xf1a1e6f12412265a055da8d0ea3e7e51693f4e129e01882dab07971e0b4d3744
+                      deployedAt: '2022-04-08T21:51:11.000Z'
+                      deployerAddress: '0xc4B38541c0047bC4CBd8582Ff32175C3243Ca526'
+                      logoUrl: null
+                      type: ERC20
+                      name: Guerlain Metaverse
+                      symbol: Guerlain
+                      totalSupply: '100000000000000000000000000000000'
+                      decimals: 18
+                  - ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+                    balance: '100000000000000000000000000000000'
+                    contract:
+                      address: '0x05F04fC65167d65b6CdB93c142c174bd64323C2F'
+                      deployedTransactionHash: >-
+                        0x285708dfc1ffae697b23d7c4a4c8a0e301a66375c96c79c31bd6dd64bc958731
+                      deployedAt: '2022-04-05T23:12:54.000Z'
+                      deployerAddress: '0xf03B2198c877516289Cfd6c269603937fe3C6267'
+                      logoUrl: null
+                      type: ERC20
+                      name: Niantic Metaverse
+                      symbol: Niantic
+                      totalSupply: '100000000000000000000000000000000'
+                      decimals: 18
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/token/searchTokenContractMetadataByKeyword:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Token API
+      description: ERC20 토큰 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.
+      summary: Search Token Contract Metadata by Keyword
+      operationId: searchTokenContractMetadataByKeyword
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  properties:
+                    keyword:
+                      type: string
+                      description: 조회하고자 하는 컨트랙트의 name 혹은 symbol을 지정하는 파라미터입니다.
+                      default: USDT
+                  required:
+                    - keyword
+                - *ref_9
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  page:
+                    type: integer
+                    description: >-
+                      page 파라미터에 지정된 페이지 번호를 나타내는 필드입니다. 이 필드는 page 파라미터에 0보다 큰
+                      값을 입력한 경우에만 응답에 포함됩니다.
+                  rpp:
+                    type: integer
+                    description: rpp 파라미터에 지정된 페이지당 결과 수를 나타내는 필드입니다.
+                  cursor:
+                    type: string
+                    description: >-
+                      cursor 페이지네이션을 위한 필드로, 다음 페이지의 데이터를 로드하기 위해 다음 요청에 제공해야 하는
+                      값입니다.
+                  count:
+                    type: integer
+                    description: >-
+                      요청한 데이터의 총 개수를 나타내는 필드입니다. 이 필드는 withCount 파라미터에 true를 입력한
+                      경우에만 응답에 포함됩니다.
+                  items:
+                    type: array
+                    description: 조회된 데이터의 목록을 나타내는 필드입니다.
+                    items:
+                      allOf:
+                        - *ref_23
+                        - *ref_24
+              example:
+                rpp: 10
+                page: 1
+                count: 3189
+                items:
+                  - address: '0x012625DBc9c0E5BAc5934258BA122BF6cDC6B627'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: Tether USD
+                    symbol: USDT
+                    totalSupply: '990000000000000'
+                    decimals: 6
+                  - address: '0x03366cf000a6Ec13B9636861c5afbC6DD564FED6'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: USDT
+                    symbol: ERC-20
+                    totalSupply: '999999999999999999000'
+                    decimals: 3
+                  - address: '0x045c802A8b66a55b5000Ad19acE1e7Bb6d500Daf'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: USDT
+                    symbol: USDT
+                    totalSupply: '10000000000000000000000000000'
+                    decimals: 18
+                  - address: '0x04a542e7E307c05bEB7a184903F343F296b80aba'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: Tether USD
+                    symbol: USDT
+                    totalSupply: '2300000000000'
+                    decimals: 6
+                  - address: '0x050E978e655e3B7F69d6f9fd431CB50dBcb5D850'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: Tether USD from PulseChain
+                    symbol: USDT
+                    totalSupply: '61290480708521'
+                    decimals: 6
+                  - address: '0x05b10d9Fcd2b7771Ec8A53C99fc7ea642C26558b'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: Bitcoin
+                    symbol: USDT
+                    totalSupply: '19378282000000000000000000'
+                    decimals: 18
+                  - address: '0x05bd784Bf369Ba7Fbf9F2582964d6dDcE03eE760'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: Tether USDT
+                    symbol: USDT
+                    totalSupply: '21000000000000000000000000'
+                    decimals: 18
+                  - address: '0x07BB5Ce7F71021fB22E16C947fec307F6155F242'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: USDT
+                    symbol: USDT
+                    totalSupply: '39030815694000000'
+                    decimals: 6
+                  - address: '0x0900f5e872A9Fec1BF3B64C8EF5B3Cbc5B248825'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: Tether
+                    symbol: USDT
+                    totalSupply: '66000000000000000000000000000'
+                    decimals: 18
+                  - address: '0x0d40868082CCe17050E5a230032B833dC93620F3'
+                    deployedTransactionHash: null
+                    deployedAt: null
+                    deployerAddress: null
+                    logoUrl: null
+                    type: ERC20
+                    name: USDT
+                    symbol: USDT
+                    totalSupply: '50000000000000000000000000000'
+                    decimals: 18
         '400':
           description: Bad Request
           content: *ref_4

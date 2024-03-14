@@ -3,6 +3,7 @@ import * as yaml from "js-yaml";
 import * as fs from "fs";
 import { WEB3_DATA_API_BASE_URL } from "../../utils/urls.utils";
 import nftPaths from "./nft";
+import tokenPaths from "./token";
 
 const EVM_API_docs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
@@ -25,12 +26,8 @@ const EVM_API_docs: OpenAPIV3.Document = {
 		},
 	},
 	paths: {
-		// NFT
 		...nftPaths,
-
-		// Token
-		// Blockchain
-		// Stats
+		...tokenPaths,
 	},
 };
 

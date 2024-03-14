@@ -7,7 +7,7 @@ import Constants from "../../../utils/constants.utils";
 
 const title = "Get NFT Transfers By Account";
 const endpoint = "getNftTransfersByAccount";
-const hide = false;
+const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -27,11 +27,13 @@ const info: OpenAPIV3.PathItemObject = {
 			content: {
 				"application/json": {
 					schema: {
+						additionalProperties: false,
 						allOf: [
 							{
 								type: "object",
 								properties: {
 									accountAddress: { ...Requests.accountAddress, default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS },
+									relation: Requests.relation,
 									contractAddresses: {
 										type: "array",
 										items: Requests.contractAddress,
@@ -94,6 +96,6 @@ const info: OpenAPIV3.PathItemObject = {
 export default {
 	title,
 	endpoint,
-	hide,
+	isPublic,
 	info,
 };

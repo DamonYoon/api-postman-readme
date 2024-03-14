@@ -3,9 +3,10 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
+import Constants from "../../../utils/constants.utils";
 
-const title = "Search NFT Contract Metadata By Keyword";
-const endpoint = "searchNftContractMetadataByKeyword";
+const title = "Get Token Contract Metadata by Contracts";
+const endpoint = "getTokenContractMetadataByContracts";
 const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -15,8 +16,8 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description: "NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
+		tags: ["Token API"],
+		description: `특정 ERC20 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -30,11 +31,17 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									keyword: { ...Requests.keyword, default: "BAYC" },
+									contractAddresses: {
+										type: "array",
+										items: {
+											...Requests.contractAddress,
+										},
+										default: [Constants.USDT_CONTRACT_ADDRESS, Constants.USDC_CONTRACT_ADDRESS],
+									},
 								},
-								required: ["keyword"],
+								required: ["contractAddresses"],
+								maximum: Constants.INPUT_ITEM_MAX,
 							},
-							Requests.PaginationSet,
 						],
 					},
 				},
@@ -45,12 +52,13 @@ const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [DataDomains.ContractMeta, DataDomains.AssetMeta],
-						}),
-						example: {
-							...Examples[endpoint],
+						schema: {
+							type: "array",
+							items: {
+								allOf: [DataDomains.ContractMeta, DataDomains.AssetMeta],
+							},
 						},
+						example: Examples[endpoint],
 					},
 				},
 			},

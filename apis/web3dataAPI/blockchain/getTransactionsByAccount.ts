@@ -5,8 +5,8 @@ import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFT Transfers By Contract";
-const endpoint = "getNftTransfersByContract";
+const title = "Get Transactions by Account";
+const endpoint = "getTransactionsByAccount";
 const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -16,9 +16,12 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description:
-			"특정 컨트랙트에서 발생된 NFT 전송 목록을 조회합니다. 조회 결과에는 컨트랙트 메타데이터와 NFT 메타데이터가 포함됩니다.",
+		tags: ["Blockchain API"],
+		description: `특정 계정이 전송 혹은 수신한 트랜잭션 목록을 조회합니다.
+
+> ⚠️ decodeInput 사용 시 주의사항
+>
+> decodeInput 필드는 트랜잭션의 input 필드를 해석하여 결과를 제공합니다. 그러나 서로 다른 함수가 같은 함수 선택자(function selector)를 사용할 수 있기 때문에, 제공된 결과가 실제로 호출된 함수와 일치하지 않을 가능성이 있습니다. 따라서, ERC 표준 규격과 다른 함수의 경우 추가적인 검증 과정을 거치는 것을 권장 드립니다.`,
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -32,13 +35,18 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									contractAddress: { ...Requests.contractAddress, default: Constants.BAYC_CONTRACT_ADDRESS },
+									accountAddress: { ...Requests.accountAddress, default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS },
+									relation: Requests.relation,
+									contractAddresses: {
+										type: "array",
+										items: Requests.contractAddress,
+									},
 									fromBlock: Requests.fromBlock,
 									toBlock: Requests.toBlock,
 									fromDate: Requests.fromDate,
 									toDate: Requests.toDate,
 								},
-								required: ["contractAddress"],
+								required: ["accountAddress"],
 							},
 							Requests.PaginationSet,
 							{
@@ -46,6 +54,8 @@ const info: OpenAPIV3.PathItemObject = {
 								properties: {
 									withMetadata: Requests.withMetadata,
 									withZeroValue: Requests.withZeroValue,
+									withLogs: Requests.withLogs,
+									withDecode: Requests.withDecode,
 								},
 							},
 						],
@@ -68,7 +78,6 @@ const info: OpenAPIV3.PathItemObject = {
 											...DataDomains.ContractMeta,
 											...DataDomains.AssetMeta,
 										},
-										nft: DataDomains.NftMeta,
 									},
 								},
 							],

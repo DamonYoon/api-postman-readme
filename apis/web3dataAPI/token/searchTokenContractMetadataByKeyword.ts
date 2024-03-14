@@ -4,8 +4,8 @@ import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 
-const title = "Search NFT Contract Metadata By Keyword";
-const endpoint = "searchNftContractMetadataByKeyword";
+const title = "Search Token Contract Metadata by Keyword";
+const endpoint = "searchTokenContractMetadataByKeyword";
 const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -15,8 +15,8 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description: "NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
+		tags: ["Token API"],
+		description: "ERC20 토큰 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -30,7 +30,7 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									keyword: { ...Requests.keyword, default: "BAYC" },
+									keyword: { ...Requests.keyword, default: "USDT" },
 								},
 								required: ["keyword"],
 							},

@@ -207,6 +207,63 @@ namespace DataDomains {
 		},
 	};
 
+	export const TokenMarketData: OpenAPIV3.SchemaObject = {
+		type: "object",
+		properties: {
+			currency: {
+				type: "string",
+				description: "거래에 사용되는 통화의 종류를 나타냅니다. ISO 4217 통화코드 형식으로 제공됩니다.",
+				pattern: Patterns.iso4217,
+			},
+			price: {
+				type: "string",
+				description: "토큰의 현재 가격을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			volumeFor24h: {
+				type: "string",
+				description:
+					"지난 24시간 동안의 총 거래량을 나타내는 필드입니다. 이 필드는 활발한 거래 활동을 나타내는 지표로 사용됩니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			volumeChangeFor24h: {
+				type: "string",
+				description:
+					"지난 24시간 동안의 거래량 변동을 나타내는 필드입니다. 이 필드는 시장의 변동성을 나타내는 지표로 사용됩니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			percentChangeFor1h: {
+				type: "string",
+				description:
+					"지난 1시간 동안의 가격 변화 비율을 나타내는 필드입니다. 이 필드는 단기적 시장 동향을 나태는 지표로 사용됩니다.",
+				pattern: Patterns.percentage,
+			},
+			percentChangeFor24h: {
+				type: "string",
+				description:
+					"지난 24시간 동안의 가격 변화 비율을 나타내는 필드입니다. 이 필드는 중기적 시장 동향을 나태는 지표로 사용됩니다.",
+				pattern: Patterns.percentage,
+			},
+			percentChangeFor7d: {
+				type: "string",
+				description:
+					"지난 7일 동안의 가격 변화 비율을 나타내는 필드입니다. 이 필드는 장기적 시장 동향을 나태는 지표로 사용됩니다.",
+				pattern: Patterns.percentage,
+			},
+			marketCap: {
+				type: "string",
+				description:
+					"토큰의 시가총액을 나타내는 필드입니다. 이 필드는 자산의 총 시장 가치를 반영합니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			updatedAt: {
+				type: "string",
+				description: "데이터가 업데이트된 시간을 나타내는 필드입니다. 이 필드는 ISO 8601 형식으로 제공됩니다.",
+				pattern: Patterns.iso8601,
+			},
+		},
+	};
+
 	export const Transfer: OpenAPIV3.SchemaObject = {
 		type: "object",
 		required: ["from", "to", "value", "timestamp", "blockNumber", "transactionHash", "logIndex"],
@@ -250,6 +307,520 @@ namespace DataDomains {
 				type: "integer",
 				description:
 					"토큰 전송 트랜잭션의 배치 인덱스를 나타내는 필드입니다. 이 필드는 ERC1155 토큰 전송에 대한 응답에만 포함됩니다.",
+			},
+		},
+	};
+
+	export const Block: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: [
+			"hash",
+			"number",
+			"timestamp",
+			"parentHash",
+			"nonce",
+			"stateRoot",
+			"receiptsRoot",
+			"transactionsRoot",
+			"miner",
+			"difficulty",
+			"totalDifficulty",
+			"mixHash",
+			"gasLimit",
+			"gasUsed",
+			"size",
+			"logsBloom",
+			"extraData",
+			"sha3Uncles",
+			"transactionCount",
+			"transactions",
+		],
+		properties: {
+			hash: {
+				type: "string",
+				description: "블록 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			number: {
+				type: "integer",
+				description: "블록 번호 또는 블록 높이를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			timestamp: {
+				type: "integer",
+				description: "블록이 생성된 시간을 나타내는 필드입니다. 이 필드는 UNIX 타임스탬프로 제공됩니다.",
+			},
+			parentHash: {
+				type: "string",
+				description:
+					"블록의 부모 블록 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			nonce: {
+				type: "string",
+				description:
+					"작업증명(PoW)에서 블록의 유효성을 증명하는 데 사용되는 값입니다. 지분증명(PoS)로 전환된 블록부터는 0x0000000000000000을 반환합니다.",
+				pattern: Patterns.hexaDecimal,
+			},
+			stateRoot: {
+				type: "string",
+				description:
+					"블록 상태의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			receiptsRoot: {
+				type: "string",
+				description:
+					"블록에 포함된 모든 트랜잭션의 receipt의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			transactionsRoot: {
+				type: "string",
+				description:
+					"블록에 포함된 모든 트랜잭션의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			miner: {
+				type: "string",
+				description:
+					"블록을 생성한 채굴자의 주소를 나타내는 필드입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.ethereumAddress,
+			},
+			difficulty: {
+				type: "string",
+				description:
+					"블록 생성 난이도를 나타내는 필드입니다. 작업증명(PoW)에서는 난이도 값이 반환되며, 지분증명(PoS)로 전환된 블록부터는 0을 반환합니다.",
+				pattern: Patterns.decimalString,
+			},
+			totalDifficulty: {
+				type: "string",
+				description:
+					"블록 생성의 누적 난이도를 나타내는 필드로, 0번 블록부터 현재 블록까지의 난이도를 모두 더한 값을 반환합니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			mixHash: {
+				type: "string",
+				description:
+					"작업증명(PoW)에서 블록의 유효성을 증명하는 데 사용되는 값입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal64,
+			},
+			gasLimit: {
+				type: "string",
+				description:
+					"블록에 허용되는 최대 가스량을 나타내는 필드입니다. 블록에 포함된 모든 트랜잭션의 가스량을 합한 값은 이 값보다 작아야 합니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal,
+			},
+			gasUsed: {
+				type: "string",
+				description:
+					"블록에 포함된 모든 트랜잭션의 가스 사용량을 나타내는 필드입니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal,
+			},
+			baseFeePerGas: {
+				type: "string",
+				description:
+					"블록 기본 가스 수수료를 나타내는 필드입니다. EIP-1559(London Hard fork)에서 도입된 변동적인 수수료 모델의 일부입니다. 따라서 도입 이전 블록에서는 해당 필드가 제공되지 않습니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal,
+			},
+			size: {
+				type: "string",
+				description:
+					"블록의 크기를 나타내는 필드입니다. 바이트 단위로 제공됩니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal,
+			},
+			logsBloom: {
+				type: "string",
+				description:
+					"블록에 포함된 모든 트랜잭션의 로그 블룸을 나타내는 필드입니다. 0x로 시작하는 512자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal512,
+			},
+			extraData: {
+				type: "string",
+				description:
+					"블록 생성자가 추가한 데이터를 나타내는 필드입니다. 아무런 값을 추가하지 않은 경우 0x를 반환합니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal,
+			},
+			sha3Uncles: {
+				type: "string",
+				description:
+					"블록에 포함된 모든 삼촌 블록의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal64,
+			},
+			transactionCount: {
+				type: "integer",
+				description: "블록에 포함된 트랜잭션의 수를 나타내는 필드입니다.",
+			},
+			transactions: {
+				type: "array",
+				description: "블록에 포함된 트랜잭션의 목록을 나타내는 필드입니다.",
+				items: {
+					type: "string",
+					description:
+						"블록에 포함된 트랜잭션의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+					pattern: Patterns.txHash,
+				},
+			},
+			withdrawalRoot: {
+				type: "string",
+				description:
+					"블록에 포함된 모든 출금 트랜잭션의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			// withdrawalsCount: {
+			// 	type: "integer",
+			// 	description: "블록에 포함된 출금 트랜잭션의 수를 나타내는 필드입니다.",
+			// },
+			withdrawals: {
+				type: "array",
+				description: "검증자가 스테이킹한 자산을 출금한 목록을 나타내는 필드입니다.",
+				items: {
+					type: "object",
+					required: ["index", "validatorIndex", "address", "amount"],
+					properties: {
+						index: {
+							type: "string",
+							description:
+								"출금 거래의 인덱스를 나타내는 필드입니다. 0부터 시작하는 정수로 제공됩니다. 10진수 문자열 형태로 제공됩니다.",
+							pattern: Patterns.decimalString,
+						},
+						validatorIndex: {
+							type: "string",
+							description: "출금을 요청한 검증자의 인덱스를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+							pattern: Patterns.decimalString,
+						},
+						address: {
+							type: "string",
+							description:
+								"출금된 Native Token을 받을 주소를 나타내는 필드입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+							pattern: Patterns.ethereumAddress,
+						},
+						amount: {
+							type: "string",
+							description: "출금한 수량을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+							pattern: Patterns.decimalString,
+						},
+					},
+				},
+			},
+		},
+	};
+
+	export const Args: OpenAPIV3.SchemaObject = {
+		type: "object",
+		properties: {
+			name: {
+				type: "string",
+				description: "인자의 이름을 나타내는 필드입니다.",
+			},
+			type: {
+				type: "string",
+				description: "인자의 타입을 나타내는 필드입니다.",
+			},
+			value: {
+				type: "string",
+				description: "인자의 값을 나타내는 필드입니다.",
+			},
+		},
+	};
+
+	export const TransactionWithReceipt: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: [
+			"transactionHash",
+			"transactionIndex",
+			"blockHash",
+			"blockNumber",
+			"from",
+			"to",
+			"value",
+			"input",
+			"functionSelector",
+			"nonce",
+			"gas",
+			"gasPrice",
+			"gasUsed",
+			"cumulativeGasUsed",
+			"effectiveGasPrice",
+			"contractAddress",
+			"logsBloom",
+			"timestamp",
+		],
+		properties: {
+			transactionHash: {
+				type: "string",
+				description: "트랜잭션의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.txHash,
+			},
+			transactionIndex: {
+				type: "string",
+				description:
+					"트랜잭션의 인덱스를 나타내는 필드입니다. 블록 내에서의 순서를 나타냅니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			blockHash: {
+				type: "string",
+				description: "블록의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			blockNumber: {
+				type: "string",
+				description: "블록 번호를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockNumber,
+			},
+			from: {
+				type: "string",
+				description:
+					"트랜잭션을 발생시킨 주소를 나타내는 필드입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.ethereumAddress,
+			},
+			to: {
+				type: "string",
+				description:
+					"트랜잭션의 수신 주소를 나타내는 필드입니다. 컨트랙트 생성 트랜잭션의 경우 이 필드는 null을 반환합니다.0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.ethereumAddress,
+			},
+			value: {
+				type: "string",
+				description: "트랜잭션의 가치를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			input: {
+				type: "string",
+				description:
+					"트랜잭션의 데이터를 나타내는 필드입니다. Native Token(ETH, MATIC 등) 전송의 경우 이 필드는 비어 있습니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다. ",
+				pattern: Patterns.hexaDecimal,
+			},
+			decodedInput: {
+				type: "object",
+				description:
+					"트랜잭션의 데이터를 디코딩한 결과를 나타내는 필드입니다. withDecodedInput 파라미터에 true를 입력한 경우에만 응답에 포함됩니다.",
+				properties: {
+					type: {
+						type: "string",
+						description: "트랜잭션의 함수 타입을 나타내는 필드입니다.",
+					},
+					name: {
+						type: "string",
+						description: "트랜잭션의 함수 이름을 나타내는 필드입니다.",
+					},
+					signature: {
+						type: "string",
+						description: "트랜잭션의 함수 시그니처를 나타내는 필드입니다.",
+					},
+					args: {
+						type: "array",
+						items: DataDomains.Args,
+					},
+				},
+			},
+			functionSelector: {
+				type: "string",
+				description:
+					"트랜잭션에서 호출한 함수의 selector를 나타내는 필드입니다. 0x로 시작하는 8자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal8,
+			},
+			nonce: {
+				type: "string",
+				description:
+					"트랜잭션의 nonce 값을 나타내는 필드입니다. 트랜잭션의 중복 방지 및 순서를 결정하는 데 사용됩니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			gas: {
+				type: "string",
+				description:
+					"트랜잭션 실행을 위해 사용자가 할당하고자 하는 가스의 최대 양을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			gasPrice: {
+				type: "string",
+				description:
+					"사용자가 단위 가스당 지불할 의향이 있는 금액을 나타내는 필드입니다. EIP-1559(London Hard fork) 적용 이전의 트랜잭션 모델(고정된 수수료)에서 사용되는 필드이며, 네트워크 혼잡도에 따라 사용자가 수동으로 가격을 설정할 수 있습니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			maxFeePerGas: {
+				type: "string",
+				description:
+					"사용자가 단위 가스당 지불할 의향이 있는 최대 수수료를 나타내는 필드입니다. 이는 baseFeePerGas와 MaxPriorityFeePerGas의 합보다 크거나 같아야 합니다. EIP-1559(London Hard fork)에서 도입된 변동적인 수수료 모델의 일부입니다. 따라서 도입 이전 트랜잭션에서는 해당 필드가 제공되지 않습니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			maxPriorityFeePerGas: {
+				type: "string",
+				description:
+					"사용자가 블록 생성자에게 직접 지불하길 원하는 단위 가스당 최대 수수료입니다. 이 값이 클수록 블록 생성자는 해당 트랜잭션을 우선적으로 처리하게 됩니다. EIP-1559(London Hard fork)에서 도입된 변동적인 수수료 모델의 일부입니다. 따라서 도입 이전 트랜잭션에서는 해당 필드가 제공되지 않습니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			gasUsed: {
+				type: "string",
+				description:
+					"트랜잭션 실행에서 실제로 사용된 가스의 양을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			cumulativeGasUsed: {
+				type: "string",
+				description:
+					"현재 트랜잭션까지 포함하여, 블록 내에서 처리된 모든 트랜잭션들에 사용된 가스의 총합을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			effectGasPrice: {
+				type: "string",
+				description:
+					"트랜잭션이 실제로 단위 가스당 지불한 평균 가격을 나타내는 필드입니다. EIP-1559(London Hard fork)에서 도입된 변동적인 수수료 모델의 일부입니다. 따라서 도입 이전 트랜잭션에서는 해당 필드가 제공되지 않습니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			contractAddress: {
+				type: "string",
+				description:
+					"트랜잭션이 컨트랙트 생성 트랜잭션인 경우, 생성된 컨트랙트 주소를 나타내는 필드입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.ethereumAddress,
+			},
+			type: {
+				type: "string",
+				description: `트랜잭션의 타입을 나타내는 필드이며, 블록 시점에 따라 이 필드가 제공되지 않을 수 있습니다. 10진수 문자열 형태로 제공됩니다.
+0: Legacy transaction, EIP-1559 이전의 트랜잭션
+1: Access List transaction, EIP-2930에 의해 도입된 접근 목록 트랜잭션
+2: Fee market transaction, EIP-1559에 의해 도입된 수수료 시장 트랜잭션`,
+				pattern: Patterns.decimalString,
+			},
+			status: {
+				type: "string",
+				description:
+					"트랜잭션의 상태를 나타내는 필드입니다. 1이면 성공, 0이면 실패를 나타냅니다. Byzantium Hard Fork 이전의 트랜잭션에서는 해당 필드가 제공되지 않습니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			logsBloom: {
+				type: "string",
+				description:
+					"트랜잭션에 포함된 모든 로그 블룸을 나타내는 필드입니다. 0x로 시작하는 512자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.hexaDecimal512,
+			},
+			accessList: {
+				type: "array",
+				description: "트랜잭션의 접근 목록을 나타내는 필드입니다.",
+				items: {
+					type: "object",
+					required: ["address", "storageKeys"],
+					properties: {
+						address: {
+							type: "string",
+							description:
+								"트랜잭션에서 접근한 컨트랙트 주소를 나타내는 필드입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+							pattern: Patterns.ethereumAddress,
+						},
+						storageKeys: {
+							type: "array",
+							description: "트랜잭션에서 접근한 컨트랙트의 storage key 목록을 나타내는 필드입니다.",
+							items: {
+								type: "string",
+								description:
+									"트랜잭션에서 접근한 컨트랙트의 storage key를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+								pattern: Patterns.hexaDecimal64,
+							},
+						},
+					},
+				},
+			},
+			timeStamp: {
+				type: "integer",
+				description: "트랜잭션이 생성된 시간을 나타내는 필드입니다. 이 필드는 UNIX 타임스탬프로 제공됩니다.",
+			},
+		},
+	};
+
+	export const Logs: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: [
+			"contractAddress",
+			"transactionHash",
+			"transactionIndex",
+			"blockHash",
+			"blockNumber",
+			"data",
+			"logIndex",
+			"removed",
+			"topics",
+		],
+		properties: {
+			contractAddress: {
+				type: "string",
+				description:
+					"로그를 생성한 컨트랙트 주소를 나타내는 필드입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.ethereumAddress,
+			},
+			transactionHash: {
+				type: "string",
+				description:
+					"로그를 생성한 트랜잭션의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.txHash,
+			},
+			transactionIndex: {
+				type: "string",
+				description:
+					"로그를 생성한 트랜잭션의 인덱스를 나타내는 필드입니다. 블록 내에서의 순서를 나타냅니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			blockHash: {
+				type: "string",
+				description:
+					"로그를 생성한 블록의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockHash,
+			},
+			blockNumber: {
+				type: "string",
+				description: "로그를 생성한 블록 번호를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockNumber,
+			},
+			data: {
+				type: "string",
+				description:
+					"로그의 데이터를 나타내는 필드입니다. 0x로 시작하는 16진수 문자열 형태로 제공됩니다. 이 필드는 로그의 이벤트 데이터를 나타냅니다.",
+				pattern: Patterns.hexaDecimal,
+			},
+			logIndex: {
+				type: "string",
+				description:
+					"로그의 인덱스를 나타내는 필드입니다. 트랜잭션에서 발생한 이벤트의 순서를 의미합니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			removed: {
+				type: "boolean",
+				description:
+					"로그가 제거되었는지 여부를 나타내는 필드입니다. 체인의 재구성(Reorg)으로 인해 로그가 제거된 경우 true를 반환합니다.",
+			},
+			topics: {
+				type: "array",
+				description: "인덱스된 로그의 인자를 나타내는 필드입니다. 최대 4개의 토픽을 가질 수 있습니다.",
+				items: {
+					type: "string",
+					description: "로그의 토픽을 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+					pattern: Patterns.hexaDecimal64,
+				},
+			},
+			decodedLog: {
+				type: "object",
+				description:
+					"로그의 데이터를 디코딩한 결과를 나타내는 필드입니다. withLogs와 withDecoded가 모두 true인 경우에만 응답에 포함됩니다.",
+				properties: {
+					name: {
+						type: "string",
+						description: "로그의 이벤트 이름을 나타내는 필드입니다.",
+					},
+					eventFragment: {
+						type: "string",
+						description: "로그의 이벤트 프래그먼트를 나타내는 필드입니다.",
+					},
+					signature: {
+						type: "string",
+						description: "로그의 이벤트 시그니처를 나타내는 필드입니다.",
+					},
+					eventHash: {
+						type: "string",
+						description: "로그의 이벤트 해시를 나타내는 필드입니다.",
+					},
+					args: {
+						type: "array",
+						items: DataDomains.Args,
+					},
+				},
 			},
 		},
 	};

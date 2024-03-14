@@ -3,9 +3,10 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
+import Constants from "../../../utils/constants.utils";
 
-const title = "Search NFT Contract Metadata By Keyword";
-const endpoint = "searchNftContractMetadataByKeyword";
+const title = "Get Token Holders By Contract";
+const endpoint = "getTokenHoldersByContract";
 const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -15,8 +16,9 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description: "NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
+		tags: ["Token API"],
+		description:
+			"특정 NFT 컨트랙트의 홀더 리스트를 조회합니다. 홀더 리스트에는 홀더의 주소와 홀더가 보유한 NFT의 수량이 포함됩니다.",
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -30,9 +32,12 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									keyword: { ...Requests.keyword, default: "BAYC" },
+									contractAddress: {
+										...Requests.contractAddress,
+										default: Constants.USDT_CONTRACT_ADDRESS,
+									},
 								},
-								required: ["keyword"],
+								required: ["contractAddress"],
 							},
 							Requests.PaginationSet,
 						],
@@ -45,9 +50,7 @@ const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [DataDomains.ContractMeta, DataDomains.AssetMeta],
-						}),
+						schema: DataDomains.Pagination(DataDomains.Balance),
 						example: {
 							...Examples[endpoint],
 						},
