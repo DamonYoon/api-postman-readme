@@ -52,6 +52,36 @@ namespace DataDomains {
 		},
 	});
 
+	export const StatsDailyResponse: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: ["date", "count"],
+		properties: {
+			date: {
+				type: "string",
+				description: "날짜를 나타내는 필드입니다. 이 필드는 ",
+			},
+			count: {
+				type: "integer",
+				description: "날짜별 거래 수를 나타내는 필드입니다.",
+			},
+		},
+	};
+
+	export const StatsHourlyResponse: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: ["date", "count"],
+		properties: {
+			date: {
+				type: "string",
+				description: "시간을 나타내는 필드입니다. 이 필드는 ISO 8601 형식으로 제공됩니다.",
+			},
+			count: {
+				type: "integer",
+				description: "시간별 거래 수를 나타내는 필드입니다.",
+			},
+		},
+	};
+
 	export const Balance: OpenAPIV3.SchemaObject = {
 		type: "object",
 		required: ["ownerAddress", "balance"],
@@ -457,7 +487,7 @@ namespace DataDomains {
 					type: "string",
 					description:
 						"블록에 포함된 트랜잭션의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-					pattern: Patterns.txHash,
+					pattern: Patterns.transactionHash,
 				},
 			},
 			withdrawalRoot: {
@@ -549,7 +579,7 @@ namespace DataDomains {
 			transactionHash: {
 				type: "string",
 				description: "트랜잭션의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.txHash,
+				pattern: Patterns.transactionHash,
 			},
 			transactionIndex: {
 				type: "string",
@@ -581,7 +611,7 @@ namespace DataDomains {
 			},
 			value: {
 				type: "string",
-				description: "트랜잭션의 가치를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				description: "트랜잭션에서 전송한 토큰의 수량을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
 				pattern: Patterns.decimalString,
 			},
 			input: {
@@ -726,7 +756,7 @@ namespace DataDomains {
 		},
 	};
 
-	export const Logs: OpenAPIV3.SchemaObject = {
+	export const Log: OpenAPIV3.SchemaObject = {
 		type: "object",
 		required: [
 			"contractAddress",
@@ -750,7 +780,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"로그를 생성한 트랜잭션의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.txHash,
+				pattern: Patterns.transactionHash,
 			},
 			transactionIndex: {
 				type: "string",
@@ -795,32 +825,143 @@ namespace DataDomains {
 					pattern: Patterns.hexaDecimal64,
 				},
 			},
-			decodedLog: {
-				type: "object",
+		},
+	};
+
+	export const DecodedLog: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: ["name", "eventFragment", "signature", "eventHash", "args"],
+		properties: {
+			name: {
+				type: "string",
+				description: "로그의 이벤트 이름을 나타내는 필드입니다.",
+			},
+			eventFragment: {
+				type: "string",
+				description: "로그의 이벤트 프래그먼트를 나타내는 필드입니다.",
+			},
+			signature: {
+				type: "string",
+				description: "로그의 이벤트 시그니처를 나타내는 필드입니다.",
+			},
+			eventHash: {
+				type: "string",
+				description: "로그의 이벤트 해시를 나타내는 필드입니다.",
+			},
+			args: {
+				type: "array",
+				items: DataDomains.Args,
+			},
+		},
+	};
+
+	export const GasPrice: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: ["high", "average", "low", "latestBlock", "baseFee"],
+		properties: {
+			high: {
+				type: "string",
+				description: "현재 Gas Price의 최고가를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			average: {
+				type: "string",
+				description: "현재 Gas Price의 평균가를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			low: {
+				type: "string",
+				description: "현재 Gas Price의 최저가를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			latestBlock: {
+				type: "string",
+				description: "최신 블록을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			baseFee: {
+				type: "string",
+				description: "최신 블록의 기본 수수료를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+		},
+	};
+
+	export const Trace: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: [],
+		properties: {
+			traceId: {
+				type: "string",
+				description: `트랜잭션의 트레이스 ID를 나타내는 필드입니다. 트랜잭션의 깊이와 호출 순서에 따라 고유한 값을 가집니다.
+
+네이밍 규칙: \`call_{blockNumber}_{transactionIndex}_{depth1's callOrder}_{depth2's callOrder}_{...}\``,
+			},
+			traceIndex: {
+				type: "integer",
+				description: "트랜잭션의 트레이스 인덱스를 나타내는 필드입니다. external transaction의 경우 0을 반환합니다.",
+			},
+			transactionHash: {
+				type: "string",
+				description: "트랜잭션의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.transactionHash,
+			},
+			transactionIndex: {
+				type: "string",
 				description:
-					"로그의 데이터를 디코딩한 결과를 나타내는 필드입니다. withLogs와 withDecoded가 모두 true인 경우에만 응답에 포함됩니다.",
-				properties: {
-					name: {
-						type: "string",
-						description: "로그의 이벤트 이름을 나타내는 필드입니다.",
-					},
-					eventFragment: {
-						type: "string",
-						description: "로그의 이벤트 프래그먼트를 나타내는 필드입니다.",
-					},
-					signature: {
-						type: "string",
-						description: "로그의 이벤트 시그니처를 나타내는 필드입니다.",
-					},
-					eventHash: {
-						type: "string",
-						description: "로그의 이벤트 해시를 나타내는 필드입니다.",
-					},
-					args: {
-						type: "array",
-						items: DataDomains.Args,
-					},
-				},
+					"트랜잭션의 인덱스를 나타내는 필드입니다. 블록 내에서의 순서를 나타냅니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			from: {
+				type: "string",
+				description:
+					"트랜잭션을 발생시킨 주소를 나타내는 필드입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.ethereumAddress,
+			},
+			to: {
+				type: "string",
+				description:
+					"트랜잭션의 수신 주소를 나타내는 필드입니다. 컨트랙트 생성 트랜잭션의 경우, 이 필드는 생성된 컨트랙트 주소를 반환합니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.ethereumAddress,
+			},
+			value: {
+				type: "string",
+				description: "트랜잭션에서 전송된 수량을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			traceType: {
+				type: "string",
+				description: "트랜잭션의 트레이스 타입을 나타내는 필드입니다. call, create 등이 있습니다.",
+			},
+			callType: {
+				type: "string",
+				description: "트랜잭션의 호출 타입을 나타내는 필드입니다. call, delegatecall, staticcall 등이 있습니다.",
+			},
+			gas: {
+				type: "string",
+				description: "트랜잭션에 할당된 가스의 양을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			gasUsed: {
+				type: "string",
+				description:
+					"트랜잭션 실행에서 실제로 사용된 가스의 양을 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			status: {
+				type: "string",
+				description:
+					"트랜잭션의 상태를 나타내는 필드입니다. 1이면 성공, 0이면 실패를 나타냅니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.decimalString,
+			},
+			blockNumber: {
+				type: "string",
+				description: "트랜잭션이 포함된 블록의 번호를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
+				pattern: Patterns.blockNumber,
+			},
+			timeStamp: {
+				type: "integer",
+				description: "트랜잭션이 생성된 시간을 나타내는 필드입니다. 이 필드는 UNIX 타임스탬프로 제공됩니다.",
 			},
 		},
 	};

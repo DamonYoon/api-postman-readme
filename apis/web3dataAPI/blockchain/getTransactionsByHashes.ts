@@ -5,9 +5,9 @@ import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
-const title = "Get Transactions by Account";
-const endpoint = "getTransactionsByAccount";
-const isPublic = true;
+const title = "Get Transactions by Hashes";
+const endpoint = "getTransactionsByHashes";
+const isPublic = false; //TODO: 개발 진행상황 확인 필요
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -17,7 +17,8 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Blockchain API"],
-		description: `특정 계정이 전송 혹은 수신한 트랜잭션 목록을 조회합니다.
+		//TODO: 최대 조회 가능한 트랜잭션 수량 확인 필요
+		description: `여러 트랜잭션의 정보를 조회합니다. 최대 ${Constants.INPUT_ITEM_MAX}개의 트랜잭션을 조회할 수 있습니다. 
 
 > ⚠️ decodeInput 사용 시 주의사항
 >
@@ -35,18 +36,9 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									accountAddress: { ...Requests.accountAddress, default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS },
-									relation: Requests.relation,
-									contractAddresses: {
-										type: "array",
-										items: Requests.contractAddress,
-									},
-									fromBlock: Requests.fromBlock,
-									toBlock: Requests.toBlock,
-									fromDate: Requests.fromDate,
-									toDate: Requests.toDate,
+									block: { ...Requests.block, default: "latest" },
 								},
-								required: ["accountAddress"],
+								required: ["block"],
 							},
 							Requests.PaginationSet,
 							{

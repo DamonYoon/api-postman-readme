@@ -3,10 +3,9 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
-import Constants from "../../../utils/constants.utils";
 
-const title = "Get Transactions by Account";
-const endpoint = "getTransactionsByAccount";
+const title = "Get Transactions In Block";
+const endpoint = "getTransactionsInBlock";
 const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -17,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Blockchain API"],
-		description: `특정 계정이 전송 혹은 수신한 트랜잭션 목록을 조회합니다.
+		description: `특정 블록 내의 트랜잭션 리스트를 조회합니다.
 
 > ⚠️ decodeInput 사용 시 주의사항
 >
@@ -35,18 +34,9 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									accountAddress: { ...Requests.accountAddress, default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS },
-									relation: Requests.relation,
-									contractAddresses: {
-										type: "array",
-										items: Requests.contractAddress,
-									},
-									fromBlock: Requests.fromBlock,
-									toBlock: Requests.toBlock,
-									fromDate: Requests.fromDate,
-									toDate: Requests.toDate,
+									block: { ...Requests.block, default: "latest" },
 								},
-								required: ["accountAddress"],
+								required: ["block"],
 							},
 							Requests.PaginationSet,
 							{
@@ -73,8 +63,18 @@ const info: OpenAPIV3.PathItemObject = {
 									type: "object",
 									properties: {
 										logs: {
-											...DataDomains.Log,
-											...DataDomains.DecodedLog,
+											type: "array",
+											items: {
+												allOf: [
+													{ ...DataDomains.Log },
+													{
+														type: "object",
+														properties: {
+															decoded: DataDomains.DecodedLog,
+														},
+													},
+												],
+											},
 										},
 									},
 								},

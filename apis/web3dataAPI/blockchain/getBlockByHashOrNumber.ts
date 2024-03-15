@@ -3,21 +3,20 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
-import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFT Metadata by Contract";
-const endpoint = "getNftMetadataByContract";
+const title = "Get Block by Hash or Number";
+const endpoint = "getBlockByHashOrNumber";
 const isPublic = true;
 
-export const info: OpenAPIV3.PathItemObject = {
+const info: OpenAPIV3.PathItemObject = {
 	post: {
 		security: [
 			{
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description: `특정 컨트랙트에서 발행된 NFT의 메타데이터 목록을 조회합니다. 여러 NFT를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 NFT를 조회할 수 있습니다.`,
+		tags: ["Blockchain API"],
+		description: `블록 해시 혹은 블록넘버로 조회한 블록의 특정 정보를 반환합니다.`,
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,14 +30,17 @@ export const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									contractAddress: {
-										...Requests.contractAddress,
-										default: Constants.BAYC_CONTRACT_ADDRESS,
-									},
+									block: { ...Requests.block, default: "latest" },
 								},
-								required: ["contractAddress"],
+								required: ["block"],
 							},
 							Requests.PaginationSet,
+							{
+								type: "object",
+								properties: {
+									withLogs: Requests.withLogs,
+								},
+							},
 						],
 					},
 				},
@@ -49,20 +51,7 @@ export const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [
-								DataDomains.NftMeta,
-								{
-									type: "object",
-									properties: {
-										contract: {
-											...DataDomains.ContractMeta,
-											...DataDomains.AssetMeta,
-										},
-									},
-								},
-							],
-						}),
+						schema: DataDomains.Block,
 						example: {
 							...Examples[endpoint],
 						},

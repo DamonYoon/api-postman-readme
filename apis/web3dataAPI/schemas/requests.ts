@@ -57,6 +57,7 @@ page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다
 		type: "boolean",
 		description:
 			"응답에 count 필드의 포함 여부를 지정하는 파라미터이며, count 필드는 요청한 데이터의 총 개수를 나타냅니다. 이 파라미터에 true를 입력한 경우, 응답에 count 필드가 포함되며 응답속도가 느려질 수 있습니다.",
+		default: false,
 	};
 
 	export const PaginationSet: OpenAPIV3.SchemaObject = {
@@ -71,6 +72,13 @@ page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다
 	// Pagination end
 
 	/* Common */
+	export const address: OpenAPIV3.SchemaObject = {
+		type: "string",
+		description:
+			"조회하고자 하는 주소를 지정하는 파라미터입니다. 0x로 시작하는 40자리의 16진수 문자열 형태로 입력할 수 있습니다.",
+		pattern: Patterns.ethereumAddress,
+	};
+
 	export const accountAddress: OpenAPIV3.SchemaObject = {
 		type: "string",
 		description:
@@ -96,7 +104,36 @@ page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다
 		description: "조회하고자 하는 컨트랙트의 name 혹은 symbol을 지정하는 파라미터입니다.",
 	};
 
+	export const transactionHash: OpenAPIV3.SchemaObject = {
+		type: "string",
+		description:
+			"조회하고자 하는 트랜잭션의 해시를 지정하는 파라미터입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 입력할 수 있습니다.",
+		pattern: Patterns.transactionHash,
+	};
+
+	export const eventNames: OpenAPIV3.SchemaObject = {
+		type: "array",
+		items: {
+			type: "string",
+			description: "조회하고자 하는 이벤트의 이름을 지정하는 파라미터입니다.",
+		},
+	};
+
+	export const abi: OpenAPIV3.SchemaObject = {
+		type: "string",
+		format: "json",
+		description:
+			"조회하고자 하는 컨트랙트의 ABI를 지정하는 파라미터입니다. JSON 형태의 ABI 문자열을 입력할 수 있습니다.",
+	};
+
 	/* Range */
+	export const block: OpenAPIV3.SchemaObject = {
+		type: "string",
+		description: `조회하고자 하는 블록을 지정하는 파라미터입니다. 이 파라미터의 기본 값은 latest이며, 블록 번호(10진수 문자열), 블록 해시(0x로 시작하는 64자리 16진수 문자열) 또는 블록 태그(earliest, latest)를 입력할 수 있습니다. "earliest"는 첫 번째 블록을, "latest"는 최근 블록을 의미합니다.`,
+		pattern: Patterns.blockNumber || Patterns.blockHash || Patterns.blockTag,
+		default: "latest",
+	};
+
 	export const fromBlock: OpenAPIV3.SchemaObject = {
 		type: "string",
 		description: `조회 시작 블록을 지정하는 파라미터입니다. 이 파라미터의 기본 값은 0이며, 블록 번호(10진수 문자열), 블록 해시(0x로 시작하는 64자리 16진수 문자열) 또는 블록 태그("earliest")를 입력할 수 있습니다.
@@ -147,18 +184,21 @@ fromDate 없이 toDate만 제공되는 경우, 최초 날짜부터 toDate까지�
 		type: "boolean",
 		description:
 			"응답에 NFT 토큰 메타데이터 관련 필드(rawMetadata, metadata, media, metadataSyncedAt)의 포함 여부를 지정하는 파라미터입니다. 이 파라미터에 true를 입력한 경우, 응답속도가 느려질 수 있습니다.",
+		default: false,
 	};
 
 	export const withZeroValue: OpenAPIV3.SchemaObject = {
 		type: "boolean",
 		description:
-			"Value가 0인 transaction 혹은 transfer를 포함하는지 여부를 지정하는 파라미터입니다. 이 파라미터에 true를 입력한 경우, 응답속도가 느려질 수 있습니다.",
+			"Value가 0인 transaction 혹은 transfer를 포함하는지 여부를 지정하는 파라미터입니다. 더 빠른 응답을 원한다면 이 파라미터를 true로 설정하세요.",
+		default: true,
 	};
 
 	export const withLogs: OpenAPIV3.SchemaObject = {
 		type: "boolean",
 		description:
 			"응답에 logs 필드의 포함 여부를 지정하는 파라미터입니다. 이 파라미터에 true를 입력한 경우, 응답속도가 느려질 수 있습니다.",
+		default: false,
 	};
 
 	export const withDecode: OpenAPIV3.SchemaObject = {
@@ -166,6 +206,14 @@ fromDate 없이 toDate만 제공되는 경우, 최초 날짜부터 toDate까지�
 		description: `응답에 decodedInput, decodedLog 필드의 포함 여부를 지정하는 파라미터입니다. 이 파라미터에 true를 입력한 경우, 응답속도가 느려질 수 있습니다.
 
 decodedLog는 logs에 포함되어 있기 때문에 withDecode가 true라도 withLogs가 false인 경우 decodedLog는 응답에 포함되지 않습니다.`,
+		default: false,
+	};
+
+	export const withExternalTransaction: OpenAPIV3.SchemaObject = {
+		type: "boolean",
+		description:
+			"응답에 externalTransactions 필드의 포함 여부를 지정하는 파라미터입니다. 이 파라미터에 true를 입력한 경우, 응답속도가 느려질 수 있습니다.",
+		default: false,
 	};
 }
 

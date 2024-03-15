@@ -5,19 +5,20 @@ import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFT Metadata by Contract";
-const endpoint = "getNftMetadataByContract";
+const title = "Get Native Balance by Account";
+const endpoint = "getNativeBalanceByAccount";
 const isPublic = true;
 
-export const info: OpenAPIV3.PathItemObject = {
+const info: OpenAPIV3.PathItemObject = {
 	post: {
 		security: [
 			{
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description: `특정 컨트랙트에서 발행된 NFT의 메타데이터 목록을 조회합니다. 여러 NFT를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 NFT를 조회할 수 있습니다.`,
+		tags: ["Token API"],
+		description:
+			"특정 Account가 보유한 ERC20 토큰의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰 컨트랙트의 메타데이터가 포함됩니다.",
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,14 +32,13 @@ export const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									contractAddress: {
-										...Requests.contractAddress,
-										default: Constants.BAYC_CONTRACT_ADDRESS,
+									accountAddress: {
+										...Requests.accountAddress,
+										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
 									},
 								},
-								required: ["contractAddress"],
+								required: ["accountAddress"],
 							},
-							Requests.PaginationSet,
 						],
 					},
 				},
@@ -49,20 +49,7 @@ export const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [
-								DataDomains.NftMeta,
-								{
-									type: "object",
-									properties: {
-										contract: {
-											...DataDomains.ContractMeta,
-											...DataDomains.AssetMeta,
-										},
-									},
-								},
-							],
-						}),
+						schema: DataDomains.Balance,
 						example: {
 							...Examples[endpoint],
 						},

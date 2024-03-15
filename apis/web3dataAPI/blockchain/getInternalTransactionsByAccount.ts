@@ -5,19 +5,23 @@ import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
-const title = "Get NFT Metadata by Contract";
-const endpoint = "getNftMetadataByContract";
+const title = "Get Internal Transactions by Account";
+const endpoint = "getInternalTransactionsByAccount";
 const isPublic = true;
 
-export const info: OpenAPIV3.PathItemObject = {
+const info: OpenAPIV3.PathItemObject = {
 	post: {
 		security: [
 			{
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
-		description: `특정 컨트랙트에서 발행된 NFT의 메타데이터 목록을 조회합니다. 여러 NFT를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 NFT를 조회할 수 있습니다.`,
+		tags: ["Blockchain API"],
+		description: `특정 Account와 관련된 internal transaction 리스트를 조회합니다.
+
+> 💡 사용 시 네트워크를 확인하세요!
+>
+> 이 API는 오직 Ethereum Mainnet에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요.`,
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,14 +35,21 @@ export const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									contractAddress: {
-										...Requests.contractAddress,
-										default: Constants.BAYC_CONTRACT_ADDRESS,
+									accountAddress: {
+										...Requests.accountAddress,
+										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
 									},
 								},
-								required: ["contractAddress"],
+								required: ["accountAddress"],
 							},
 							Requests.PaginationSet,
+							{
+								type: "object",
+								properties: {
+									withZeroValue: Requests.withZeroValue,
+									withExternalTransaction: Requests.withExternalTransaction,
+								},
+							},
 						],
 					},
 				},
@@ -49,20 +60,7 @@ export const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination({
-							allOf: [
-								DataDomains.NftMeta,
-								{
-									type: "object",
-									properties: {
-										contract: {
-											...DataDomains.ContractMeta,
-											...DataDomains.AssetMeta,
-										},
-									},
-								},
-							],
-						}),
+						schema: DataDomains.Pagination(DataDomains.Trace),
 						example: {
 							...Examples[endpoint],
 						},
