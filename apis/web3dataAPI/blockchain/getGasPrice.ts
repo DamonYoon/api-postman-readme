@@ -26,9 +26,7 @@ const info: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.GasPrice,
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

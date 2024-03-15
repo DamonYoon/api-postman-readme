@@ -58,9 +58,7 @@ const info: OpenAPIV3.PathItemObject = {
 								logs: DataDomains.Log,
 							},
 						}),
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

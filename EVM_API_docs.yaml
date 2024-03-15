@@ -2844,7 +2844,7 @@ paths:
         - NFT API
       description: |-
         특정 기간동안 발생한 NFT 전송 목록을 조회합니다. 조회 결과에는 컨트랙트 메타데이터와 NFT 메타데이터가 포함됩니다. 
-        > 💡 기간 설정 팁 
+        > 📘 기간 설정 팁 
         > 설정한 기간이 길 경우 응답시간이 길어질 수 있습니다. 빠른 응답을 원한다면 필요한 기간만큼만 설정하는 것을 권장합니다.
       summary: Get NFT Transfers Within Range
       operationId: getNftTransfersWithinRange
@@ -5221,7 +5221,7 @@ paths:
         특정 기간동안 발생한 ERC20 토큰 전송 목록을 조회합니다. 조회 결과에는 토큰 컨트랙트의 메타데이터와 전송된 토큰의 수량이
         포함됩니다.
 
-        > 💡 기간 설정 팁 
+        > 📘 기간 설정 팁 
 
         > 설정한 기간이 길 경우 응답시간이 길어질 수 있습니다. 빠른 응답을 원한다면 필요한 기간만큼만 설정하는 것을 권장합니다.
       summary: Get Token Transfers Within Range
@@ -7098,7 +7098,7 @@ paths:
         특정 Account와 관련된 internal transaction 리스트를 조회합니다.
 
 
-        > 💡 사용 시 네트워크를 확인하세요!
+        > 🚧 사용 시 네트워크를 확인하세요!
 
         >
 
@@ -7321,7 +7321,7 @@ paths:
         특정 트랜잭션에서 발생한 internal transaction 리스트를 조회합니다.
 
 
-        > 💡 사용 시 네트워크를 확인하세요!
+        > � 사용 시 네트워크를 확인하세요!
 
         >
 
@@ -7597,7 +7597,7 @@ paths:
         특정 트랜잭션의 정보를 조회합니다.
 
 
-        > ⚠️ decodeInput 사용 시 주의사항
+        > 🚧 decodeInput 사용 시 주의사항
 
         >
 
@@ -7959,7 +7959,7 @@ paths:
         특정 계정이 전송 혹은 수신한 트랜잭션 목록을 조회합니다.
 
 
-        > ⚠️ decodeInput 사용 시 주의사항
+        > 🚧 decodeInput 사용 시 주의사항
 
         >
 
@@ -8172,7 +8172,7 @@ paths:
         특정 블록 내의 트랜잭션 리스트를 조회합니다.
 
 
-        > ⚠️ decodeInput 사용 시 주의사항
+        > 🚧 decodeInput 사용 시 주의사항
 
         >
 
@@ -8486,8 +8486,6 @@ paths:
                   result:
                     type: boolean
                     description: 입력된 Address가 컨트랙트라면 true, 아니라면 false를 반환합니다.
-                    example:
-                      result: true
               example:
                 result: true
         '400':
@@ -8719,6 +8717,668 @@ paths:
                       value: '96111814'
                     eventSignature: Transfer(address,address,uint256)
                     eventName: Transfer
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getDailyActiveAccountsStats:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 일별 활성 계정의 수를 조회할 수 있습니다.\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n> 현재 일 통계 API에서 '1일'의 기준은 UTC 기준으로, 해당 일자의 UTC 00:00:00부터 UTC 24:00:00이전까지의 데이터를 취합합니다. 일일 통계의 경우 이전 일자의 통계치 반영이 다음날 오전 00:30:00까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Daily Active Accounts Stats
+      operationId: getDailyActiveAccountsStats
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDate: &ref_38
+                  type: string
+                  description: >-
+                    조회 시작 날짜를 지정하는 파라미터입니다. 시작 일자로부터 종료 일자까지 최대 100일까지의 데이터를 조회할
+                    수 있습니다. YYYY-MM-DD 타입을 지원합니다.
+                  pattern: ^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$
+                endDate: &ref_39
+                  type: string
+                  description: >-
+                    조회 종료 날짜를 지정하는 파라미터입니다. 시작 일자로부터 종료 일자까지 최대 100일까지의 데이터를 조회할
+                    수 있습니다. YYYY-MM-DD 타입을 지원합니다.
+                  pattern: ^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$
+              required:
+                - startDate
+                - endDate
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: &ref_40
+                type: object
+                required:
+                  - date
+                  - count
+                properties:
+                  date:
+                    type: string
+                    description: 날짜를 나타내는 필드입니다. YYYY-MM-DD 형식으로 제공됩니다. (e.g., 2021-01-01)
+                    pattern: ^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$
+                  count:
+                    type: integer
+                    description: 날짜별 거래 수를 나타내는 필드입니다.
+              example:
+                count: 10
+                items:
+                  - date: '2024-02-10'
+                    count: 413238
+                  - date: '2024-02-11'
+                    count: 421233
+                  - date: '2024-02-12'
+                    count: 395251
+                  - date: '2024-02-13'
+                    count: 471066
+                  - date: '2024-02-14'
+                    count: 489431
+                  - date: '2024-02-15'
+                    count: 481119
+                  - date: '2024-02-16'
+                    count: 481143
+                  - date: '2024-02-17'
+                    count: 437796
+                  - date: '2024-02-18'
+                    count: 440703
+                  - date: '2024-02-19'
+                    count: 473340
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getDailyActiveAccountsStatsByContract:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 특정 컨트랙트의 일별 활성 계정의 수를 조회할 수 있습니다.\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n> 현재 일 통계 API에서 '1일'의 기준은 UTC 기준으로, 해당 일자의 UTC 00:00:00부터 UTC 24:00:00이전까지의 데이터를 취합합니다. 일일 통계의 경우 이전 일자의 통계치 반영이 다음날 오전 00:30:00까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Daily Active Accounts Stats By Contract
+      operationId: getDailyActiveAccountsStatsByContract
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDate: *ref_38
+                endDate: *ref_39
+              required:
+                - startDate
+                - endDate
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_40
+              example:
+                count: 10
+                items:
+                  - date: '2024-02-01'
+                    count: 17
+                  - date: '2024-02-02'
+                    count: 13
+                  - date: '2024-02-03'
+                    count: 13
+                  - date: '2024-02-04'
+                    count: 12
+                  - date: '2024-02-05'
+                    count: 10
+                  - date: '2024-02-06'
+                    count: 6
+                  - date: '2024-02-07'
+                    count: 14
+                  - date: '2024-02-08'
+                    count: 21
+                  - date: '2024-02-09'
+                    count: 28
+                  - date: '2024-02-10'
+                    count: 20
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getDailyTransactionsStats:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 일일 트랜잭션 발생량을 조회할 수 있습니다.\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n> 현재 일 통계 API에서 '1일'의 기준은 UTC 기준으로, 해당 일자의 UTC 00:00:00부터 UTC 24:00:00이전까지의 데이터를 취합합니다. 일일 통계의 경우 이전 일자의 통계치 반영이 다음날 오전 00:30:00까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Daily Transactions Stats
+      operationId: getDailyTransactionsStats
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDate: *ref_38
+                endDate: *ref_39
+              required:
+                - startDate
+                - endDate
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_40
+              example:
+                count: 10
+                items:
+                  - date: '2024-02-10'
+                    count: 1010940
+                  - date: '2024-02-11'
+                    count: 1027275
+                  - date: '2024-02-12'
+                    count: 984284
+                  - date: '2024-02-13'
+                    count: 1102512
+                  - date: '2024-02-14'
+                    count: 1130386
+                  - date: '2024-02-15'
+                    count: 1153897
+                  - date: '2024-02-16'
+                    count: 1179007
+                  - date: '2024-02-17'
+                    count: 1078511
+                  - date: '2024-02-18'
+                    count: 1093072
+                  - date: '2024-02-19'
+                    count: 1146697
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getDailyTransactionsStatsByContract:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 특정 컨트랙트의 일별 트랜잭션 발생량을 조회할 수 있습니다.\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n> 현재 일 통계 API에서 '1일'의 기준은 UTC 기준으로, 해당 일자의 UTC 00:00:00부터 UTC 24:00:00이전까지의 데이터를 취합합니다. 일일 통계의 경우 이전 일자의 통계치 반영이 다음날 오전 00:30:00까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Daily Transactions Stats By Contract
+      operationId: getDailyTransactionsStatsByContract
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDate: *ref_38
+                endDate: *ref_39
+              required:
+                - startDate
+                - endDate
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_40
+              example:
+                count: 10
+                items:
+                  - date: '2024-02-01'
+                    count: 19
+                  - date: '2024-02-02'
+                    count: 14
+                  - date: '2024-02-03'
+                    count: 16
+                  - date: '2024-02-04'
+                    count: 12
+                  - date: '2024-02-05'
+                    count: 13
+                  - date: '2024-02-06'
+                    count: 7
+                  - date: '2024-02-07'
+                    count: 22
+                  - date: '2024-02-08'
+                    count: 28
+                  - date: '2024-02-09'
+                    count: 38
+                  - date: '2024-02-10'
+                    count: 24
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getHourlyActiveAccountsStats:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 시간별 활성 계정의 수를 조회합니다\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n>  현재 시간별 통계 API에서 시간은 UTC 기준으로, 응답의 각 항목에는 date로부터 +1시간 내의 통계치가 제공됩니다. 시간별 통계의 경우 최근 1시간의 통계치 반영이 최대 40분까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Hourly Active Accounts Stats
+      operationId: getHourlyActiveAccountsStats
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDateTime: *ref_38
+                endDateTime: *ref_39
+              required:
+                - startDateTime
+                - endDateTime
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_40
+              example:
+                count: 24
+                items:
+                  - date: 2024-02-01-00
+                    count: 26627
+                  - date: 2024-02-01-01
+                    count: 27084
+                  - date: 2024-02-01-02
+                    count: 27135
+                  - date: 2024-02-01-03
+                    count: 26595
+                  - date: 2024-02-01-04
+                    count: 31669
+                  - date: 2024-02-01-05
+                    count: 31949
+                  - date: 2024-02-01-06
+                    count: 31206
+                  - date: 2024-02-01-07
+                    count: 30234
+                  - date: 2024-02-01-08
+                    count: 31551
+                  - date: 2024-02-01-09
+                    count: 28662
+                  - date: 2024-02-01-10
+                    count: 31947
+                  - date: 2024-02-01-11
+                    count: 31527
+                  - date: 2024-02-01-12
+                    count: 35021
+                  - date: 2024-02-01-13
+                    count: 31857
+                  - date: 2024-02-01-14
+                    count: 32679
+                  - date: 2024-02-01-15
+                    count: 31453
+                  - date: 2024-02-01-16
+                    count: 30661
+                  - date: 2024-02-01-17
+                    count: 33057
+                  - date: 2024-02-01-18
+                    count: 27096
+                  - date: 2024-02-01-19
+                    count: 29512
+                  - date: 2024-02-01-20
+                    count: 29577
+                  - date: 2024-02-01-21
+                    count: 31197
+                  - date: 2024-02-01-22
+                    count: 29265
+                  - date: 2024-02-01-23
+                    count: 27136
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getHourlyActiveAccountsStatsByContract:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 특정 컨트랙트의 시간별 활성 계정의 수를 조회합니다\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n>  현재 시간별 통계 API에서 시간은 UTC 기준으로, 응답의 각 항목에는 date로부터 +1시간 내의 통계치가 제공됩니다. 시간별 통계의 경우 최근 1시간의 통계치 반영이 최대 40분까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Hourly Active Accounts Stats By Contract
+      operationId: getHourlyActiveAccountsStatsByContract
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDateTime: *ref_38
+                endDateTime: *ref_39
+              required:
+                - startDateTime
+                - endDateTime
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_40
+              example:
+                count: 25
+                items:
+                  - date: 2024-02-01-00
+                    count: 1
+                  - date: 2024-02-01-01
+                    count: 0
+                  - date: 2024-02-01-02
+                    count: 0
+                  - date: 2024-02-01-03
+                    count: 1
+                  - date: 2024-02-01-04
+                    count: 1
+                  - date: 2024-02-01-05
+                    count: 1
+                  - date: 2024-02-01-06
+                    count: 1
+                  - date: 2024-02-01-07
+                    count: 2
+                  - date: 2024-02-01-08
+                    count: 1
+                  - date: 2024-02-01-09
+                    count: 1
+                  - date: 2024-02-01-10
+                    count: 2
+                  - date: 2024-02-01-11
+                    count: 1
+                  - date: 2024-02-01-12
+                    count: 1
+                  - date: 2024-02-01-13
+                    count: 1
+                  - date: 2024-02-01-14
+                    count: 0
+                  - date: 2024-02-01-15
+                    count: 0
+                  - date: 2024-02-01-16
+                    count: 0
+                  - date: 2024-02-01-17
+                    count: 1
+                  - date: 2024-02-01-18
+                    count: 0
+                  - date: 2024-02-01-19
+                    count: 1
+                  - date: 2024-02-01-20
+                    count: 0
+                  - date: 2024-02-01-21
+                    count: 0
+                  - date: 2024-02-01-22
+                    count: 2
+                  - date: 2024-02-01-23
+                    count: 0
+                  - date: 2024-02-02-00
+                    count: 0
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getHourlyTransactionsStats:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 시간별 트랜잭션 수를 조회합니다\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n>  현재 시간별 통계 API에서 시간은 UTC 기준으로, 응답의 각 항목에는 date로부터 +1시간 내의 통계치가 제공됩니다. 시간별 통계의 경우 최근 1시간의 통계치 반영이 최대 40분까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Hourly Transactions Stats
+      operationId: getHourlyTransactionsStats
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDateTime: *ref_38
+                endDateTime: *ref_39
+              required:
+                - startDateTime
+                - endDateTime
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_40
+              example:
+                count: 10
+                items:
+                  - date: '2024-02-10'
+                    count: 1010940
+                  - date: '2024-02-11'
+                    count: 1027275
+                  - date: '2024-02-12'
+                    count: 984284
+                  - date: '2024-02-13'
+                    count: 1102512
+                  - date: '2024-02-14'
+                    count: 1130386
+                  - date: '2024-02-15'
+                    count: 1153897
+                  - date: '2024-02-16'
+                    count: 1179007
+                  - date: '2024-02-17'
+                    count: 1078511
+                  - date: '2024-02-18'
+                    count: 1093072
+                  - date: '2024-02-19'
+                    count: 1146697
+        '400':
+          description: Bad Request
+          content: *ref_4
+        '401':
+          description: Unauthorized
+          content: *ref_5
+        '403':
+          description: Forbidden
+          content: *ref_6
+        '404':
+          description: Not Found
+          content: *ref_7
+        '429':
+          description: Too Many Requests
+          content: *ref_8
+  /{protocol}/{network}/stats/getHourlyTransactionsStatsByContract:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Statistic API
+      description: "지정한 범위 내에서 발생한 특정 컨트랙트의 시간별 트랜잭션 수를 조회합니다\n\t\t\n> 📘 데이터는 언제 반영되나요?\n>\n>  현재 시간별 통계 API에서 시간은 UTC 기준으로, 응답의 각 항목에는 date로부터 +1시간 내의 통계치가 제공됩니다. 시간별 통계의 경우 최근 1시간의 통계치 반영이 최대 40분까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.\n\t\t\n> 🚧 사용 시 네트워크를 확인하세요!\n>\n> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요."
+      summary: Get Hourly Transactions Stats By Contract
+      operationId: getHourlyTransactionsStatsByContract
+      parameters:
+        - *ref_0
+        - *ref_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                startDateTime: *ref_38
+                endDateTime: *ref_39
+              required:
+                - startDateTime
+                - endDateTime
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_40
+              example:
+                count: 25
+                items:
+                  - date: 2024-02-01-00
+                    count: 2
+                  - date: 2024-02-01-01
+                    count: 0
+                  - date: 2024-02-01-02
+                    count: 0
+                  - date: 2024-02-01-03
+                    count: 1
+                  - date: 2024-02-01-04
+                    count: 1
+                  - date: 2024-02-01-05
+                    count: 1
+                  - date: 2024-02-01-06
+                    count: 1
+                  - date: 2024-02-01-07
+                    count: 2
+                  - date: 2024-02-01-08
+                    count: 1
+                  - date: 2024-02-01-09
+                    count: 1
+                  - date: 2024-02-01-10
+                    count: 2
+                  - date: 2024-02-01-11
+                    count: 1
+                  - date: 2024-02-01-12
+                    count: 1
+                  - date: 2024-02-01-13
+                    count: 1
+                  - date: 2024-02-01-14
+                    count: 0
+                  - date: 2024-02-01-15
+                    count: 0
+                  - date: 2024-02-01-16
+                    count: 0
+                  - date: 2024-02-01-17
+                    count: 1
+                  - date: 2024-02-01-18
+                    count: 0
+                  - date: 2024-02-01-19
+                    count: 1
+                  - date: 2024-02-01-20
+                    count: 0
+                  - date: 2024-02-01-21
+                    count: 0
+                  - date: 2024-02-01-22
+                    count: 2
+                  - date: 2024-02-01-23
+                    count: 0
+                  - date: 2024-02-02-00
+                    count: 0
         '400':
           description: Bad Request
           content: *ref_4

@@ -50,9 +50,7 @@ const info: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.Balance,
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

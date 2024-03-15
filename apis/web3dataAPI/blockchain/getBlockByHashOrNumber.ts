@@ -52,9 +52,7 @@ const info: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.Block,
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

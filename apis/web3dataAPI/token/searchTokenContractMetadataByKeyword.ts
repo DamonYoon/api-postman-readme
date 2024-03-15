@@ -48,9 +48,7 @@ const info: OpenAPIV3.PathItemObject = {
 						schema: DataDomains.Pagination({
 							allOf: [DataDomains.ContractMeta, DataDomains.AssetMeta],
 						}),
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

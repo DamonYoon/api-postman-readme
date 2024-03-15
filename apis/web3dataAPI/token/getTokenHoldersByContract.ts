@@ -51,9 +51,7 @@ const info: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.Pagination(DataDomains.Balance),
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

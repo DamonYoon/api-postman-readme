@@ -6,6 +6,7 @@ import nftPaths from "./nft";
 import nativePaths from "./native";
 import tokenPaths from "./token";
 import blockchainPaths from "./blockchain";
+import statsPaths from "./stats";
 
 const EVM_API_docs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
@@ -32,6 +33,7 @@ const EVM_API_docs: OpenAPIV3.Document = {
 		...nativePaths,
 		...tokenPaths,
 		...blockchainPaths,
+		...statsPaths,
 	},
 };
 

@@ -17,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags: ["NFT API"],
 		description: `특정 기간동안 발생한 NFT 전송 목록을 조회합니다. 조회 결과에는 컨트랙트 메타데이터와 NFT 메타데이터가 포함됩니다. 
-> 💡 기간 설정 팁 
+> 📘 기간 설정 팁 
 > 설정한 기간이 길 경우 응답시간이 길어질 수 있습니다. 빠른 응답을 원한다면 필요한 기간만큼만 설정하는 것을 권장합니다.`,
 		summary: title,
 		operationId: endpoint,
@@ -71,9 +71,7 @@ const info: OpenAPIV3.PathItemObject = {
 								},
 							],
 						}),
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

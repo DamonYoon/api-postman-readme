@@ -68,9 +68,7 @@ const info: OpenAPIV3.PathItemObject = {
 								},
 							],
 						}),
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

@@ -3,10 +3,9 @@ import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
 import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
-import Constants from "../../../utils/constants.utils";
 
-const title = "Get Internal Transactions by Account";
-const endpoint = "getInternalTransactionsByAccount";
+const title = "Get Daily Transactions Stats By Contract";
+const endpoint = "getDailyTransactionsStatsByContract";
 const isPublic = true;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -16,12 +15,16 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
-		description: `특정 Account와 관련된 internal transaction 리스트를 조회합니다.
-
+		tags: ["Statistic API"],
+		description: `지정한 범위 내에서 발생한 특정 컨트랙트의 일별 트랜잭션 발생량을 조회할 수 있습니다.
+		
+> 📘 데이터는 언제 반영되나요?
+>
+> 현재 일 통계 API에서 '1일'의 기준은 UTC 기준으로, 해당 일자의 UTC 00:00:00부터 UTC 24:00:00이전까지의 데이터를 취합합니다. 일일 통계의 경우 이전 일자의 통계치 반영이 다음날 오전 00:30:00까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.
+		
 > 🚧 사용 시 네트워크를 확인하세요!
 >
-> 이 API는 오직 Ethereum Mainnet에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요.`,
+> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요.`,
 		summary: title,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
@@ -31,26 +34,12 @@ const info: OpenAPIV3.PathItemObject = {
 				"application/json": {
 					schema: {
 						additionalProperties: false,
-						allOf: [
-							{
-								type: "object",
-								properties: {
-									accountAddress: {
-										...Requests.accountAddress,
-										default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
-									},
-								},
-								required: ["accountAddress"],
-							},
-							Requests.PaginationSet,
-							{
-								type: "object",
-								properties: {
-									withZeroValue: Requests.withZeroValue,
-									withExternalTransaction: Requests.withExternalTransaction,
-								},
-							},
-						],
+						type: "object",
+						properties: {
+							startDate: Requests.startDate,
+							endDate: Requests.endDate,
+						},
+						required: ["startDate", "endDate"],
 					},
 				},
 			},
@@ -60,7 +49,7 @@ const info: OpenAPIV3.PathItemObject = {
 				description: "Successful Response",
 				content: {
 					"application/json": {
-						schema: DataDomains.Pagination(DataDomains.Trace),
+						schema: DataDomains.DailyStats,
 						example: Examples[endpoint],
 					},
 				},

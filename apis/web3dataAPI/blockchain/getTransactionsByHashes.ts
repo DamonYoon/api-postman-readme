@@ -20,7 +20,7 @@ const info: OpenAPIV3.PathItemObject = {
 		//TODO: 최대 조회 가능한 트랜잭션 수량 확인 필요
 		description: `여러 트랜잭션의 정보를 조회합니다. 최대 ${Constants.INPUT_ITEM_MAX}개의 트랜잭션을 조회할 수 있습니다. 
 
-> ⚠️ decodeInput 사용 시 주의사항
+> 🚧 decodeInput 사용 시 주의사항
 >
 > decodeInput 필드는 트랜잭션의 input 필드를 해석하여 결과를 제공합니다. 그러나 서로 다른 함수가 같은 함수 선택자(function selector)를 사용할 수 있기 때문에, 제공된 결과가 실제로 호출된 함수와 일치하지 않을 가능성이 있습니다. 따라서, ERC 표준 규격과 다른 함수의 경우 추가적인 검증 과정을 거치는 것을 권장 드립니다.`,
 		summary: title,
@@ -72,9 +72,7 @@ const info: OpenAPIV3.PathItemObject = {
 								},
 							],
 						}),
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

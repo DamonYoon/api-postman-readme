@@ -52,13 +52,14 @@ namespace DataDomains {
 		},
 	});
 
-	export const StatsDailyResponse: OpenAPIV3.SchemaObject = {
+	export const DailyStats: OpenAPIV3.SchemaObject = {
 		type: "object",
 		required: ["date", "count"],
 		properties: {
 			date: {
 				type: "string",
-				description: "날짜를 나타내는 필드입니다. 이 필드는 ",
+				description: "날짜를 나타내는 필드입니다. YYYY-MM-DD 형식으로 제공됩니다. (e.g., 2021-01-01)",
+				pattern: Patterns.yyyymmdd,
 			},
 			count: {
 				type: "integer",
@@ -67,13 +68,14 @@ namespace DataDomains {
 		},
 	};
 
-	export const StatsHourlyResponse: OpenAPIV3.SchemaObject = {
+	export const HourlyStats: OpenAPIV3.SchemaObject = {
 		type: "object",
 		required: ["date", "count"],
 		properties: {
 			date: {
 				type: "string",
-				description: "시간을 나타내는 필드입니다. 이 필드는 ISO 8601 형식으로 제공됩니다.",
+				description: "날짜와 시간을 나타내는 필드입니다. YYYY-MM-DD-HH 형식으로 제공됩니다. (e.g., 2021-01-01-00)",
+				pattern: Patterns.yyyymmddhh,
 			},
 			count: {
 				type: "integer",

@@ -1,7 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 import Requests from "../schemas/requests";
 import Responses from "../schemas/responses";
-import DataDomains from "../schemas/dataDomains";
 import Examples from "../examples";
 import Constants from "../../../utils/constants.utils";
 
@@ -54,13 +53,10 @@ const info: OpenAPIV3.PathItemObject = {
 								result: {
 									type: "boolean",
 									description: "입력된 Address가 컨트랙트라면 true, 아니라면 false를 반환합니다.",
-									example: Examples.isContract,
 								},
 							},
 						},
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},

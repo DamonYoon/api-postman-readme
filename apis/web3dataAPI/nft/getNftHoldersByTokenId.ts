@@ -55,9 +55,7 @@ const info: OpenAPIV3.PathItemObject = {
 				content: {
 					"application/json": {
 						schema: DataDomains.Pagination(DataDomains.NftHolder),
-						example: {
-							...Examples[endpoint],
-						},
+						example: Examples[endpoint],
 					},
 				},
 			},
