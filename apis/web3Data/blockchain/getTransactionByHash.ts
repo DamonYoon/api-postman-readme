@@ -49,28 +49,23 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": {
-				description: "Successful Response",
-				content: {
-					"application/json": {
-						schema: {
-							allOf: [
-								DataDomains.TransactionWithReceipt,
-								{
-									type: "object",
-									properties: {
-										logs: {
-											...DataDomains.Log,
-											...DataDomains.DecodedLog,
-										},
-									},
+			"200": Responses.Success200({
+				schema: {
+					allOf: [
+						DataDomains.TransactionWithReceipt,
+						{
+							type: "object",
+							properties: {
+								logs: {
+									...DataDomains.Log,
+									...DataDomains.DecodedLog,
 								},
-							],
+							},
 						},
-						example: Examples[endpoint],
-					},
+					],
 				},
-			},
+				example: Examples[endpoint],
+			}),
 			"400": Responses.Error400,
 			"401": Responses.Error401,
 			"403": Responses.Error403,

@@ -42,24 +42,19 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": {
-				description: "Successful Response",
-				content: {
-					"application/json": {
-						schema: {
-							type: "object",
-							properties: {
-								nonce: {
-									type: "string",
-									description: "조회한 계정의 다음 nonce 값을 나타냅니다. 이 값은 트랜잭션을 생성할 때 사용됩니다.",
-									pattern: Patterns.decimalString,
-								},
-							},
+			"200": Responses.Success200({
+				schema: {
+					type: "object",
+					properties: {
+						nonce: {
+							type: "string",
+							description: "조회한 계정의 다음 nonce 값을 나타냅니다. 이 값은 트랜잭션을 생성할 때 사용됩니다.",
+							pattern: Patterns.decimalString,
 						},
-						example: Examples[endpoint],
 					},
 				},
-			},
+				example: Examples[endpoint],
+			}),
 			"400": Responses.Error400,
 			"401": Responses.Error401,
 			"403": Responses.Error403,

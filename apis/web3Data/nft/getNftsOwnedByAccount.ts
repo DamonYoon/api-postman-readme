@@ -56,10 +56,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": {
-				description: "Successful Response",
-				content: {
-					"application/json": {
+			"200": Responses.Success200({
 						schema: DataDomains.Pagination({
 							allOf: [
 								DataDomains.Balance,

@@ -59,24 +59,19 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": {
-				description: "Successful Response",
-				content: {
-					"application/json": {
-						schema: {
-							type: "object",
-							properties: {
-								message: {
-									type: "string",
-									description: "동기화 요청에 대한 결과 메시지를 반환합니다.",
-									example: "NFT Metadata synchronization request has been successfully submitted.",
-								},
-							},
+			"200": Responses.Success200({
+				schema: {
+					type: "object",
+					properties: {
+						message: {
+							type: "string",
+							description: "동기화 요청에 대한 결과 메시지를 반환합니다.",
+							example: "NFT Metadata synchronization request has been successfully submitted.",
 						},
-						example: Examples[endpoint],
 					},
 				},
-			},
+				example: Examples[endpoint],
+			}),
 			"400": Responses.Error400,
 			"401": Responses.Error401,
 			"403": Responses.Error403,

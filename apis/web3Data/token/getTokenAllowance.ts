@@ -51,24 +51,19 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": {
-				description: "Successful Response",
-				content: {
-					"application/json": {
-						schema: {
-							type: "object",
-							properties: {
-								allowance: {
-									type: "string",
-									description:
-										"spender가 owner를 대신하여 transferFrom을 통해 사용할 수 있는 남은 토큰 수를 반환합니다. 이 값은 approve나 transferFrom이 호출될 때 변경됩니다",
-								},
-							},
+			"200": Responses.Success200({
+				schema: {
+					type: "object",
+					properties: {
+						allowance: {
+							type: "string",
+							description:
+								"spender가 owner를 대신하여 transferFrom을 통해 사용할 수 있는 남은 토큰 수를 반환합니다. 이 값은 approve나 transferFrom이 호출될 때 변경됩니다",
 						},
-						example: Examples[endpoint],
 					},
 				},
-			},
+				example: Examples[endpoint],
+			}),
 			"400": Responses.Error400,
 			"401": Responses.Error401,
 			"403": Responses.Error403,

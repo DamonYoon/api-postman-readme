@@ -1,6 +1,18 @@
 import { OpenAPIV3 } from "openapi-types";
 
+interface Success200Interface {
+	(option: OpenAPIV3.MediaTypeObject): OpenAPIV3.ResponseObject;
+}
+
 namespace Responses {
+	/* Success Response Objects */
+	export const Success200: Success200Interface = (option) => ({
+		description: "Successful Response",
+		content: {
+			"application/json": option,
+		},
+	});
+
 	/* Error Response Objects */
 	export const Error400: OpenAPIV3.ResponseObject = {
 		description: "Bad Request",

@@ -55,15 +55,10 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": {
-				description: "Successful Response",
-				content: {
-					"application/json": {
-						schema: DataDomains.Pagination(DataDomains.Trace),
-						example: Examples[endpoint],
-					},
-				},
-			},
+			"200": Responses.Success200({
+				schema: DataDomains.Pagination(DataDomains.Trace),
+				example: Examples[endpoint],
+			}),
 			"400": Responses.Error400,
 			"401": Responses.Error401,
 			"403": Responses.Error403,

@@ -43,23 +43,18 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": {
-				description: "Successful Response",
-				content: {
-					"application/json": {
-						schema: {
-							type: "object",
-							properties: {
-								result: {
-									type: "boolean",
-									description: "입력된 Address가 컨트랙트라면 true, 아니라면 false를 반환합니다.",
-								},
-							},
+			"200": Responses.Success200({
+				schema: {
+					type: "object",
+					properties: {
+						result: {
+							type: "boolean",
+							description: "입력된 Address가 컨트랙트라면 true, 아니라면 false를 반환합니다.",
 						},
-						example: Examples[endpoint],
 					},
 				},
-			},
+				example: Examples[endpoint],
+			}),
 			"400": Responses.Error400,
 			"401": Responses.Error401,
 			"403": Responses.Error403,
