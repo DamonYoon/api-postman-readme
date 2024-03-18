@@ -1,8 +1,8 @@
 import { OpenAPIV3 } from "openapi-types";
-import Requests from "../schemas/requests";
-import Responses from "../schemas/responses";
-import DataDomains from "../schemas/dataDomains";
-import Examples from "../examples";
+import Requests from "../resources/requests";
+import Responses from "../resources/responses";
+import DataDomains from "../resources/dataDomains";
+import Examples from "../resources/examples";
 
 const title = "Get Daily Transactions Stats";
 const endpoint = "getDailyTransactionsStats";
@@ -16,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Statistic API"],
-		description: `지정한 범위 내에서 발생한 일일 트랜잭션 발생량을 조회할 수 있습니다.
+		description: `지정한 범위 내에서 발생한 일별 트랜잭션 발생량을 조회할 수 있습니다.
 		
 > 📘 데이터는 언제 반영되나요?
 >

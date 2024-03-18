@@ -1,8 +1,8 @@
 import { OpenAPIV3 } from "openapi-types";
-import Requests from "../schemas/requests";
-import Responses from "../schemas/responses";
-import DataDomains from "../schemas/dataDomains";
-import Examples from "../examples";
+import Requests from "../resources/requests";
+import Responses from "../resources/responses";
+import DataDomains from "../resources/dataDomains";
+import Examples from "../resources/examples";
 import Constants from "../../../utils/constants.utils";
 
 const title = "Get NFT Metadata by Contract";

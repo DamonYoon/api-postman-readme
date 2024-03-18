@@ -1,7 +1,7 @@
 import { OpenAPIV3 } from "openapi-types";
-import Requests from "../schemas/requests";
-import Responses from "../schemas/responses";
-import Examples from "../examples";
+import Requests from "../resources/requests";
+import Responses from "../resources/responses";
+import Examples from "../resources/examples";
 import Constants from "../../../utils/constants.utils";
 
 const title = "Sync Nft Metadata";
