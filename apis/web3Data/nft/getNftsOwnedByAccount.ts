@@ -57,25 +57,23 @@ const info: OpenAPIV3.PathItemObject = {
 		},
 		responses: {
 			"200": Responses.Success200({
-						schema: DataDomains.Pagination({
-							allOf: [
-								DataDomains.Balance,
-								DataDomains.NftMeta,
-								{
-									type: "object",
-									properties: {
-										contract: {
-											...DataDomains.ContractMeta,
-											...DataDomains.AssetMeta,
-										},
-									},
+				schema: DataDomains.Pagination({
+					allOf: [
+						DataDomains.Balance,
+						DataDomains.NftMeta,
+						{
+							type: "object",
+							properties: {
+								contract: {
+									...DataDomains.ContractMeta,
+									...DataDomains.AssetMeta,
 								},
-							],
-						}),
-						example: Examples[endpoint],
-					},
-				},
-			},
+							},
+						},
+					],
+				}),
+				example: Examples[endpoint],
+			}),
 			"400": Responses.Error400,
 			"401": Responses.Error401,
 			"403": Responses.Error403,
