@@ -8,12 +8,13 @@ import tokenPaths from "./token";
 import blockchainPaths from "./blockchain";
 import statsPaths from "./stats";
 
-const docsFileName = "EVM_Web3_Data_API.yaml";
+const docsFileName = "EVM_Web3_Data_API";
+const title = "Web3 Data API";
 
 const EVM_Web3_Data_API: OpenAPIV3.Document = {
 	openapi: "3.1.0",
 	info: {
-		title: "Web3 Data API",
+		title: title,
 		version: "1.0.0",
 	},
 	servers: [
