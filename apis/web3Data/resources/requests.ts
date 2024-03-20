@@ -93,6 +93,15 @@ page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다
 		pattern: Patterns.ethereumAddress,
 	};
 
+	export const contractAddresses: OpenAPIV3.SchemaObject = {
+		type: "array",
+		description:
+			"조회하고자 하는 컨트랙트 주소의 배열을 지정하는 파라미터입니다. 컨트랙트 주소는 0x로 시작하는 40자리의 16진수 문자열 형태로 입력할 수 있습니다.",
+		items: {
+			...Requests.contractAddress,
+		},
+	};
+
 	export const tokenId: OpenAPIV3.SchemaObject = {
 		type: "string",
 		description: "조회하고자 하는 NFT 토큰의 ID를 지정하는 파라미터입니다. 10진수 문자열 형태로 입력할 수 있습니다.",

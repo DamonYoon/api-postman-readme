@@ -33,10 +33,7 @@ const info: OpenAPIV3.PathItemObject = {
 								type: "object",
 								properties: {
 									contractAddresses: {
-										type: "array",
-										items: {
-											...Requests.contractAddress,
-										},
+										...Requests.contractAddress,
 										default: [Constants.USDT_CONTRACT_ADDRESS, Constants.USDC_CONTRACT_ADDRESS],
 									},
 								},
