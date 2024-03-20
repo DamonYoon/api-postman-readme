@@ -4,8 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "ts-node src",
-		"build": "tsc && node dist"
+		"convert-to-yaml": "ts-node ./scripts/convertToYaml.ts",
+		"update-to-readme": "ts-node ./scripts/updateToReadme.ts",
+		"convert-and-update": "ts-node ./scripts/convertAndUpdate.ts"
 	},
 	"keywords": [],
 	"author": "",

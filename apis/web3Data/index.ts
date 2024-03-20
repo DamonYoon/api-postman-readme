@@ -1,20 +1,20 @@
 import { OpenAPIV3 } from "openapi-types";
-import * as yaml from "js-yaml";
-import * as fs from "fs";
 import { WEB3_DATA_API_BASE_URL } from "../../utils/urls.utils";
 import nftPaths from "./nft";
 import nativePaths from "./native";
 import tokenPaths from "./token";
 import blockchainPaths from "./blockchain";
 import statsPaths from "./stats";
+import { ApiDefinition } from "../../types";
 
-const docsFileName = "EVM_Web3_Data_API";
-const title = "Web3 Data API";
+const category = "Web3 Data API";
+const fileName = "Web3_Data_API";
+const id = "65f9435dc3bc24003cc4d2b2";
 
-const EVM_Web3_Data_API: OpenAPIV3.Document = {
+const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
 	info: {
-		title: title,
+		title: category,
 		version: "1.0.0",
 	},
 	servers: [
@@ -40,6 +40,10 @@ const EVM_Web3_Data_API: OpenAPIV3.Document = {
 	},
 };
 
-const EVM_Web3_Data_API_yaml = yaml.dump(EVM_Web3_Data_API);
-fs.writeFileSync(`./docs/${docsFileName}.yaml`, EVM_Web3_Data_API_yaml, "utf8");
-console.log("File created successfully");
+const apiDefinition: ApiDefinition = {
+	fileName,
+	oasDocs,
+	id,
+};
+
+export default apiDefinition;
