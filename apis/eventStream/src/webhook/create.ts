@@ -1,8 +1,8 @@
 import { OpenAPIV3 } from "openapi-types";
-import Requests from "../resources/requests";
-import Responses from "../resources/responses";
-import Examples from "../resources/examples";
-import Constants from "../../../utils/constants.utils";
+import Requests from "../../resources/requests";
+import Responses from "../../resources/responses";
+import Examples from "../../resources/examples";
+import Constants from "../../../../utils/constants.utils";
 
 const title = "Create Webhook";
 const endpoint = "createWebhook";

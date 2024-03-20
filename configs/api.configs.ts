@@ -1,14 +1,16 @@
+import { README_CONFIGS } from "./readme.config";
+
+const MAIN_VERSION = "1.0.2";
+
+const apiDefinitions = README_CONFIGS.find((config) => config.version === MAIN_VERSION)?.apiDefinitions;
+
+if (!apiDefinitions) {
+	throw new Error("API definitions not found");
+}
+
 const API_CONFIGS = {
-	web3Data: {
-		category: "Web3 Data API",
-		fileName: "Web3_Data_API",
-		id: "65f9435dc3bc24003cc4d2b2",
-	},
-	webhook: {
-		category: "Event Stream",
-		fileName: "Webhook_API",
-		id: "65f9435dc3bc24003cc4d2b3",
-	},
+	version: MAIN_VERSION,
+	apiDefinitions,
 };
 
 export default API_CONFIGS;

@@ -2,24 +2,26 @@ import * as yaml from "js-yaml";
 import * as path from "path";
 import * as fs from "fs/promises";
 import { exec } from "child_process";
-import { ApiDefinition } from "../types";
 import dotenv from "dotenv";
+import { ApiInfo } from "../types";
 dotenv.config();
 
-export async function getApiDefinition(tsFilePath: string): Promise<ApiDefinition> {
+export async function getApiInfo(tsFilePath: string): Promise<ApiInfo> {
 	if (!tsFilePath.endsWith(".ts")) {
 		throw new Error("A valid TypeScript file path with a .ts extension must be provided as an argument.");
 	}
 	const module = await require(tsFilePath);
-	const tsData: ApiDefinition = module.default;
-	return tsData;
+	const apiInfo = module.default;
+	return apiInfo;
 }
 
-export async function convertTsToYaml(tsData: ApiDefinition, outputDir: string = "./docs") {
+export async function convertTsToYaml(apiInfo: ApiInfo, outputDir: string = "./docs", version: string) {
 	try {
-		const yamlData = yaml.dump(tsData.oasDocs); // yaml로 변환
+		apiInfo.oasDocs.info.version = version;
 
-		const baseFileName = tsData.fileName;
+		const yamlData = yaml.dump({ ...apiInfo.oasDocs }); // yaml로 변환
+
+		const baseFileName = `${apiInfo.oasDocs.info.version.replace(/\./g, "_")}_${apiInfo.title.replace(/ /g, "_")}`;
 		const outputPath = path.join(outputDir, `${baseFileName}.yaml`);
 
 		await fs.writeFile(outputPath, yamlData, "utf8");

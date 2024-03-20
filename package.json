@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"convert-to-yaml": "ts-node ./scripts/convertToYaml.ts",
-		"update-to-readme": "ts-node ./scripts/updateToReadme.ts",
-		"convert-and-update": "ts-node ./scripts/convertAndUpdate.ts"
+		"convert": "ts-node ./scripts/convertToYaml.ts",
+		"update": "ts-node ./scripts/updateToReadmeWithId.ts",
+		"convert-and-update": "ts-node ./scripts/convertAndUpdateWithVersion.ts"
 	},
 	"keywords": [],
 	"author": "",

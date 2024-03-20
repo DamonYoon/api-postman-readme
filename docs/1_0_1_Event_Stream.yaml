@@ -1,0 +1,402 @@
+openapi: 3.1.0
+info:
+  title: Event Stream
+  version: 1.0.1
+servers:
+  - url: https://web3.nodit.io/v1/
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-API-KEY
+      in: header
+paths:
+  /{protocol}/{network}/webhooks:
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Webhook API
+      description: >-
+        Webhook을 생성하기 위한 API입니다. 구독 정보와 Webhook URL을 입력하여 Webhook을 생성합니다.
+        Webhook을 생성하면 해당 Webhook URL로 이벤트가 전송됩니다. Webhook이 생성되면 Webhook의
+        Subscription ID를 반환하며, 이를 통해 Webhook 정보를 조회, 수정 및 삭제를 할 수 있습니다.
+      summary: Create Webhook
+      operationId: createWebhook
+      parameters:
+        - &ref_0
+          name: protocol
+          in: path
+          required: true
+          schema:
+            type: string
+            default: ethereum
+          description: >-
+            조회 대상 Chain 프로토콜을 지정하기 위한 파라미터입니다. 지원되는 프로토콜에 대한 정보는 Supported
+            Chains 페이지를 참고하거나, Protocol 조회 API를 활용하세요.
+        - &ref_1
+          name: network
+          in: path
+          required: true
+          schema:
+            type: string
+            default: mainnet
+          description: >-
+            조회 대상 Chain 네트워크를 지정하기 위한 파라미터입니다. mainnet 또는 테스트넷을 지정할 수 있습니다. 지원되는
+            네트워크에 대한 정보는 Supported Chains 페이지를 참고하거나 Network 조회 API를 활용하세요.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                eventType:
+                  type: string
+                  description: >-
+                    Webhook으로 구독하고자 하는 이벤트 타입 구분자를 지정하는 파라미터입니다. 지원되는 이벤트 타입에 대한
+                    정보는 Event Types 페이지를 참고하세요.
+                description: &ref_17
+                  type: string
+                  description: 이벤트의 설명을 지정하는 파라미터입니다.
+                notification: &ref_16
+                  type: object
+                  description: 이벤트 발생 시 알림을 받기 위해 필요한 정보를 지정하는 파라미터입니다.
+                  properties:
+                    webhookUrl:
+                      type: string
+                      description: >-
+                        구독한 이벤트 발생 시 알림을 받을 웹훅 URL을 지정하는 파라미터입니다. Public Access가
+                        가능한 URL을 지정해야 합니다.
+                condition: &ref_18
+                  type: string
+                  description: >-
+                    구독하고자 하는 이벤트 조건의 상제 정의를 위한 필드입니다. 이벤트 타입에 따라 입력 가능한 조건이 다르기
+                    때문에, Webhook Types 페이지를 참고하여 사용하세요.
+                  format: json
+              required:
+                - eventType
+                - description
+                - notification
+                - condition
+              default:
+                eventType: SUCCESSFUL_TRANSACTION
+                notification:
+                  webhookUrl: https://example.com/webhook
+                description: Webhook for successful transaction
+                condition: '{"addresses": ["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"]}'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscriptionId: &ref_2
+                    type: string
+                    description: >-
+                      Webhook에 할당된 subscriptionId를 나타내는 필드입니다. subscriptionId는
+                      Webhook을 식별하는 유니크한 값으로, Webhook을 조회, 수정 또는 삭제할 때 사용됩니다.
+                  description: &ref_3
+                    type: string
+                    description: Webhook의 설명을 나타내는 필드입니다.
+                  protocol: &ref_4
+                    type: string
+                    description: >-
+                      해당 Webhook의 프로토콜을 나타내는 필드입니다. (e.g., ETHEREUM, POLYGON,
+                      OPTIMISM, ...)
+                  network: &ref_5
+                    type: string
+                    description: >-
+                      해당 Webhook의 네트워크를 나타내는 필드입니다. (e.g., MAINNET, SEPOLIA,
+                      MUMBAI, ...)
+                  eventType: &ref_6
+                    type: string
+                    description: 해당 Webhook이 구독하는 이벤트 타입을 나타내는 필드입니다.
+                  notification: &ref_7
+                    type: object
+                    description: Webhook으로 알림을 받기 위한 정보를 나타내는 필드입니다.
+                    properties:
+                      webhookUrl:
+                        type: string
+                        description: Webhook으로 알림을 받을 URL을 나타내는 필드입니다.
+                  signingKey: &ref_8
+                    type: string
+                    description: >-
+                      Webhook 알림의 인증을 위한 서명 키를 나타내는 필드입니다. Webhook 알림을 수신한 후 서명
+                      키를 사용하여 알림의 유효성을 검증할 수 있습니다. 서명 키는 Webhook 생성 시 자동으로 생성되며,
+                      Webhook 수정 시 변경할 수 없습니다.
+                  createdAt: &ref_9
+                    type: string
+                    description: Webhook이 생성된 시간을 나타내는 필드입니다. ISO 8601 형식으로 표현됩니다.
+                  condition: &ref_10
+                    type: object
+                    description: Webhook 구독 조건을 나타내는 필드입니다. 이벤트 타입에 따라 다른 조건을 가질 수 있습니다.
+              example:
+                subscriptionId: '322'
+                description: test webhook
+                protocol: ETHEREUM
+                network: MAINNET
+                eventType: BLOCK_PERIOD
+                notification:
+                  webhookUrl: https://webhook.mock.server/blockperiod
+                condition:
+                  period: 3
+                createdAt: '2023-04-21T05:55:12.084Z'
+        '400': &ref_11
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  code: INVALID_PARAMETER
+                  message: >-
+                    Invalid parameter: { PARAMETER1_NAME = PARAMETER1_VALUE,
+                    PARAMETER2_NAME = PARAMETER2_VALUE, ... }
+        '401': &ref_12
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  code: AUTHENTICATION_FAILED
+                  message: Authentication failed
+        '403': &ref_13
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  code: PERMISSION_DENIED
+                  message: Permission denied
+        '404': &ref_14
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  code: RESOURCE_NOT_FOUND
+                  message: >-
+                    Resource not found: { RESOURCE1_NAME = RESOURCE1_VALUE,
+                    RESOURCE2_NAME = RESOURCE2_VALUE, ... }
+        '429': &ref_15
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  code: TOO_MANY_REQUESTS
+                  message: Too many requests
+    get:
+      security:
+        - api_key: []
+      tags:
+        - Webhook API
+      description: Webhook의 Subscription ID로 Webhook 정보를 조회하기 위한 API입니다.
+      summary: Get Webhook
+      operationId: getWebhook
+      parameters:
+        - *ref_0
+        - *ref_1
+        - name: subscriptionId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            조회하고자 하는 Webhook에 할당된 subscriptionId를 지정하기 위한 파라미터입니다. Webhook 생성 시
+            반환되는 subscriptionId를 사용하여 Webhook 정보를 조회, 수정 및 삭제할 수 있습니다. 빈 값을 입력하면
+            모든 Webhook 정보를 조회합니다.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  rpp:
+                    type: integer
+                  page:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        subscriptionId: *ref_2
+                        description: *ref_3
+                        protocol: *ref_4
+                        network: *ref_5
+                        eventType: *ref_6
+                        notification: *ref_7
+                        signingKey: *ref_8
+                        isActive:
+                          type: boolean
+                          description: >-
+                            Webhook의 활성화 여부를 나타내는 필드입니다. Webhook이 활성화되어 있으면
+                            true, 비활성화되어 있으면 false입니다. Webhook이 비활성화되어 있으면 해당
+                            Webhook으로 알림을 받을 수 없습니다.
+                        updatedAt:
+                          type: string
+                          description: Webhook이 수정된 시간을 나타내는 필드입니다. ISO 8601 형식으로 표현됩니다.
+                        createdAt: *ref_9
+                        condition: *ref_10
+              example:
+                total: 1
+                rpp: 10
+                page: 1
+                items:
+                  - subscriptionId: '31'
+                    description: test
+                    protocol: ETHEREUM
+                    network: MAINNET
+                    subscriptionType: WEBHOOK
+                    eventType: BLOCK_PERIOD
+                    notification:
+                      webhookUrl: https://webhook.mock.server/blockperiod
+                    isActive: true
+                    updatedAt: '2023-04-21T09:40:49.678Z'
+                    createdAt: '2023-04-21T09:40:49.678Z'
+                    condition:
+                      period: 1
+        '400': *ref_11
+        '401': *ref_12
+        '403': *ref_13
+        '404': *ref_14
+        '429': *ref_15
+  /{protocol}/{network}/webhooks/{subscriptionId}:
+    patch:
+      security:
+        - api_key: []
+      tags:
+        - Webhook API
+      description: Webhook의 구독 조건(condition)을 변경하거나 Webhook을 활성화, 또는 비활성화 할 수 있습니다.
+      summary: Update Webhook
+      operationId: updateWebhook
+      parameters:
+        - *ref_0
+        - *ref_1
+        - &ref_19
+          name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            조회하고자 하는 Webhook에 할당된 subscriptionId를 지정하기 위한 파라미터입니다. Webhook 생성 시
+            반환되는 subscriptionId를 사용하여 Webhook 정보를 조회, 수정 및 삭제할 수 있습니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                notification: *ref_16
+                description: *ref_17
+                isActive:
+                  type: boolean
+                  description: >-
+                    Webhook의 활성화 여부를 지정하는 파라미터입니다. 이 값이 true로 지정하면 활성화되며, false로
+                    지정하면 비활성화됩니다. 비활성화된 Webhook은 알림을 받을 수 없지만 삭제되지 않습니다.
+                condition: *ref_18
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: &ref_20
+                    type: boolean
+                    description: 호출 결과를 나타내는 필드입니다. 성공 시 true, 실패 시 false를 반환합니다.
+              example:
+                total: 1
+                rpp: 10
+                page: 1
+                items:
+                  - subscriptionId: '31'
+                    description: test
+                    protocol: ETHEREUM
+                    network: MAINNET
+                    subscriptionType: WEBHOOK
+                    eventType: BLOCK_PERIOD
+                    notification:
+                      webhookUrl: https://webhook.mock.server/blockperiod
+                    isActive: true
+                    updatedAt: '2023-04-21T09:40:49.678Z'
+                    createdAt: '2023-04-21T09:40:49.678Z'
+                    condition:
+                      period: 1
+        '400': *ref_11
+        '401': *ref_12
+        '403': *ref_13
+        '404': *ref_14
+        '429': *ref_15
+    delete:
+      security:
+        - api_key: []
+      tags:
+        - Webhook API
+      description: >-
+        Webhook을 삭제하기 위한 API입니다. Webhook을 삭제하면 해당 Webhook의 구독이 취소되며, 더 이상 이벤트를
+        받지 않습니다.
+      summary: Delete Webhook
+      operationId: deleteWebhook
+      parameters:
+        - *ref_0
+        - *ref_1
+        - *ref_19
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: *ref_20
+              example:
+                result: true
+        '400': *ref_11
+        '401': *ref_12
+        '403': *ref_13
+        '404': *ref_14
+        '429': *ref_15

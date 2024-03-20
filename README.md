@@ -1,27 +1,28 @@
 ## Scripts
-Always check the API definition ID before running scripts for readme update.
-API definition ID is in the [api configs](configs/api.configs.ts) file.
-
-1. Convert to Yaml file from Ts file
-Run below script.
-```sh
-npm run convert-to-yaml -- ${filePath}
-```
-
-2. Update Docs to ReadMe
-Before using it, must set Readme API key in `.env` file.
+0. Requirements 
+Before using scripts, must set Readme API key in `.env` file.
 ```
 README_API_KEY="rdme_xn8..."
-
 ```
 
-Run below script.
 
+1. Convert to Yaml file from Ts file
+If version is not provided, it will use the default version.
+The default version is set in the [api configs](configs/api.configs.ts) file.
 ```sh
-npm run update-to-readme -- ${filePath} ${id}
+npm run convert -- ${filePath} ${version}
 ```
 
-3. Convert and Update Docs to Readme
+2. Update Docs with API Definition ID
+
 ```sh
-npm run convert-and-update -- ${filePath}
+npm run update -- ${filePath} ${id}
+```
+
+3. Convert and Update Docs with Docs Version
+Before using it, must set Readme API key in `.env` file.
+If version is not provided, it will use the default version.
+The default version is set in the [api configs](configs/api.configs.ts) file.
+```sh
+npm run convert-and-update -- ${filePath} ${version}
 ```

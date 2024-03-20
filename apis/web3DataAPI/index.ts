@@ -5,16 +5,24 @@ import nativePaths from "./src/native";
 import tokenPaths from "./src/token";
 import blockchainPaths from "./src/blockchain";
 import statsPaths from "./src/stats";
-import { ApiDefinition } from "../../types";
 import API_CONFIGS from "../../configs/api.configs";
+import { ApiInfo } from "../../types";
+import API_DOCS_TITLES from "../../utils/titles.utils";
 
-const { category, fileName, id } = API_CONFIGS.web3Data;
+const title = API_DOCS_TITLES.WEB3_DATA_API;
+
+const { version } = API_CONFIGS;
+const apiConfig = API_CONFIGS.apiDefinitions.find((config) => config.title === title);
+if (!apiConfig) {
+	throw new Error("API definitions not found. Please check the title of the API.");
+}
+const { id } = apiConfig;
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
 	info: {
-		title: category,
-		version: "1.0.0",
+		title,
+		version,
 	},
 	servers: [
 		{
@@ -39,11 +47,10 @@ const oasDocs: OpenAPIV3.Document = {
 	},
 };
 
-const apiDefinition: ApiDefinition = {
-	category,
-	fileName,
-	oasDocs,
+const apiInfo: ApiInfo = {
+	title,
 	id,
+	oasDocs,
 };
 
-export default apiDefinition;
+export default apiInfo;
