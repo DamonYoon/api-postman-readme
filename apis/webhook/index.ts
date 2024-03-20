@@ -1,9 +1,9 @@
 import { OpenAPIV3 } from "openapi-types";
 import { WEB3_DATA_API_BASE_URL } from "../../utils/urls.utils";
-import webhookCreate from "./crud/create";
-import webhookGet from "./crud/get";
-import webhookUpdate from "./crud/update";
-import webhookDelete from "./crud/delete";
+import webhookCreate from "./src/create";
+import webhookGet from "./src/get";
+import webhookUpdate from "./src/update";
+import webhookDelete from "./src/delete";
 import { ApiDefinition } from "../../types";
 import API_CONFIGS from "../../configs/api.configs";
 

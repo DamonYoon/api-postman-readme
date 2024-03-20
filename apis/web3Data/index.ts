@@ -1,10 +1,10 @@
 import { OpenAPIV3 } from "openapi-types";
 import { WEB3_DATA_API_BASE_URL } from "../../utils/urls.utils";
-import nftPaths from "./nft";
-import nativePaths from "./native";
-import tokenPaths from "./token";
-import blockchainPaths from "./blockchain";
-import statsPaths from "./stats";
+import nftPaths from "./src/nft";
+import nativePaths from "./src/native";
+import tokenPaths from "./src/token";
+import blockchainPaths from "./src/blockchain";
+import statsPaths from "./src/stats";
 import { ApiDefinition } from "../../types";
 import API_CONFIGS from "../../configs/api.configs";
 
