@@ -33,13 +33,20 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									contractAddress: { ...Requests.contractAddress, default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS },
+									contractAddress: {
+										...Requests.contractAddress,
+										default: Constants.RARE_PEPE_CONTRACT_ADDRESS,
+									},
+									tokenId: {
+										...Requests.tokenId,
+										default: Constants.RARE_PEPE_TOKEN_ID,
+									},
 									fromBlock: Requests.fromBlock,
 									toBlock: Requests.toBlock,
 									fromDate: Requests.fromDate,
 									toDate: Requests.toDate,
 								},
-								required: ["contractAddress"],
+								required: ["contractAddress", "tokenId"],
 							},
 							Requests.PaginationSet,
 							{

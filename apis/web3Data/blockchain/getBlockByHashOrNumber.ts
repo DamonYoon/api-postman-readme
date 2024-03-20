@@ -35,13 +35,6 @@ const info: OpenAPIV3.PathItemObject = {
 								},
 								required: ["block"],
 							},
-							Requests.PaginationSet,
-							{
-								type: "object",
-								properties: {
-									withLogs: Requests.withLogs,
-								},
-							},
 						],
 					},
 				},

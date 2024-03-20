@@ -47,7 +47,6 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									withMetadata: Requests.withMetadata,
 									withZeroValue: Requests.withZeroValue,
 								},
 							},
