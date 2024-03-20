@@ -8,6 +8,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Get Transactions by Account";
 const endpoint = "getTransactionsByAccount";
 const isPublic = true;
+const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -16,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
+		tags,
 		description: `특정 계정이 전송 혹은 수신한 트랜잭션 목록을 조회합니다.
 
 > 🚧 decodeInput 사용 시 주의사항

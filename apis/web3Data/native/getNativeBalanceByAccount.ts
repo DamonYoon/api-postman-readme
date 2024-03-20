@@ -8,6 +8,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Get Native Balance by Account";
 const endpoint = "getNativeBalanceByAccount";
 const isPublic = true;
+const tags = ["Token API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -16,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Token API"],
+		tags,
 		description:
 			"특정 Account가 보유한 ERC20 토큰의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰 컨트랙트의 메타데이터가 포함됩니다.",
 		summary: title,

@@ -17,13 +17,15 @@ export async function getApiDefinition(tsFilePath: string): Promise<ApiDefinitio
 
 export async function convertTsToYaml(tsData: ApiDefinition, tsFilePath: string, outputDir: string = "./docs") {
 	try {
-		const yamlData = yaml.dump(tsData); // yaml로 변환
+		const yamlData = yaml.dump(tsData.oasDocs); // yaml로 변환
 
 		const baseFileName = tsData.fileName || path.basename(tsFilePath, path.extname(tsFilePath));
 		const outputPath = path.join(outputDir, `${baseFileName}.yaml`);
 
 		await fs.writeFile(outputPath, yamlData, "utf8");
 		console.log(`${outputPath} file created successfully`);
+
+		return outputPath;
 	} catch (err) {
 		// 에러 객체가 Error 인스턴스인지 확인
 		if (err instanceof Error) {
@@ -38,9 +40,9 @@ export async function convertTsToYaml(tsData: ApiDefinition, tsFilePath: string,
 
 export async function updateToReadme(docsPath: string, id: string) {
 	// 환경 변수를 통한 인증 정보 확인
-	const apiKey = process.env.RDME_API_KEY;
+	const apiKey = process.env.README_API_KEY;
 	if (!apiKey) {
-		console.error("Error: RDME_API_KEY environment variable is not set.");
+		console.error("Error: README_API_KEY environment variable is not set.");
 		process.exit(1);
 	}
 

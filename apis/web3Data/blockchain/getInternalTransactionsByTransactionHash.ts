@@ -7,6 +7,7 @@ import Examples from "../resources/examples";
 const title = "Get Internal Transactions By Transaction Hash";
 const endpoint = "getInternalTransactionsByTransactionHash";
 const isPublic = true;
+const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -15,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
+		tags,
 		description: `특정 트랜잭션에서 발생한 internal transaction 리스트를 조회합니다.
 
 > � 사용 시 네트워크를 확인하세요!

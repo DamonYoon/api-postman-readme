@@ -1,7 +1,11 @@
 import { OpenAPIV3 } from "openapi-types";
 
-export interface ApiDefinition {
+export interface ApiConfig {
+	category: string;
 	fileName: string;
-	oasDocs: OpenAPIV3.Document;
 	id: string;
+}
+
+export interface ApiDefinition extends ApiConfig {
+	oasDocs: OpenAPIV3.Document;
 }

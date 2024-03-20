@@ -1,14 +1,13 @@
 import { OpenAPIV3 } from "openapi-types";
 import { WEB3_DATA_API_BASE_URL } from "../../utils/urls.utils";
-import webhookCreate from "./webhook/create";
-import webhookGet from "./webhook/get";
-import webhookUpdate from "./webhook/update";
-import webhookDelete from "./webhook/delete";
+import webhookCreate from "./crud/create";
+import webhookGet from "./crud/get";
+import webhookUpdate from "./crud/update";
+import webhookDelete from "./crud/delete";
 import { ApiDefinition } from "../../types";
+import API_CONFIGS from "../../configs/api.configs";
 
-const category = "Event Stream";
-const fileName = "Webhook_API";
-const id = "65f9435dc3bc24003cc4d2b3";
+const { category, fileName, id } = API_CONFIGS.webhook;
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
@@ -43,6 +42,7 @@ const oasDocs: OpenAPIV3.Document = {
 };
 
 const apiDefinition: ApiDefinition = {
+	category,
 	fileName,
 	oasDocs,
 	id,

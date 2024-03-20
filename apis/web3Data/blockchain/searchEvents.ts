@@ -8,6 +8,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Search Events";
 const endpoint = "searchEvents";
 const isPublic = true;
+const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -16,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
+		tags,
 		description: `지정한 범위 내의 특정 event를 검색합니다.`,
 		summary: title,
 		operationId: endpoint,

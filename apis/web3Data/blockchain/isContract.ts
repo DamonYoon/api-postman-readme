@@ -7,6 +7,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Is Contract";
 const endpoint = "isContract";
 const isPublic = true;
+const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -15,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
+		tags,
 		description: `입력된 Address가 컨트랙트 주소인지 아닌지 조회합니다.`,
 		summary: title,
 		operationId: endpoint,

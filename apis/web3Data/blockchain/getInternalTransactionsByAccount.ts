@@ -8,6 +8,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Get Internal Transactions by Account";
 const endpoint = "getInternalTransactionsByAccount";
 const isPublic = true;
+const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -16,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
+		tags,
 		description: `특정 Account와 관련된 internal transaction 리스트를 조회합니다.
 
 > 🚧 사용 시 네트워크를 확인하세요!

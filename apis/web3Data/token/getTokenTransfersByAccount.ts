@@ -8,6 +8,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Get Token Transfers by Account";
 const endpoint = "getTokenTransfersByAccount";
 const isPublic = true;
+const tags = ["Token API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -16,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Token API"],
+		tags,
 		description:
 			"특정 주소가 전송 혹은 수신한 ERC20 토큰 전송 목록을 조회합니다. 조회 결과에는 토큰 컨트랙트의 메타데이터와 전송된 토큰의 수량이 포함됩니다.",
 		summary: title,

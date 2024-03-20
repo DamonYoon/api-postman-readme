@@ -7,6 +7,7 @@ import Examples from "../resources/examples";
 const title = "Get Block by Hash or Number";
 const endpoint = "getBlockByHashOrNumber";
 const isPublic = true;
+const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -15,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
+		tags,
 		description: `블록 해시 혹은 블록넘버로 조회한 블록의 특정 정보를 반환합니다.`,
 		summary: title,
 		operationId: endpoint,

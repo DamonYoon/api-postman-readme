@@ -7,6 +7,7 @@ import Examples from "../resources/examples";
 const title = "Search Token Contract Metadata by Keyword";
 const endpoint = "searchTokenContractMetadataByKeyword";
 const isPublic = true;
+const tags = ["Token API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -15,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Token API"],
+		tags,
 		description: "ERC20 토큰 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
 		summary: title,
 		operationId: endpoint,

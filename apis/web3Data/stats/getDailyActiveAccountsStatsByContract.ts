@@ -7,6 +7,7 @@ import Examples from "../resources/examples";
 const title = "Get Daily Active Accounts Stats By Contract";
 const endpoint = "getDailyActiveAccountsStatsByContract";
 const isPublic = true;
+const tags = ["Statistic API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -15,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Statistic API"],
+		tags,
 		description: `지정한 범위 내에서 발생한 특정 컨트랙트의 일별 활성 계정의 수를 조회할 수 있습니다.
 		
 > 📘 데이터는 언제 반영되나요?

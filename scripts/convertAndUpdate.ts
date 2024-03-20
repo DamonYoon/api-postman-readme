@@ -1,5 +1,7 @@
 import * as path from "path";
 import { convertTsToYaml, getApiDefinition, updateToReadme } from ".";
+import dotenv from "dotenv";
+dotenv.config();
 
 async function main() {
 	try {
@@ -19,8 +21,9 @@ async function main() {
 		const outputDir = process.argv[3]
 			? path.resolve(currentWorkingDir, process.argv[3])
 			: path.resolve(currentWorkingDir, "./docs");
-		await convertTsToYaml(tsData, tsFilePath, outputDir);
-		await updateToReadme(outputDir, tsData.id);
+
+		const outputPath = await convertTsToYaml(tsData, tsFilePath, outputDir);
+		await updateToReadme(outputPath, tsData.id);
 	} catch (err) {
 		// 에러 객체가 Error 인스턴스인지 확인
 		if (err instanceof Error) {

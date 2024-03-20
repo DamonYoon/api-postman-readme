@@ -7,6 +7,7 @@ import Examples from "../resources/examples";
 const title = "Search NFT Contract Metadata By Keyword";
 const endpoint = "searchNftContractMetadataByKeyword";
 const isPublic = true;
+const tags = ["NFT API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -15,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
+		tags,
 		description: "NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
 		summary: title,
 		operationId: endpoint,

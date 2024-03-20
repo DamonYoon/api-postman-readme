@@ -1,7 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 import Requests from "../resources/requests";
 import Responses from "../resources/responses";
-import DataDomains from "../resources/dataDomains";
 import Examples from "../resources/examples";
 import Constants from "../../../utils/constants.utils";
 import { Patterns } from "../../../utils/patterns.utils";
@@ -9,6 +8,7 @@ import { Patterns } from "../../../utils/patterns.utils";
 const title = "Get Next Nonce by Account";
 const endpoint = "getNextNonceByAccount";
 const isPublic = true;
+const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -17,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Blockchain API"],
+		tags,
 		description: `특정 Account의 다음 nonce를 조회합니다.`,
 		summary: title,
 		operationId: endpoint,

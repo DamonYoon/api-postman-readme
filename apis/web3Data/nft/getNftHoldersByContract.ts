@@ -8,6 +8,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Get NFT Holders by Contract";
 const endpoint = "getNftHoldersByContract";
 const isPublic = true;
+const tags = ["NFT API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -16,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
+		tags,
 		description:
 			"특정 NFT 컨트랙트의 홀더 리스트를 조회합니다. 홀더 리스트에는 홀더의 주소와 홀더가 보유한 NFT의 수량이 포함됩니다.",
 		summary: title,

@@ -7,6 +7,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Get Token Allowance";
 const endpoint = "getTokenAllowance";
 const isPublic = true;
+const tags = ["Token API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -15,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["Token API"],
+		tags,
 		description: "Spender에게 Owner가 Approve한 Token의 수량을 조회합니다.",
 		summary: title,
 		operationId: endpoint,

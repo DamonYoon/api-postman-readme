@@ -8,6 +8,7 @@ import Constants from "../../../utils/constants.utils";
 const title = "Get NFT Contracts by Account";
 const endpoint = "getNftContractsByAccount";
 const isPublic = true;
+const tags = ["NFT API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -16,7 +17,7 @@ const info: OpenAPIV3.PathItemObject = {
 				api_key: [],
 			},
 		],
-		tags: ["NFT API"],
+		tags,
 		description:
 			"특정 Account가 보유한 NFT를 컨트랙트 별로 그룹핑하여 조회합니다. 조회 결과에는 컨트랙트별 NFT의 수량과 컨트랙트의 메타데이터가 포함됩니다.",
 		summary: title,
