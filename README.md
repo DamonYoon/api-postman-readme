@@ -1,4 +1,7 @@
 ## Scripts
+Always check the API definition ID before running scripts for readme update.
+API definition ID is in the [api configs](configs/api.configs.ts) file.
+
 1. Convert to Yaml file from Ts file
 Run below script.
 ```sh
@@ -18,3 +21,7 @@ Run below script.
 npm run update-to-readme -- ${filePath} ${id}
 ```
 
+3. Convert and Update Docs to Readme
+```sh
+npm run convert-and-update -- ${filePath}
+```
