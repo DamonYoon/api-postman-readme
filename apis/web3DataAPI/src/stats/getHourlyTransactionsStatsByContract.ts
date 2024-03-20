@@ -3,11 +3,12 @@ import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
+import Constants from "../../../../utils/constants.utils";
 
 const title = "Get Hourly Transactions Stats By Contract";
 const endpoint = "getHourlyTransactionsStatsByContract";
 const isPublic = true;
-const tags = ["Statistic API"];
+const tags = ["Statistics API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -37,10 +38,14 @@ const info: OpenAPIV3.PathItemObject = {
 						additionalProperties: false,
 						type: "object",
 						properties: {
-							startDateTime: Requests.startDate,
-							endDateTime: Requests.endDate,
+							contractAddress: {
+								...Requests.contractAddress,
+								default: Constants.USDT_CONTRACT_ADDRESS,
+							},
+							startDateTime: { ...Requests.startDateTime, default: "2024-01-01-00" },
+							endDateTime: { ...Requests.endDateTime, default: "2024-02-01-00" },
 						},
-						required: ["startDateTime", "endDateTime"],
+						required: ["contractAddress", "startDateTime", "endDateTime"],
 					},
 				},
 			},

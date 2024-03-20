@@ -7,7 +7,7 @@ import Examples from "../../resources/examples";
 const title = "Get Daily Transactions Stats";
 const endpoint = "getDailyTransactionsStats";
 const isPublic = true;
-const tags = ["Statistic API"];
+const tags = ["Statistics API"];
 
 const info: OpenAPIV3.PathItemObject = {
 	post: {
@@ -37,8 +37,8 @@ const info: OpenAPIV3.PathItemObject = {
 						additionalProperties: false,
 						type: "object",
 						properties: {
-							startDate: Requests.startDate,
-							endDate: Requests.endDate,
+							startDate: { ...Requests.startDate, default: "2024-01-01" },
+							endDate: { ...Requests.endDate, default: "2024-02-01" },
 						},
 						required: ["startDate", "endDate"],
 					},

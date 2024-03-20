@@ -15,7 +15,7 @@ export async function getApiInfo(tsFilePath: string): Promise<ApiInfo> {
 	return apiInfo;
 }
 
-export async function convertTsToYaml(apiInfo: ApiInfo, outputDir: string = "./docs", version: string) {
+export async function convertTsToYaml(apiInfo: ApiInfo, version: string, outputDir: string) {
 	try {
 		apiInfo.oasDocs.info.version = version;
 

@@ -2,31 +2,49 @@ import * as path from "path";
 import { convertTsToYaml, getApiInfo } from ".";
 import API_CONFIGS from "../configs/api.configs";
 
-async function main() {
-	const currentWorkingDir = process.cwd();
+const versionPattern = /^(main|\d+\.\d+\.\d+)$/;
 
-	// 커맨드 라인 인자로부터 받은 TypeScript 파일 경로의 유효성을 검사합니다.
-	const tsFilePathInput = process.argv[2];
-	const version = process.argv[3] ? process.argv[3] : API_CONFIGS.version; // 버전을 입력하지 않은 경우 기본값을 사용합니다.
-	const versionPattern = /^[0-9]+\.[0-9]+\.[0-9]+$/;
-
+function validateInputs(tsFilePathInput?: string, versionInput?: string): [string, string] {
 	if (!tsFilePathInput) {
-		console.error("Error: A TypeScript file path is required as the first argument.");
-		process.exit(1);
+		throw new Error("Error: A TypeScript file path and version are required as the first and second arguments.");
 	}
 
-	if (!versionPattern.test(version)) {
-		console.error("Error: The version must be in the format of x.x.x.");
-		process.exit(1);
+	if (!versionInput) {
+		throw new Error("Error: A version is required as the second argument.");
 	}
 
-	const tsFilePath = path.resolve(currentWorkingDir, tsFilePathInput);
+	if (!versionPattern.test(versionInput)) {
+		throw new Error("Error: The version must be in the format of x.x.x.");
+	}
+	return [tsFilePathInput, versionInput];
+}
 
-	const apiInfo = await getApiInfo(tsFilePath);
+async function main() {
+	try {
+		const currentWorkingDir = process.cwd();
+		const [tsFilePathInput, versionInput] = validateInputs(process.argv[2], process.argv[3]);
 
-	const outputDir = path.resolve(currentWorkingDir, "./docs");
+		const tsFilePath = path.resolve(currentWorkingDir, tsFilePathInput);
+		const apiInfo = await getApiInfo(tsFilePath);
+		const outputDir = path.resolve(currentWorkingDir, "./docs");
 
-	convertTsToYaml(apiInfo, outputDir, version);
+		let version = versionInput;
+
+		if (version === "main") {
+			version = API_CONFIGS.version;
+		}
+
+		// 비동기 함수 실행 결과를 기다림
+		await convertTsToYaml(apiInfo, version, outputDir);
+		console.log("API documentation has been successfully generated.");
+	} catch (err) {
+		if (err instanceof Error) {
+			console.error("Error processing the file:", err.message);
+		} else {
+			console.error("An unknown error occurred:", err);
+		}
+		process.exit(1);
+	}
 }
 
 main();

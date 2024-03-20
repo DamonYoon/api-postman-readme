@@ -240,15 +240,13 @@ decodedLog는 logs에 포함되어 있기 때문에 withDecode가 true라도 wit
 
 	export const startDateTime: OpenAPIV3.SchemaObject = {
 		type: "string",
-		description: `조회 시작 날짜와 시간을 지정하는 파라미터입니다. 시작 일시로부터 종료 일시까지 최대 100시간까지의 데이터를 조회할 수 있습니다. YYYY-MM-DD-HH 타입을 지원합니다.`,
-		default: "2024-01-01-00",
+		description: `조회 시작 날짜와 시간을 지정하는 파라미터입니다. 시작 일시로부터 종료 일시까지 최대 2400시간까지의 데이터를 조회할 수 있습니다. YYYY-MM-DD-HH 타입을 지원합니다.`,
 		pattern: Patterns.yyyymmddhh,
 	};
 
 	export const endDateTime: OpenAPIV3.SchemaObject = {
 		type: "string",
-		description: `조회 종료 날짜와 시간을 지정하는 파라미터입니다. 시작 일시로부터 종료 일시까지 최대 100시간까지의 데이터를 조회할 수 있습니다. YYYY-MM-DD-HH 타입을 지원합니다.`,
-		default: "2024-02-01-00",
+		description: `조회 종료 날짜와 시간을 지정하는 파라미터입니다. 시작 일시로부터 종료 일시까지 최대 2400시간까지의 데이터를 조회할 수 있습니다. YYYY-MM-DD-HH 타입을 지원합니다.`,
 		pattern: Patterns.yyyymmddhh,
 	};
 }
