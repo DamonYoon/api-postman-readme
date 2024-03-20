@@ -15,11 +15,11 @@ export async function getApiDefinition(tsFilePath: string): Promise<ApiDefinitio
 	return tsData;
 }
 
-export async function convertTsToYaml(tsData: ApiDefinition, tsFilePath: string, outputDir: string = "./docs") {
+export async function convertTsToYaml(tsData: ApiDefinition, outputDir: string = "./docs") {
 	try {
 		const yamlData = yaml.dump(tsData.oasDocs); // yaml로 변환
 
-		const baseFileName = tsData.fileName || path.basename(tsFilePath, path.extname(tsFilePath));
+		const baseFileName = tsData.fileName;
 		const outputPath = path.join(outputDir, `${baseFileName}.yaml`);
 
 		await fs.writeFile(outputPath, yamlData, "utf8");

@@ -20,7 +20,7 @@ async function main() {
 		? path.resolve(currentWorkingDir, process.argv[3])
 		: path.resolve(currentWorkingDir, "./docs");
 
-	convertTsToYaml(tsData, tsFilePath, outputDir);
+	convertTsToYaml(tsData, outputDir);
 }
 
 main();

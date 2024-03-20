@@ -8,7 +8,7 @@ import statsPaths from "./stats";
 import { ApiDefinition } from "../../types";
 import API_CONFIGS from "../../configs/api.configs";
 
-const { category, fileName, id } = API_CONFIGS.webhook;
+const { category, fileName, id } = API_CONFIGS.web3Data;
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",

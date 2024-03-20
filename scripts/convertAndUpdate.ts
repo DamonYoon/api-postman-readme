@@ -22,7 +22,7 @@ async function main() {
 			? path.resolve(currentWorkingDir, process.argv[3])
 			: path.resolve(currentWorkingDir, "./docs");
 
-		const outputPath = await convertTsToYaml(tsData, tsFilePath, outputDir);
+		const outputPath = await convertTsToYaml(tsData, outputDir);
 		await updateToReadme(outputPath, tsData.id);
 	} catch (err) {
 		// 에러 객체가 Error 인스턴스인지 확인
