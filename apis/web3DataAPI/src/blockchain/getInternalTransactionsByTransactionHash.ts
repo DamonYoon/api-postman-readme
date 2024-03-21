@@ -4,7 +4,7 @@ import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 
-const title = "Get Internal Transactions By Transaction Hash";
+const summary = "Get Internal Transactions By Transaction Hash";
 const endpoint = "getInternalTransactionsByTransactionHash";
 const isPublic = true;
 const tags = ["Blockchain API"];
@@ -22,7 +22,7 @@ const info: OpenAPIV3.PathItemObject = {
 > 🚧 사용 시 네트워크를 확인하세요!
 >
 > 이 API는 오직 Ethereum Mainnet에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -70,7 +70,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

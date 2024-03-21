@@ -4,7 +4,7 @@ import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 
-const title = "Search NFT Contract Metadata By Keyword";
+const summary = "Search NFT Contract Metadata By Keyword";
 const endpoint = "searchNftContractMetadataByKeyword";
 const isPublic = true;
 const tags = ["NFT API"];
@@ -18,7 +18,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description: "NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -58,7 +58,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

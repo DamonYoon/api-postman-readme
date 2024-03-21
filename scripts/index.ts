@@ -4,7 +4,22 @@ import * as fs from "fs/promises";
 import { exec } from "child_process";
 import dotenv from "dotenv";
 import { ApiInfo } from "../types";
+import API_CONFIGS from "../configs/api.configs";
+import { README_CONFIGS } from "../configs/readme.config";
 dotenv.config();
+
+export function getVersionAndId(title: string) {
+	const { version } = API_CONFIGS;
+	const apiConfig = README_CONFIGS.find((config) => config.version === version)?.apiDefinitions.find(
+		(config) => config.title === title
+	);
+	if (!apiConfig) {
+		throw new Error("API definitions not found. Please check the version or title of the API.");
+	}
+	const { id } = apiConfig;
+
+	return { version, id };
+}
 
 export async function getApiInfo(tsFilePath: string): Promise<ApiInfo> {
 	if (!tsFilePath.endsWith(".ts")) {

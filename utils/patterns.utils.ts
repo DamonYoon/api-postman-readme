@@ -27,4 +27,11 @@ export const Patterns = {
 	// Pagination
 	page: "^(?:[1-9][0-9]?|100)$", //	1 이상 100 이하의 숫자
 	rpp: "^(?:[1-9][0-9]{0,2}?|1000)$", // 1 이상 1000 이하의 숫자
+
+	// Aptos
+	Aptos: {
+		address: "^0[xX]?[0-9a-fA-F]{0,64}$", // 0x로 시작하는 최대 64자리 16진수 문자열, 0x는 생략 가능
+		resourceType: "^0x[0-9a-zA-Z:_<>]+$",
+		primitiveType: "^(bool|u8|u64|u128|address|signer|vector<.+>|0x[0-9a-zA-Z:_<, >]+)$",
+	},
 };

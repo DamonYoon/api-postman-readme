@@ -4,7 +4,7 @@ import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 
-const title = "Get Daily Transactions Stats";
+const summary = "Get Daily Transactions Stats";
 const endpoint = "getDailyTransactionsStats";
 const isPublic = true;
 const tags = ["Statistics API"];
@@ -26,7 +26,7 @@ const info: OpenAPIV3.PathItemObject = {
 > 🚧 사용 시 네트워크를 확인하세요!
 >
 > 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -60,7 +60,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

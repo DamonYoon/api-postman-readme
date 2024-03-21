@@ -5,7 +5,7 @@ import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const title = "Search Events";
+const summary = "Search Events";
 const endpoint = "searchEvents";
 const isPublic = true;
 const tags = ["Blockchain API"];
@@ -19,7 +19,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description: `지정한 범위 내의 특정 event를 검색합니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -68,7 +68,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

@@ -5,7 +5,7 @@ import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const title = "Get Token Prices by Contracts";
+const summary = "Get Token Prices by Contracts";
 const endpoint = "getTokenPricesByContracts";
 const isPublic = true;
 const tags = ["Token API"];
@@ -19,7 +19,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description: `특정 ERC20 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -76,7 +76,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

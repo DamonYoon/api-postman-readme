@@ -3,7 +3,7 @@ import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
 
-const title = "Delete Webhook";
+const summary = "Delete Webhook";
 const endpoint = "deleteWebhook";
 const isPublic = true;
 
@@ -16,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags: ["Webhook API"],
 		description: `Webhook을 삭제하기 위한 API입니다. Webhook을 삭제하면 해당 Webhook의 구독이 취소되며, 더 이상 이벤트를 받지 않습니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network, Requests.subscriptionId],
 		responses: {
@@ -39,7 +39,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

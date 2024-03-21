@@ -4,7 +4,7 @@ import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const title = "Is Contract";
+const summary = "Is Contract";
 const endpoint = "isContract";
 const isPublic = true;
 const tags = ["Blockchain API"];
@@ -18,7 +18,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description: `입력된 Address가 컨트랙트 주소인지 아닌지 조회합니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -66,7 +66,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

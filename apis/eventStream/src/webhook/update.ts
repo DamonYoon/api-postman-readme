@@ -3,7 +3,7 @@ import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
 
-const title = "Update Webhook";
+const summary = "Update Webhook";
 const endpoint = "updateWebhook";
 const isPublic = true;
 
@@ -16,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags: ["Webhook API"],
 		description: `Webhook의 구독 조건(condition)을 변경하거나 Webhook을 활성화, 또는 비활성화 할 수 있습니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network, Requests.subscriptionId],
 		requestBody: {
@@ -56,7 +56,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

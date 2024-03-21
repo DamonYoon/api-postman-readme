@@ -4,18 +4,13 @@ import webhookCreate from "./src/webhook/create";
 import webhookGet from "./src/webhook/get";
 import webhookUpdate from "./src/webhook/update";
 import webhookDelete from "./src/webhook/delete";
-import API_CONFIGS from "../../configs/api.configs";
 import { ApiInfo } from "../../types";
 import API_DOCS_TITLES from "../../utils/titles.utils";
+import { getVersionAndId } from "../../scripts";
 
 const title = API_DOCS_TITLES.EVENT_STREAM;
 
-const { version } = API_CONFIGS;
-const apiConfig = API_CONFIGS.apiDefinitions.find((config) => config.title === title);
-if (!apiConfig) {
-	throw new Error("API definitions not found. Please check the title of the API.");
-}
-const { id } = apiConfig;
+const { version, id } = getVersionAndId(title);
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",

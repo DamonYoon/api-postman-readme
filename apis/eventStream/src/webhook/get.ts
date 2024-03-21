@@ -3,7 +3,7 @@ import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
 
-const title = "Get Webhook";
+const summary = "Get Webhook";
 const endpoint = "getWebhook";
 const isPublic = true;
 
@@ -16,7 +16,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags: ["Webhook API"],
 		description: `Webhook의 Subscription ID로 Webhook 정보를 조회하기 위한 API입니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network, Requests.subscriptionIdQuery],
 		responses: {
@@ -66,7 +66,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

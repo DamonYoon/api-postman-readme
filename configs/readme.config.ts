@@ -13,6 +13,10 @@ export const README_CONFIGS: ReadmeConfig[] = [
 				title: API_DOCS_TITLES.EVENT_STREAM,
 				id: "65fa8c319a046700577794d4",
 			},
+			{
+				title: API_DOCS_TITLES.NODE_API,
+				id: "65fa8c319a046700577794d5",
+			},
 		],
 	},
 	{
@@ -25,6 +29,10 @@ export const README_CONFIGS: ReadmeConfig[] = [
 			{
 				title: API_DOCS_TITLES.EVENT_STREAM,
 				id: "65f9435dc3bc24003cc4d2b3",
+			},
+			{
+				title: API_DOCS_TITLES.NODE_API,
+				id: "65f9435dc3bc24003cc4d2b4",
 			},
 		],
 	},

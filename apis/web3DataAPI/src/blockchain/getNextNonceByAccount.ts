@@ -5,7 +5,7 @@ import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 import { Patterns } from "../../../../utils/patterns.utils";
 
-const title = "Get Next Nonce by Account";
+const summary = "Get Next Nonce by Account";
 const endpoint = "getNextNonceByAccount";
 const isPublic = true;
 const tags = ["Blockchain API"];
@@ -19,7 +19,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description: `특정 Account의 다음 nonce를 조회합니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -65,7 +65,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

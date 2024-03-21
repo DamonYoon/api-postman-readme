@@ -5,7 +5,7 @@ import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const title = "Get Native Balance by Account";
+const summary = "Get Native Balance by Account";
 const endpoint = "getNativeBalanceByAccount";
 const isPublic = true;
 const tags = ["Token API"];
@@ -20,7 +20,7 @@ const info: OpenAPIV3.PathItemObject = {
 		tags,
 		description:
 			"특정 Account가 보유한 ERC20 토큰의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰 컨트랙트의 메타데이터가 포함됩니다.",
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -60,7 +60,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

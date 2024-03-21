@@ -4,7 +4,7 @@ import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const title = "Get Token Allowance";
+const summary = "Get Token Allowance";
 const endpoint = "getTokenAllowance";
 const isPublic = true;
 const tags = ["Token API"];
@@ -18,7 +18,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description: "Spender에게 Owner가 Approve한 Token의 수량을 조회합니다.",
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -75,7 +75,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

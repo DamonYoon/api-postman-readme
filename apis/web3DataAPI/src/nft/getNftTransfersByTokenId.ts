@@ -5,7 +5,7 @@ import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const title = "Get NFT Transfers By TokenId";
+const summary = "Get NFT Transfers By TokenId";
 const endpoint = "getNftTransfersByTokenId";
 const isPublic = true;
 const tags = ["NFT API"];
@@ -20,7 +20,7 @@ const info: OpenAPIV3.PathItemObject = {
 		tags,
 		description:
 			"특정 NFT가 전송된 목록을 조회합니다. 조회 결과에는 컨트랙트 메타데이터와 NFT 메타데이터가 포함됩니다.",
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -90,7 +90,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,

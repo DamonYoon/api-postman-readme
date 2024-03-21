@@ -4,7 +4,7 @@ import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const title = "Sync Nft Metadata";
+const summary = "Sync Nft Metadata";
 const endpoint = "syncNftMetadata";
 const isPublic = true;
 const tags = ["NFT API"];
@@ -18,7 +18,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description: `특정 NFT의 Metadata를 동기화합니다. 최대 100개의 NFT를 동기화할 수 있으며, 동기화까지 최대 10초가 소요될 수 있습니다.`,
-		summary: title,
+		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],
 		requestBody: {
@@ -83,7 +83,7 @@ const info: OpenAPIV3.PathItemObject = {
 };
 
 export default {
-	title,
+	summary,
 	endpoint,
 	isPublic,
 	info,
