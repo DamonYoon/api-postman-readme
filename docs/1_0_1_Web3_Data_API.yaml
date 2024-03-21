@@ -8757,7 +8757,22 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: *ref_39
+              schema: &ref_40
+                type: object
+                required:
+                  - date
+                  - count
+                properties:
+                  date:
+                    type: string
+                    description: >-
+                      날짜와 시간을 나타내는 필드입니다. YYYY-MM-DD-HH 형식으로 제공됩니다. (e.g.,
+                      2021-01-01-00)
+                    pattern: >-
+                      ^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])-([01][0-9]|2[0-3])$
+                  count:
+                    type: integer
+                    description: 시간별 거래 수를 나타내는 필드입니다.
               example:
                 count: 24
                 items:
@@ -8866,7 +8881,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: *ref_39
+              schema: *ref_40
               example:
                 count: 25
                 items:
@@ -8969,7 +8984,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: *ref_39
+              schema: *ref_40
               example:
                 count: 10
                 items:
@@ -9050,7 +9065,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: *ref_39
+              schema: *ref_40
               example:
                 count: 25
                 items:

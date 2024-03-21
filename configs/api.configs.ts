@@ -1,6 +1,6 @@
 import { README_CONFIGS } from "./readme.config";
 
-const MAIN_VERSION = "1.0.2";
+const MAIN_VERSION = "1.0.1";
 
 const apiDefinitions = README_CONFIGS.find((config) => config.version === MAIN_VERSION)?.apiDefinitions;
 

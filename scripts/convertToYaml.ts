@@ -34,7 +34,6 @@ async function main() {
 			version = API_CONFIGS.version;
 		}
 
-		// 비동기 함수 실행 결과를 기다림
 		await convertTsToYaml(apiInfo, version, outputDir);
 		console.log("API documentation has been successfully generated.");
 	} catch (err) {
