@@ -47,7 +47,7 @@ const info: OpenAPIV3.PathItemObject = {
 		},
 		responses: {
 			"200": Responses.Success200({
-				schema: DataDomains.DailyStats,
+				schema: DataDomains.HourlyStats,
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,
