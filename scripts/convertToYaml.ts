@@ -13,10 +13,13 @@ function validateInputs(tsFilePathInput?: string, versionInput?: string): [strin
 		throw new Error("Error: A version is required as the second argument.");
 	}
 
-	if (!versionPattern.test(versionInput)) {
-		throw new Error("Error: The version must be in the format of x.x.x.");
+	const effectiveVersion = versionInput === "main" ? API_CONFIGS.version : versionInput;
+
+	if (!versionPattern.test(effectiveVersion)) {
+		throw new Error("The version must be 'main' or in the format of x.x.x.");
 	}
-	return [tsFilePathInput, versionInput];
+
+	return [tsFilePathInput, effectiveVersion];
 }
 
 async function main() {
@@ -28,13 +31,7 @@ async function main() {
 		const apiInfo = await getApiInfo(tsFilePath);
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
 
-		let version = versionInput;
-
-		if (version === "main") {
-			version = API_CONFIGS.version;
-		}
-
-		await convertTsToYaml(apiInfo, version, outputDir);
+		await convertTsToYaml(apiInfo, versionInput, outputDir);
 		console.log("API documentation has been successfully generated.");
 	} catch (err) {
 		if (err instanceof Error) {

@@ -18,6 +18,16 @@ const oasDocs: OpenAPIV3.Document = {
 	servers: [
 		{
 			url: NODE_API_BASE_URL,
+			variables: {
+				protocol: {
+					enum: ["aptos"],
+					default: "aptos",
+				},
+				network: {
+					enum: ["mainnet", "testnet"],
+					default: "mainnet",
+				},
+			},
 		},
 	],
 	components: {

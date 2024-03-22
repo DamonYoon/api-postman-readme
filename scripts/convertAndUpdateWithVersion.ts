@@ -1,16 +1,17 @@
 import * as path from "path";
 import { convertTsToYaml, getApiInfo, updateToReadme } from ".";
-import dotenv from "dotenv";
 import { README_CONFIGS } from "../configs/readme.config";
 import API_CONFIGS from "../configs/api.configs";
 
-dotenv.config();
-
 const versionPattern = /^(main|\d+\.\d+\.\d+)$/;
 
-function validateInputs(tsFilePathInput?: string, versionInput: string = "main"): [string, string] {
+function validateInputs(tsFilePathInput?: string, versionInput?: string): [string, string] {
 	if (!tsFilePathInput) {
 		throw new Error("A TypeScript file path is required as the first argument.");
+	}
+
+	if (!versionInput) {
+		throw new Error("A version is required as the second argument.");
 	}
 
 	const effectiveVersion = versionInput === "main" ? API_CONFIGS.version : versionInput;
@@ -41,10 +42,11 @@ async function main() {
 
 		const tsFilePath = path.resolve(currentWorkingDir, tsFilePathInput);
 		const apiInfo = await getApiInfo(tsFilePath);
-		const apiDefinitionId = findApiDefinitionId(version, apiInfo.title);
 
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
 		const outputPath = await convertTsToYaml(apiInfo, version, outputDir);
+
+		const apiDefinitionId = findApiDefinitionId(version, apiInfo.title);
 		await updateToReadme(outputPath, apiDefinitionId);
 
 		console.log("Documentation has been successfully updated.");

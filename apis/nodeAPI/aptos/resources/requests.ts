@@ -46,7 +46,7 @@ namespace Requests {
 			schema: {
 				type: "string",
 				pattern: Patterns.Aptos.resourceType,
-				default: "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
+				default: "0x1::account::Account",
 			},
 			description: "조회하고자 하는 대상 리소스의 타입.",
 		};

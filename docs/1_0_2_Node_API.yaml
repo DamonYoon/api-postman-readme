@@ -3,7 +3,17 @@ info:
   title: Node API
   version: 1.0.2
 servers:
-  - url: https://
+  - url: https://{protocol}-{network}.nodit.io/
+    variables:
+      protocol:
+        enum:
+          - aptos
+        default: aptos
+      network:
+        enum:
+          - mainnet
+          - testnet
+        default: mainnet
 components:
   securitySchemes:
     api_key:
@@ -11,39 +21,19 @@ components:
       name: X-API-KEY
       in: header
 paths:
-  '{protocol}-{network}.nodit.io/v1/accounts/{address}':
+  /v1/accounts/{address}:
     get:
       security:
         - api_key: []
       tags:
         - Aptos
       description: >-
-        계정 주소에 대한 인증 키와 sequence number를 반환합니다. 원장의 버전을 지정할 수 있으며 원장의 버전이 지정되지
-        않은 경우, 최신 원장의 버전을 가져옵니다.
+        계정 주소에 대한 인증 키와 시퀀스 넘버를 반환합니다. 원장의 버전을 지정할 수 있으며 원장의 버전이 지정되지 않은 경우, 최신
+        원장의 버전을 가져옵니다.
       summary: Get account
       operationId: aptos_getAccount
       parameters:
         - &ref_0
-          name: protocol
-          in: path
-          required: true
-          schema:
-            type: string
-            default: aptos
-          description: >-
-            조회 대상 Chain 프로토콜을 지정하기 위한 파라미터입니다. 지원되는 프로토콜에 대한 정보는 Supported
-            Chains 페이지를 참고하거나, Protocol 조회 API를 활용하세요.
-        - &ref_1
-          name: network
-          in: path
-          required: true
-          schema:
-            type: string
-            default: mainnet
-          description: >-
-            조회 대상 Chain 네트워크를 지정하기 위한 파라미터입니다. 프로토콜에 따라 지원되는 네트워크가 다를 수 있습니다.
-            지원되는 네트워크에 대한 정보는 Supported Chains 페이지를 참고하거나 Network 조회 API를 활용하세요.
-        - &ref_2
           name: address
           in: path
           required: true
@@ -52,7 +42,7 @@ paths:
             pattern: ^0[xX]?[0-9a-fA-F]{0,64}$
             default: '0x1'
           description: 조회하고자 하는 대상 계정의 주소. hexadecimal prefix가 없는 계정 주소도 검색 가능합니다.
-        - &ref_3
+        - &ref_1
           name: ledger_version
           in: query
           required: false
@@ -130,7 +120,7 @@ paths:
               schema:
                 type: string
               required: true
-        '400': &ref_4
+        '400': &ref_2
           description: Bad Request
           content:
             application/json:
@@ -163,7 +153,7 @@ paths:
                     description: >-
                       A code providing VM error details when submitting
                       transactions to the VM.
-  '{protocol}-{network}.nodit.io/v1/accounts/{address}/modules/{module_name}':
+  /v1/accounts/{address}/module/{module_name}:
     get:
       security:
         - api_key: []
@@ -174,8 +164,6 @@ paths:
       operationId: aptos_getAccountModule
       parameters:
         - *ref_0
-        - *ref_1
-        - *ref_2
         - name: module_name
           in: path
           required: true
@@ -183,13 +171,13 @@ paths:
             type: string
             default: coin
           description: 조회하고자 하는 특정 모듈의 이름.
-        - *ref_3
+        - *ref_1
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
-              schema: &ref_5
+              schema: &ref_3
                 type: object
                 description: A Move module
                 required:
@@ -376,8 +364,8 @@ paths:
               schema:
                 type: string
               required: true
-        '400': *ref_4
-  '{protocol}-{network}.nodit.io/v1/accounts/{address}/modules':
+        '400': *ref_2
+  /v1/accounts/{address}/modules:
     get:
       security:
         - api_key: []
@@ -389,16 +377,14 @@ paths:
       parameters:
         - *ref_0
         - *ref_1
-        - *ref_2
-        - *ref_3
-        - &ref_6
+        - &ref_4
           name: limit
           in: query
           required: false
           schema:
             type: integer
           description: 조회할 최대 데이터 수
-        - &ref_7
+        - &ref_5
           name: start
           in: query
           required: false
@@ -414,7 +400,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: *ref_5
+                items: *ref_3
               example:
                 - bytecode: >-
                     0xa11ceb0b0600000005010002020218071a30084a200a6a1e00000001000000020000000300000004000000050000000600000561737365740442555344045553444304555344440455534454045742544304574554480b64756d6d795f6669656c64f22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa00020107010102010701020201070103020107010402010701050201070100
@@ -938,8 +924,8 @@ paths:
               schema:
                 type: string
               required: true
-        '400': *ref_4
-  '{protocol}-{network}.nodit.io/v1/accounts/{address}/resources/{resource_type}':
+        '400': *ref_2
+  /v1/accounts/{address}/resource/{resource_type}:
     get:
       security:
         - api_key: []
@@ -952,23 +938,21 @@ paths:
       operationId: aptos_getAccountResource
       parameters:
         - *ref_0
-        - *ref_1
-        - *ref_2
         - name: resource_type
           in: path
           required: true
           schema:
             type: string
             pattern: ^0x[0-9a-zA-Z:_<>]+$
-            default: 0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>
+            default: 0x1::account::Account
           description: 조회하고자 하는 대상 리소스의 타입.
-        - *ref_3
+        - *ref_1
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
-              schema: &ref_8
+              schema: &ref_6
                 type: object
                 description: A resource of the account
                 required:
@@ -1054,8 +1038,8 @@ paths:
               schema:
                 type: string
               required: true
-        '400': *ref_4
-  '{protocol}-{network}.nodit.io/v1/accounts/{address}/resources':
+        '400': *ref_2
+  /v1/accounts/{address}/resources:
     get:
       security:
         - api_key: []
@@ -1069,10 +1053,8 @@ paths:
       parameters:
         - *ref_0
         - *ref_1
-        - *ref_2
-        - *ref_3
-        - *ref_6
-        - *ref_7
+        - *ref_4
+        - *ref_5
       responses:
         '200':
           description: Successful Response
@@ -1080,7 +1062,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: *ref_8
+                items: *ref_6
               example:
                 - type: 0x1::account::Account
                   data:
@@ -1168,4 +1150,4 @@ paths:
               schema:
                 type: string
               required: true
-        '400': *ref_4
+        '400': *ref_2

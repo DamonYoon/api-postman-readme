@@ -19,8 +19,6 @@ const info: OpenAPIV3.PathItemObject = {
 		summary,
 		operationId,
 		parameters: [
-			Requests.PathParams.protocol,
-			Requests.PathParams.network,
 			Requests.PathParams.address,
 			Requests.QueryParams.ledgerVersion,
 			Requests.QueryParams.limit,

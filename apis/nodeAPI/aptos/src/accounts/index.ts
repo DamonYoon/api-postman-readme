@@ -9,9 +9,9 @@ const url = `/v1/accounts`;
 
 const paths: OpenAPIV3.PathsObject = {
 	[`${url}/{address}`]: getAccount,
-	[`${url}/{address}/modules/{module_name}`]: getAccountModule,
+	[`${url}/{address}/module/{module_name}`]: getAccountModule,
 	[`${url}/{address}/modules`]: getAccountModules,
-	[`${url}/{address}/resources/{resource_type}`]: getAccountResource,
+	[`${url}/{address}/resource/{resource_type}`]: getAccountResource,
 	[`${url}/{address}/resources`]: getAccountResources,
 };
 

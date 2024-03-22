@@ -15,15 +15,10 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Aptos"],
-		description: `계정 주소에 대한 인증 키와 sequence number를 반환합니다. 원장의 버전을 지정할 수 있으며 원장의 버전이 지정되지 않은 경우, 최신 원장의 버전을 가져옵니다.`,
+		description: `계정 주소에 대한 인증 키와 시퀀스 넘버를 반환합니다. 원장의 버전을 지정할 수 있으며 원장의 버전이 지정되지 않은 경우, 최신 원장의 버전을 가져옵니다.`,
 		summary,
 		operationId,
-		parameters: [
-			Requests.PathParams.protocol,
-			Requests.PathParams.network,
-			Requests.PathParams.address,
-			Requests.QueryParams.ledgerVersion,
-		],
+		parameters: [Requests.PathParams.address, Requests.QueryParams.ledgerVersion],
 		responses: {
 			"200": Responses.Success200({
 				schema: {
