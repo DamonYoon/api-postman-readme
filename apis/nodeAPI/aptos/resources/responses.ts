@@ -1,13 +1,11 @@
 import { OpenAPIV3 } from "openapi-types";
 import { Patterns } from "../../../../utils/patterns.utils";
 
-interface Success200Interface {
-	(option: OpenAPIV3.MediaTypeObject): OpenAPIV3.ResponseObject;
-}
+type Success200Function = (option: OpenAPIV3.MediaTypeObject) => OpenAPIV3.ResponseObject;
 
 namespace Responses {
 	/* Success Response Objects */
-	export const Success200: Success200Interface = (option) => ({
+	export const Success200: Success200Function = (option) => ({
 		description: "Successful Response",
 		content: {
 			"application/json": option,
