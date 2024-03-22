@@ -15,7 +15,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Aptos"],
-		description: `특정 원장 버전에서 주어진 계정의 모든 Resource를 검색합니다. 원장 버전이 지정되지 않은 경우 최신 원장 버전이 사용됩니다.`,
+		description: `특정 원장 버전에서 주어진 계정의 모든 리소스를 검색합니다. 원장 버전이 지정되지 않은 경우 최신 원장 버전이 사용됩니다.`,
 		summary,
 		operationId,
 		parameters: [

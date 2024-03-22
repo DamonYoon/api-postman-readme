@@ -3,8 +3,8 @@ import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
 
-const summary = "Get account resource";
-const endpoint = "getAccountResource";
+const summary = "Get events by event handle";
+const endpoint = "getEventsByEventHandle";
 const operationId = "aptos_" + endpoint;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -15,13 +15,22 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Aptos"],
-		description: `특정 원장 버전에서 주어진 계정의 개별 리소스를 검색합니다. 원장 버전이 지정되지 않은 경우 최신 원장 버전이 사용됩니다.`,
+		description: `address와 creation_number를 이용해 특정 이벤트를 반환합니다.`,
 		summary,
 		operationId,
-		parameters: [Requests.PathParams.address, Requests.PathParams.resource_type, Requests.QueryParams.ledgerVersion],
+		parameters: [
+			Requests.PathParams.address,
+			Requests.PathParams.eventHandle,
+			Requests.PathParams.fieldName,
+			Requests.QueryParams.limit,
+			Requests.QueryParams.start,
+		],
 		responses: {
 			"200": Responses.Success200({
-				schema: Responses.Params.resource,
+				schema: {
+					type: "array",
+					items: Responses.Params.event,
+				},
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,

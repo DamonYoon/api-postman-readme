@@ -5,7 +5,7 @@ import getAccountModules from "./getAccountModules";
 import getAccountResource from "./getAccountResource";
 import getAccountResources from "./getAccountResources";
 
-const url = `/v1/accounts`;
+const url = `/accounts`;
 
 const paths: OpenAPIV3.PathsObject = {
 	[`${url}/{address}`]: getAccount,

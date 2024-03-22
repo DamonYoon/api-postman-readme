@@ -2,8 +2,12 @@ import { OpenAPIV3 } from "openapi-types";
 import { NODE_API_BASE_URL } from "../../../utils/urls.utils";
 import { ApiInfo } from "../../../types";
 import API_DOCS_TITLES from "../../../utils/titles.utils";
-import accountPaths from "./src/accounts";
 import { getVersionAndId } from "../../../scripts";
+import accountPaths from "./src/accounts";
+import blockPaths from "./src/blocks";
+import eventsPaths from "./src/events";
+
+const APTOS_VERSION = "v1";
 
 const title = API_DOCS_TITLES.NODE_API;
 
@@ -17,7 +21,7 @@ const oasDocs: OpenAPIV3.Document = {
 	},
 	servers: [
 		{
-			url: NODE_API_BASE_URL,
+			url: `${NODE_API_BASE_URL}/${APTOS_VERSION}`,
 			variables: {
 				protocol: {
 					enum: ["aptos"],
@@ -41,6 +45,8 @@ const oasDocs: OpenAPIV3.Document = {
 	},
 	paths: {
 		...accountPaths,
+		...blockPaths,
+		...eventsPaths,
 	},
 };
 

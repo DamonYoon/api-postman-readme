@@ -3,7 +3,7 @@ info:
   title: Node API
   version: 1.0.2
 servers:
-  - url: https://{protocol}-{network}.nodit.io/
+  - url: https://{protocol}-{network}.nodit.io//v1
     variables:
       protocol:
         enum:
@@ -21,7 +21,7 @@ components:
       name: X-API-KEY
       in: header
 paths:
-  /v1/accounts/{address}:
+  /accounts/{address}:
     get:
       security:
         - api_key: []
@@ -60,7 +60,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  sequence_number:
+                  sequence_number: &ref_17
                     type: integer
                     format: uint64
                     description: A string containing a 64-bit unsigned integer.
@@ -153,7 +153,7 @@ paths:
                     description: >-
                       A code providing VM error details when submitting
                       transactions to the VM.
-  /v1/accounts/{address}/module/{module_name}:
+  /accounts/{address}/module/{module_name}:
     get:
       security:
         - api_key: []
@@ -184,7 +184,7 @@ paths:
                   - bytecode
                   - abi
                 properties:
-                  bytecode:
+                  bytecode: &ref_7
                     type: string
                     description: >-
                       All bytes (Vec) data is represented as hex-encoded string
@@ -201,7 +201,7 @@ paths:
                       - exposed_functions
                       - fields
                     properties:
-                      address:
+                      address: &ref_16
                         type: string
                         description: An account address
                         pattern: ^0[xX]?[0-9a-fA-F]{0,64}$
@@ -212,7 +212,7 @@ paths:
                         items:
                           type: string
                           description: Friends of the module
-                      exposed_functions:
+                      exposed_functions: &ref_8
                         type: array
                         description: Public functions of the module
                         items:
@@ -365,7 +365,7 @@ paths:
                 type: string
               required: true
         '400': *ref_2
-  /v1/accounts/{address}/modules:
+  /accounts/{address}/modules:
     get:
       security:
         - api_key: []
@@ -925,15 +925,13 @@ paths:
                 type: string
               required: true
         '400': *ref_2
-  /v1/accounts/{address}/resource/{resource_type}:
+  /accounts/{address}/resource/{resource_type}:
     get:
       security:
         - api_key: []
       tags:
         - Aptos
-      description: >-
-        특정 원장 버전에서 주어진 계정의 개별 Resource를 검색합니다. 원장 버전이 지정되지 않은 경우 최신 원장 버전이
-        사용됩니다.
+      description: 특정 원장 버전에서 주어진 계정의 개별 리소스를 검색합니다. 원장 버전이 지정되지 않은 경우 최신 원장 버전이 사용됩니다.
       summary: Get account resource
       operationId: aptos_getAccountResource
       parameters:
@@ -1039,15 +1037,13 @@ paths:
                 type: string
               required: true
         '400': *ref_2
-  /v1/accounts/{address}/resources:
+  /accounts/{address}/resources:
     get:
       security:
         - api_key: []
       tags:
         - Aptos
-      description: >-
-        특정 원장 버전에서 주어진 계정의 모든 Resource를 검색합니다. 원장 버전이 지정되지 않은 경우 최신 원장 버전이
-        사용됩니다.
+      description: 특정 원장 버전에서 주어진 계정의 모든 리소스를 검색합니다. 원장 버전이 지정되지 않은 경우 최신 원장 버전이 사용됩니다.
       summary: Get account resources
       operationId: aptos_getAccountResources
       parameters:
@@ -1109,6 +1105,1400 @@ paths:
                           addr: >-
                             0xf92bc956b9e25f38a2e4829b58f03ca9724233985cdda3f818bc3e62d6ed7d9c
                           creation_num: '3'
+          headers:
+            X-APTOS-BLOCK-HEIGHT:
+              description: Current block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CHAIN-ID:
+              description: Chain ID of the current chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-EPOCH:
+              description: Current epoch of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-OLDEST-VERSION:
+              description: Oldest non-pruned ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-TIMESTAMPUSEC:
+              description: Current timestamp of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-VERSION:
+              description: Current ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-OLDEST-BLOCK-HEIGHT:
+              description: Oldest non-pruned block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CURSOR:
+              description: Cursor for the next page
+              schema:
+                type: string
+              required: true
+        '400': *ref_2
+  /blocks/by_height/{block_height}:
+    get:
+      security:
+        - api_key: []
+      tags:
+        - Aptos
+      description: >-
+        블록 번호를 이용하여 해당 블록에 대한 정보와 트랜잭션을 조회할 수 있습니다. 트랜잭션은 default 트랜잭션 사이즈로 제한이
+        있으며 만약 모든 트랜잭션이 존재하지 않는 경우, 유저가 get Transaction API를 이용하여 나머지 트랜잭션을
+        Query해야 합니다. 또한 block이 pruned 된 경우, 410 에러를 반환합니다.
+      summary: Get blocks by height
+      operationId: aptos_getBlocksByHeight
+      parameters:
+        - name: block_height
+          in: path
+          required: true
+          schema:
+            type: integer
+            default: 160155267
+          description: 조회하고자 하는 블록의 번호.
+        - &ref_25
+          name: with_transactions
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: >-
+            조회할 블록의 데이터에 트랜잭션에 대한 데이터 포함 여부를 확인하는 파라미터. true로 설정 시 해당 블록 안에 있는
+            모든 트랜잭션에 대한 데이터를 포함합니다.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items: &ref_26
+                  type: object
+                  description: >-
+                    This contains the information about a transactions along
+                    with associated transactions if requested
+                  required:
+                    - block_height
+                    - block_hash
+                    - block_timestamp
+                    - first_version
+                    - last_version
+                  properties:
+                    block_height:
+                      type: string
+                      format: uint64
+                      description: >-
+                        The height of the block. The format is a 64-bit unsigned
+                        integer.
+                    block_hash:
+                      type: string
+                      description: The hash of the block
+                    block_timestamp:
+                      type: string
+                      format: uint64
+                      description: >-
+                        The timestamp of the block. The format is a 64-bit
+                        unsigned integer.
+                    first_version:
+                      type: string
+                      format: uint64
+                      description: >-
+                        The first version of the block. The format is a 64-bit
+                        unsigned integer.
+                    last_version:
+                      type: string
+                      format: uint64
+                      description: >-
+                        The last version of the block. The format is a 64-bit
+                        unsigned integer.
+                    transactions:
+                      type: array
+                      description: The transactions in the block.
+                      items:
+                        type: string
+                        description: The hash of the transaction
+                        oneOf:
+                          - type: object
+                            description: A transaction
+                            required: []
+                            properties:
+                              type:
+                                type: string
+                                description: The type of the transaction
+                                example: pending_transaction
+                              hash:
+                                type: string
+                                description: The hash of the transaction
+                              sender:
+                                type: string
+                                description: >-
+                                  The sender of the transaction. The format is a
+                                  hex encoded 32 byte Aptos account address.
+                              sequence_number:
+                                type: string
+                                format: uint64
+                                description: >-
+                                  The sequence number of the transaction. The
+                                  format is a 64-bit unsigned integer.
+                              max_gas_amount:
+                                type: string
+                                format: uint64
+                                description: >-
+                                  The maximum gas amount of the transaction. The
+                                  format is a 64-bit unsigned integer.
+                              gas_unit_price:
+                                type: string
+                                format: uint64
+                                description: >-
+                                  The gas unit price of the transaction. The
+                                  format is a 64-bit unsigned integer.
+                              expiration_timestamp_secs:
+                                type: string
+                                format: uint64
+                                description: >-
+                                  The expiration timestamp of the transaction.
+                                  The format is a 64-bit unsigned integer.
+                              payload:
+                                type: object
+                                oneOf:
+                                  - &ref_9
+                                    type: object
+                                    description: The payload of the entry function
+                                    required:
+                                      - type
+                                      - function
+                                      - type_arguments
+                                      - arguments
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the payload
+                                        example: entry_function_payload
+                                      function:
+                                        type: string
+                                        description: The function of the payload
+                                      type_arguments:
+                                        type: array
+                                        description: The type arguments of the payload
+                                        items:
+                                          type: string
+                                          pattern: >-
+                                            ^(bool|u8|u64|u128|address|signer|vector<.+>|0x[0-9a-zA-Z:_<,
+                                            >]+)$
+                                      arguments:
+                                        type: array
+                                        description: The arguments of the payload
+                                        items:
+                                          type: string
+                                  - &ref_18
+                                    type: object
+                                    description: The payload of the script
+                                    required:
+                                      - type
+                                      - code
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the payload
+                                        example: script_payload
+                                      code:
+                                        type: object
+                                        description: The code of the script
+                                        properties:
+                                          bytecode: *ref_7
+                                          abi: *ref_8
+                                  - &ref_19
+                                    type: object
+                                    description: The payload of the module bundle
+                                    required:
+                                      - type
+                                      - modules
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the payload
+                                        example: module_bundle_payload
+                                      modules:
+                                        type: array
+                                        items: *ref_3
+                                  - &ref_20
+                                    type: object
+                                    description: The payload of the multisig
+                                    required:
+                                      - type
+                                      - transactionPayload
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the payload
+                                        example: multisig_payload
+                                      transactionPayload: *ref_9
+                              signature:
+                                type: object
+                                description: The signature of the transaction
+                                oneOf:
+                                  - &ref_12
+                                    type: object
+                                    description: The Ed25519 signature
+                                    required:
+                                      - type
+                                      - public_key
+                                      - signature
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the signature
+                                        example: ed25519_signature
+                                      public_key: &ref_10
+                                        type: string
+                                        description: >-
+                                          All bytes (Vec) data is represented as
+                                          hex-encoded string prefixed with 0x and
+                                          fulfilled with two hex digits per byte.
+                                        pattern: ^0[xX][0-9a-fA-F]+$
+                                      signature: &ref_11
+                                        type: string
+                                        description: >-
+                                          All bytes (Vec) data is represented as
+                                          hex-encoded string prefixed with 0x and
+                                          fulfilled with two hex digits per byte.
+                                        pattern: ^0[xX][0-9a-fA-F]+$
+                                  - &ref_13
+                                    type: object
+                                    description: A Ed25519 multi-sig signature
+                                    required:
+                                      - type
+                                      - public_keys
+                                      - signatures
+                                      - threshold
+                                      - bitmap
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the signature
+                                        example: multi_ed25519_signature
+                                      public_keys:
+                                        type: array
+                                        description: >-
+                                          The public keys for the Ed25519
+                                          signature
+                                        items: *ref_10
+                                      signatures:
+                                        type: array
+                                        description: >-
+                                          Signature associated with the public
+                                          keys in the same order
+                                        items: *ref_11
+                                      threshold:
+                                        type: integer
+                                        description: >-
+                                          The number of signatures required for a
+                                          successful transaction
+                                      bitmap:
+                                        type: string
+                                        description: >-
+                                          All bytes (Vec) data is represented as
+                                          hex-encoded string prefixed with 0x and
+                                          fulfilled with two hex digits per byte
+                                        pattern: ^0[xX][0-9a-fA-F]+$
+                                  - &ref_21
+                                    type: object
+                                    description: A multi-agent signature
+                                    required:
+                                      - type
+                                      - signatures
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the signature
+                                        example: multi_agent_signature
+                                      sender:
+                                        type: object
+                                        description: The sender's signature
+                                        oneOf:
+                                          - *ref_12
+                                          - *ref_13
+                                          - &ref_14
+                                            type: object
+                                            description: A single key signature
+                                            required:
+                                              - type
+                                              - public_key
+                                              - signature
+                                            properties:
+                                              type:
+                                                type: string
+                                                description: The type of the signature
+                                                example: single_key_signature
+                                              public_key: *ref_10
+                                              signature: *ref_11
+                                          - &ref_15
+                                            type: object
+                                            description: A multi-key signature
+                                            required:
+                                              - type
+                                              - public_keys
+                                              - signatures
+                                            properties:
+                                              type:
+                                                type: string
+                                                description: The type of the signature
+                                                example: multi_key_signature
+                                              public_keys:
+                                                type: array
+                                                description: >-
+                                                  The public keys for the multi-key
+                                                  signature
+                                                items: *ref_10
+                                              signatures:
+                                                type: array
+                                                description: >-
+                                                  The signatures associated with the
+                                                  public keys
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    index:
+                                                      type: integer
+                                                      description: The index of the public key
+                                                    signature: *ref_11
+                                                    signatures_required:
+                                                      type: integer
+                                                      description: >-
+                                                        The number of signatures required for a
+                                                        successful transaction
+                                      secondary_signer_addresses:
+                                        type: array
+                                        description: The other involved parties' addresses
+                                        items:
+                                          type: string
+                                          pattern: ^0[xX]?[0-9a-fA-F]{0,64}$
+                                      secondary_signers:
+                                        type: array
+                                        description: The other involved parties' signatures
+                                        items:
+                                          type: object
+                                          oneOf:
+                                            - *ref_12
+                                            - *ref_13
+                                            - *ref_14
+                                            - *ref_15
+                                  - &ref_22
+                                    type: object
+                                    description: The fee payer of the transaction
+                                    required:
+                                      - type
+                                      - sender
+                                      - secondary_signer_addresses
+                                      - secondary_signers
+                                      - fee_payer_address
+                                      - fee_payer_signature
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: The type of the signature
+                                        example: fee_payer_signature
+                                      sender:
+                                        type: object
+                                        description: The sender's signature
+                                        oneOf:
+                                          - *ref_12
+                                          - *ref_13
+                                          - *ref_14
+                                          - *ref_15
+                                      secondary_signer_addresses:
+                                        type: array
+                                        description: The other involved parties' addresses
+                                        items:
+                                          type: string
+                                          pattern: ^0[xX]?[0-9a-fA-F]{0,64}$
+                                      secondary_signers:
+                                        type: array
+                                        description: The other involved parties' signatures
+                                        items:
+                                          type: object
+                                          oneOf:
+                                            - *ref_12
+                                            - *ref_13
+                                            - *ref_14
+                                            - *ref_15
+                                      fee_payer_address:
+                                        type: string
+                                        description: The address of the paying party
+                                        pattern: ^0[xX]?[0-9a-fA-F]{0,64}$
+                                      fee_payer_signature:
+                                        type: object
+                                        description: The signature of the fee payer
+                                        oneOf:
+                                          - *ref_12
+                                          - *ref_13
+                                          - *ref_14
+                                          - *ref_15
+                                  - &ref_23
+                                    type: object
+                                    description: The signature of the transaction
+                                    oneOf:
+                                      - *ref_12
+                                      - *ref_13
+                                      - *ref_14
+                                      - *ref_15
+                          - type: object
+                            description: A user transaction
+                            required:
+                              - type
+                              - version
+                              - hash
+                              - state_change_hash
+                              - event_checkpoint_hash
+                              - gas_used
+                              - success
+                              - vm_status
+                              - changes
+                              - sender
+                              - sequence_number
+                              - max_gas_amount
+                              - gas_unit_price
+                              - expiration_timestamp_secs
+                              - payload
+                              - signature
+                              - events
+                              - timestamp
+                            properties:
+                              type:
+                                type: string
+                                description: The type of the transaction
+                                example: user_transaction
+                              version:
+                                type: string
+                                description: The version of the transaction
+                              hash:
+                                type: string
+                                description: The hash of the transaction
+                              state_change_hash:
+                                type: string
+                                description: The state change hash of the transaction
+                              event_checkpoint_hash:
+                                type: string
+                                description: The event checkpoint hash of the transaction
+                              gas_used:
+                                type: string
+                                format: uint64
+                                description: The gas used by the transaction
+                              success:
+                                type: boolean
+                                description: The success of the transaction
+                              vm_status:
+                                type: string
+                                description: >-
+                                  The VM status of the transaction, can tell
+                                  useful information in a failure
+                              changes:
+                                type: array
+                                description: The changes of the transaction
+                                items:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                      description: The type of the change
+                                    address: *ref_16
+                                    state_key_hash:
+                                      type: string
+                                      description: The state key hash.
+                                    module:
+                                      type: string
+                                      description: >-
+                                        Move module id is a string
+                                        representation of Move module.
+                              sender: *ref_16
+                              sequence_number: *ref_17
+                              max_gas_amount:
+                                type: string
+                                format: uint64
+                                description: >-
+                                  The maximum gas amount of the transaction. The
+                                  format is a 64-bit unsigned integer.
+                              gas_unit_price:
+                                type: string
+                                format: uint64
+                                description: >-
+                                  The gas unit price of the transaction. The
+                                  format is a 64-bit unsigned integer.
+                              expiration_timestamp_secs:
+                                type: string
+                                format: uint64
+                                description: >-
+                                  The expiration timestamp of the transaction.
+                                  The format is a 64-bit unsigned integer.
+                              payload:
+                                type: object
+                                oneOf:
+                                  - *ref_9
+                                  - *ref_18
+                                  - *ref_19
+                                  - *ref_20
+                              signature:
+                                type: object
+                                description: The signature of the transaction
+                                oneOf:
+                                  - *ref_12
+                                  - *ref_13
+                                  - *ref_21
+                                  - *ref_22
+                                  - *ref_23
+                              events:
+                                type: array
+                                description: The events of the transaction
+                                items: &ref_24
+                                  type: object
+                                  properties:
+                                    guid:
+                                      type: object
+                                      properties:
+                                        creation_number:
+                                          type: string
+                                          format: uint64
+                                          description: The creation number of the event
+                                        account_address:
+                                          type: string
+                                          description: The account address of the event
+                                    sequenceNumber:
+                                      type: string
+                                      format: uint64
+                                      description: The sequence number of the event
+                                    type:
+                                      type: string
+                                      description: The type of the event
+                                    data:
+                                      type: object
+                                      description: The data of the event
+                              timestamp:
+                                type: string
+                                format: uint64
+                                description: The timestamp of the transaction
+                          - type: object
+                            description: A genesis transaction
+                            required:
+                              - type
+                              - version
+                              - hash
+                              - state_change_hash
+                              - event_root_hash
+                              - state_checkpoint_hash
+                              - gas_used
+                              - success
+                              - vm_status
+                              - accumulator_root_hash
+                              - changes
+                              - payload
+                              - events
+                            properties:
+                              type:
+                                type: string
+                                description: The type of the transaction
+                                example: genesis_transaction
+                              version:
+                                type: string
+                                description: The version of the transaction
+                              hash:
+                                type: string
+                                description: The hash of the transaction
+                              state_change_hash:
+                                type: string
+                                description: The state change hash of the transaction
+                              event_root_hash:
+                                type: string
+                                description: The event root hash of the transaction
+                              state_checkpoint_hash:
+                                type: string
+                                description: The state checkpoint hash of the transaction
+                              gas_used:
+                                type: string
+                                format: uint64
+                                description: The gas used by the transaction
+                              success:
+                                type: boolean
+                                description: The success of the transaction
+                              vm_status:
+                                type: string
+                                description: >-
+                                  The VM status of the transaction, can tell
+                                  useful information in a failure
+                              accumulator_root_hash:
+                                type: string
+                                description: The accumulator root hash of the transaction
+                              changes:
+                                type: array
+                                description: The changes of the transaction
+                                items:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                      description: The type of the change
+                                    address: *ref_16
+                                    state_key_hash:
+                                      type: string
+                                      description: The state key hash.
+                                    module:
+                                      type: string
+                                      description: >-
+                                        Move module id is a string
+                                        representation of Move module.
+                              payload:
+                                type: object
+                                oneOf:
+                                  - *ref_9
+                                  - *ref_18
+                                  - *ref_19
+                                  - *ref_20
+                              events:
+                                type: array
+                                description: The events of the transaction
+                                items: *ref_24
+                          - type: object
+                            required:
+                              - type
+                              - version
+                              - hash
+                              - state_change_hash
+                              - event_root_hash
+                              - state_checkpoint_hash
+                              - gas_used
+                              - success
+                              - vm_status
+                              - accumulator_root_hash
+                              - changes
+                              - id
+                              - epoch
+                              - round
+                              - events
+                              - previous_block_votes_bitvec
+                              - proposer
+                              - failed_proposer_indices
+                              - timestamp
+                            properties:
+                              type:
+                                type: string
+                                description: The type of the transaction
+                                example: block_metadata_transaction
+                              version:
+                                type: string
+                                description: The version of the transaction
+                              hash:
+                                type: string
+                                description: The hash of the transaction
+                              state_change_hash:
+                                type: string
+                                description: The state change hash of the transaction
+                              event_root_hash:
+                                type: string
+                                description: The event root hash of the transaction
+                              state_checkpoint_hash:
+                                type: string
+                                description: The state checkpoint hash of the transaction
+                              gas_used:
+                                type: string
+                                format: uint64
+                                description: The gas used by the transaction
+                              success:
+                                type: boolean
+                                description: The success of the transaction
+                              vm_status:
+                                type: string
+                                description: >-
+                                  The VM status of the transaction, can tell
+                                  useful information in a failure
+                              accumulator_root_hash:
+                                type: string
+                                description: The accumulator root hash of the transaction
+                              changes:
+                                type: array
+                                description: The changes of the transaction
+                                items:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                      description: The type of the change
+                                    address: *ref_16
+                                    state_key_hash:
+                                      type: string
+                                      description: The state key hash.
+                                    module:
+                                      type: string
+                                      description: >-
+                                        Move module id is a string
+                                        representation of Move module.
+                              id:
+                                type: string
+                                description: The ID of the transaction
+                              epoch:
+                                type: string
+                                description: The epoch of the transaction
+                              round:
+                                type: string
+                                description: The round of the transaction
+                              events:
+                                type: array
+                                description: The events of the transaction
+                                items: *ref_24
+                              previous_block_votes_bitvec:
+                                type: string
+                                description: The previous block votes bitvec
+                              proposer:
+                                type: string
+                                description: The proposer of the transaction
+                              failed_proposer_indices:
+                                type: array
+                                description: The failed proposer indices
+                                items:
+                                  type: string
+                              timestamp:
+                                type: string
+                                format: uint64
+                                description: The timestamp of the transaction
+                          - type: object
+                            required:
+                              - type
+                              - version
+                              - hash
+                              - state_change_hash
+                              - event_root_hash
+                              - state_checkpoint_hash
+                              - gas_used
+                              - success
+                              - vm_status
+                              - accumulator_root_hash
+                              - changes
+                              - timestamp
+                            properties:
+                              type:
+                                type: string
+                                description: The type of the transaction
+                                example: block_metadata_transaction
+                              version:
+                                type: string
+                                description: The version of the transaction
+                              hash:
+                                type: string
+                                description: The hash of the transaction
+                              state_change_hash:
+                                type: string
+                                description: The state change hash of the transaction
+                              event_root_hash:
+                                type: string
+                                description: The event root hash of the transaction
+                              state_checkpoint_hash:
+                                type: string
+                                description: The state checkpoint hash of the transaction
+                              gas_used:
+                                type: string
+                                format: uint64
+                                description: The gas used by the transaction
+                              success:
+                                type: boolean
+                                description: The success of the transaction
+                              vm_status:
+                                type: string
+                                description: >-
+                                  The VM status of the transaction, can tell
+                                  useful information in a failure
+                              accumulator_root_hash:
+                                type: string
+                                description: The accumulator root hash of the transaction
+                              changes:
+                                type: array
+                                description: The changes of the transaction
+                                items:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                      description: The type of the change
+                                    address: *ref_16
+                                    state_key_hash:
+                                      type: string
+                                      description: The state key hash.
+                                    module:
+                                      type: string
+                                      description: >-
+                                        Move module id is a string
+                                        representation of Move module.
+                              timestamp:
+                                type: string
+                                format: uint64
+                                description: The timestamp of the transaction
+              example:
+                block_height: '10'
+                block_hash: >-
+                  0xa293c4be641530ce8cd0d2a5ae6477f08a3fc3a87355f04c193902a33824c4c9
+                block_timestamp: '1691127571455579'
+                first_version: '18'
+                last_version: '19'
+                transactions:
+                  - version: '18'
+                    hash: >-
+                      0x81da650a597e3371cf0a3670c35e518c2c9ff7b36dad51a9c5327f96876b0d23
+                    state_change_hash: >-
+                      0x63a320ea3ebc5a7889ceebad624fc288419caedaf4e13a4ca036123cacb91b3c
+                    event_root_hash: >-
+                      0x8a09628022c06f7abe0ddda8c8a441ca604e1989ec75f5c93e3a7dec6bd42208
+                    state_checkpoint_hash: null
+                    gas_used: '0'
+                    success: true
+                    vm_status: Executed successfully
+                    accumulator_root_hash: >-
+                      0xaf4e9a4098d8386f447b81eb5212ac599b0fc3d05d4fc6357dafae462be09769
+                    changes:
+                      - address: '0x1'
+                        state_key_hash: >-
+                          0x5ddf404c60e96e9485beafcabb95609fed8e38e941a725cae4dcec8296fb32d7
+                        data:
+                          type: 0x1::block::BlockResource
+                          data:
+                            epoch_interval: '7200000000'
+                            height: '10'
+                            new_block_events:
+                              counter: '11'
+                              guid:
+                                id:
+                                  addr: '0x1'
+                                  creation_num: '3'
+                            update_epoch_interval_events:
+                              counter: '0'
+                              guid:
+                                id:
+                                  addr: '0x1'
+                                  creation_num: '4'
+                        type: write_resource
+                      - address: '0x1'
+                        state_key_hash: >-
+                          0x8048c954221814b04533a9f0a9946c3a8d472ac62df5accb9f47c097e256e8b6
+                        data:
+                          type: 0x1::stake::ValidatorPerformance
+                          data:
+                            validators:
+                              - failed_proposals: '0'
+                                successful_proposals: '1'
+                              - failed_proposals: '0'
+                                successful_proposals: '0'
+                              - failed_proposals: '0'
+                                successful_proposals: '0'
+                              - failed_proposals: '0'
+                                successful_proposals: '0'
+                              - failed_proposals: '0'
+                                successful_proposals: '1'
+                              - failed_proposals: '0'
+                                successful_proposals: '4'
+                              - failed_proposals: '0'
+                                successful_proposals: '1'
+                              - failed_proposals: '0'
+                                successful_proposals: '0'
+                              - failed_proposals: '0'
+                                successful_proposals: '0'
+                              - failed_proposals: '0'
+                                successful_proposals: '1'
+                        type: write_resource
+                      - address: '0x1'
+                        state_key_hash: >-
+                          0x7b1615bf012d3c94223f3f76287ee2f7bdf31d364071128b256aeff0841b626d
+                        data:
+                          type: 0x1::timestamp::CurrentTimeMicroseconds
+                          data:
+                            microseconds: '1691127571455579'
+                        type: write_resource
+                    id: >-
+                      0xa293c4be641530ce8cd0d2a5ae6477f08a3fc3a87355f04c193902a33824c4c9
+                    epoch: '2'
+                    round: '8'
+                    events:
+                      - guid:
+                          creation_number: '3'
+                          account_address: '0x1'
+                        sequence_number: '10'
+                        type: 0x1::block::NewBlockEvent
+                        data:
+                          epoch: '2'
+                          failed_proposer_indices: []
+                          hash: >-
+                            0xa293c4be641530ce8cd0d2a5ae6477f08a3fc3a87355f04c193902a33824c4c9
+                          height: '10'
+                          previous_block_votes_bitvec: '0xdf00'
+                          proposer: >-
+                            0x5e7cb7e08f2395a8f4149e57d1b947c2ca11e9a22edb3094217f574ef88f0370
+                          round: '8'
+                          time_microseconds: '1691127571455579'
+                    previous_block_votes_bitvec:
+                      - 223
+                      - 0
+                    proposer: >-
+                      0x5e7cb7e08f2395a8f4149e57d1b947c2ca11e9a22edb3094217f574ef88f0370
+                    failed_proposer_indices: []
+                    timestamp: '1691127571455579'
+                    type: block_metadata_transaction
+                  - version: '19'
+                    hash: >-
+                      0x2e2ed54f2bc9765bc7e90b78789fe9a0c4680b637834403348bc86c972a53f6f
+                    state_change_hash: >-
+                      0xafb6e14fe47d850fd0a7395bcfb997ffacf4715e0f895cc162c218e4a7564bc6
+                    event_root_hash: >-
+                      0x414343554d554c41544f525f504c414345484f4c4445525f4841534800000000
+                    state_checkpoint_hash: >-
+                      0x06fbf413008c50ec80907937467c6cffe91459fdda671061faad054b2236a5cb
+                    gas_used: '0'
+                    success: true
+                    vm_status: Executed successfully
+                    accumulator_root_hash: >-
+                      0x4bc9062b6893a6b221755c525ddd76245c042854bc8835202eec5bd58b390b39
+                    changes: []
+                    timestamp: '1691127571455579'
+                    type: state_checkpoint_transaction
+          headers:
+            X-APTOS-BLOCK-HEIGHT:
+              description: Current block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CHAIN-ID:
+              description: Chain ID of the current chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-EPOCH:
+              description: Current epoch of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-OLDEST-VERSION:
+              description: Oldest non-pruned ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-TIMESTAMPUSEC:
+              description: Current timestamp of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-VERSION:
+              description: Current ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-OLDEST-BLOCK-HEIGHT:
+              description: Oldest non-pruned block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CURSOR:
+              description: Cursor for the next page
+              schema:
+                type: string
+              required: true
+        '400': *ref_2
+  /blocks/by_version/{version}:
+    get:
+      security:
+        - api_key: []
+      tags:
+        - Aptos
+      description: >-
+        블록 번호를 이용하여 해당 블록에 대한 정보와 트랜잭션을 조회할 수 있습니다. 트랜잭션은 default 트랜잭션 사이즈로 제한이
+        있으며 만약 모든 트랜잭션이 존재하지 않는 경우, 유저가 get Transaction API를 이용하여 나머지 트랜잭션을
+        Query해야 합니다. 또한 block이 pruned 된 경우, 410 에러를 반환합니다.
+      summary: Get blocks by version
+      operationId: aptos_getBlocksByVersion
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: integer
+            default: 514117590
+          description: 조회하고자 하는 버전의 정보.
+        - *ref_25
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items: *ref_26
+              example:
+                block_height: '6822'
+                block_hash: >-
+                  0x8a027c6d2309855986fb640a695df04d04111f6878a0cc62d1c930b497f9d2e2
+                block_timestamp: '1691128978271362'
+                first_version: '99999'
+                last_version: '100000'
+                transactions:
+                  - version: '99999'
+                    hash: >-
+                      0xa79a3351f9ae0c137c76b0fb2ca90125e4dfca12b0529fe7816cfa3632220f3c
+                    state_change_hash: >-
+                      0x01dea2ac99bf061e5d7fe5f9dc6afd17be21ee7d68581e949ea0f09941e80d0e
+                    event_root_hash: >-
+                      0x6f5d5be307db47693793fe1601b3cc1489372579d9a28813deba44ab7a8f2d11
+                    state_checkpoint_hash: null
+                    gas_used: '0'
+                    success: true
+                    vm_status: Executed successfully
+                    accumulator_root_hash: >-
+                      0xe279724a8874089ca27a4b83715e2f4dec0afbe9394a4e2685bf73f22b846246
+                    changes:
+                      - address: '0x1'
+                        state_key_hash: >-
+                          0x5ddf404c60e96e9485beafcabb95609fed8e38e941a725cae4dcec8296fb32d7
+                        data:
+                          type: 0x1::block::BlockResource
+                          data:
+                            epoch_interval: '7200000000'
+                            height: '6822'
+                            new_block_events:
+                              counter: '6823'
+                              guid:
+                                id:
+                                  addr: '0x1'
+                                  creation_num: '3'
+                            update_epoch_interval_events:
+                              counter: '0'
+                              guid:
+                                id:
+                                  addr: '0x1'
+                                  creation_num: '4'
+                        type: write_resource
+                      - address: '0x1'
+                        state_key_hash: >-
+                          0x8048c954221814b04533a9f0a9946c3a8d472ac62df5accb9f47c097e256e8b6
+                        data:
+                          type: 0x1::stake::ValidatorPerformance
+                          data:
+                            validators:
+                              - failed_proposals: '0'
+                                successful_proposals: '704'
+                              - failed_proposals: '0'
+                                successful_proposals: '674'
+                              - failed_proposals: '0'
+                                successful_proposals: '712'
+                              - failed_proposals: '0'
+                                successful_proposals: '704'
+                              - failed_proposals: '0'
+                                successful_proposals: '715'
+                              - failed_proposals: '0'
+                                successful_proposals: '691'
+                              - failed_proposals: '4'
+                                successful_proposals: '636'
+                              - failed_proposals: '0'
+                                successful_proposals: '659'
+                              - failed_proposals: '0'
+                                successful_proposals: '686'
+                              - failed_proposals: '0'
+                                successful_proposals: '639'
+                        type: write_resource
+                      - address: '0x1'
+                        state_key_hash: >-
+                          0x7b1615bf012d3c94223f3f76287ee2f7bdf31d364071128b256aeff0841b626d
+                        data:
+                          type: 0x1::timestamp::CurrentTimeMicroseconds
+                          data:
+                            microseconds: '1691128978271362'
+                        type: write_resource
+                    id: >-
+                      0x8a027c6d2309855986fb640a695df04d04111f6878a0cc62d1c930b497f9d2e2
+                    epoch: '2'
+                    round: '6824'
+                    events:
+                      - guid:
+                          creation_number: '3'
+                          account_address: '0x1'
+                        sequence_number: '6822'
+                        type: 0x1::block::NewBlockEvent
+                        data:
+                          epoch: '2'
+                          failed_proposer_indices: []
+                          hash: >-
+                            0x8a027c6d2309855986fb640a695df04d04111f6878a0cc62d1c930b497f9d2e2
+                          height: '6822'
+                          previous_block_votes_bitvec: '0x6bc0'
+                          proposer: >-
+                            0x5e7cb7e08f2395a8f4149e57d1b947c2ca11e9a22edb3094217f574ef88f0370
+                          round: '6824'
+                          time_microseconds: '1691128978271362'
+                    previous_block_votes_bitvec:
+                      - 107
+                      - 192
+                    proposer: >-
+                      0x5e7cb7e08f2395a8f4149e57d1b947c2ca11e9a22edb3094217f574ef88f0370
+                    failed_proposer_indices: []
+                    timestamp: '1691128978271362'
+                    type: block_metadata_transaction
+                  - version: '100000'
+                    hash: >-
+                      0xb142bec4f0af9657a3979a478f7db675d4693d854bac29d63b9aabe769d53809
+                    state_change_hash: >-
+                      0xafb6e14fe47d850fd0a7395bcfb997ffacf4715e0f895cc162c218e4a7564bc6
+                    event_root_hash: >-
+                      0x414343554d554c41544f525f504c414345484f4c4445525f4841534800000000
+                    state_checkpoint_hash: >-
+                      0xbea2415fb3cc5e47fa2f54c0f95c5755df9292dba35351fe514beae7842ba987
+                    gas_used: '0'
+                    success: true
+                    vm_status: Executed successfully
+                    accumulator_root_hash: >-
+                      0x89ce7726214f761f62c61dd860370b8675380a506fcd287e73fbe1f2c05a1ca9
+                    changes: []
+                    timestamp: '1691128978271362'
+                    type: state_checkpoint_transaction
+          headers:
+            X-APTOS-BLOCK-HEIGHT:
+              description: Current block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CHAIN-ID:
+              description: Chain ID of the current chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-EPOCH:
+              description: Current epoch of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-OLDEST-VERSION:
+              description: Oldest non-pruned ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-TIMESTAMPUSEC:
+              description: Current timestamp of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-VERSION:
+              description: Current ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-OLDEST-BLOCK-HEIGHT:
+              description: Oldest non-pruned block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CURSOR:
+              description: Cursor for the next page
+              schema:
+                type: string
+              required: true
+        '400': *ref_2
+  /accounts/{address}/events/{creation_number}:
+    get:
+      security:
+        - api_key: []
+      tags:
+        - Aptos
+      description: address와 creation_number를 이용해 특정 이벤트를 반환합니다.
+      summary: Get events by creation number
+      operationId: aptos_getEventsByCreationNumber
+      parameters:
+        - *ref_0
+        - name: creation_number
+          in: path
+          required: true
+          schema:
+            type: integer
+            default: 1
+          description: 지정된 계정에서 발생한 이벤트 스트림 생성 번호. 주어진 계정에서 이벤트 유형 한 개당 1씩 증가한다.
+        - *ref_4
+        - *ref_5
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items: *ref_24
+              example:
+                - version: '218787635'
+                  guid:
+                    creation_number: '18'
+                    account_address: >-
+                      0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
+                  sequence_number: '0'
+                  type: 0x1::coin::WithdrawEvent
+                  data:
+                    amount: '10000'
+                - version: '219460266'
+                  guid:
+                    creation_number: '18'
+                    account_address: >-
+                      0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
+                  sequence_number: '1'
+                  type: 0x1::coin::WithdrawEvent
+                  data:
+                    amount: '10000'
+                - version: '221037533'
+                  guid:
+                    creation_number: '18'
+                    account_address: >-
+                      0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
+                  sequence_number: '2'
+                  type: 0x1::coin::WithdrawEvent
+                  data:
+                    amount: '10000'
+                - version: '221366107'
+                  guid:
+                    creation_number: '18'
+                    account_address: >-
+                      0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
+                  sequence_number: '3'
+                  type: 0x1::coin::WithdrawEvent
+                  data:
+                    amount: '10000'
+                - version: '222318308'
+                  guid:
+                    creation_number: '18'
+                    account_address: >-
+                      0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
+                  sequence_number: '4'
+                  type: 0x1::coin::WithdrawEvent
+                  data:
+                    amount: '10000'
+                - version: '223085311'
+                  guid:
+                    creation_number: '18'
+                    account_address: >-
+                      0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
+                  sequence_number: '5'
+                  type: 0x1::coin::WithdrawEvent
+                  data:
+                    amount: '10000'
+                - version: '223495386'
+                  guid:
+                    creation_number: '18'
+                    account_address: >-
+                      0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
+                  sequence_number: '6'
+                  type: 0x1::coin::WithdrawEvent
+                  data:
+                    amount: '10000'
+          headers:
+            X-APTOS-BLOCK-HEIGHT:
+              description: Current block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CHAIN-ID:
+              description: Chain ID of the current chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-EPOCH:
+              description: Current epoch of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-OLDEST-VERSION:
+              description: Oldest non-pruned ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-TIMESTAMPUSEC:
+              description: Current timestamp of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-VERSION:
+              description: Current ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-OLDEST-BLOCK-HEIGHT:
+              description: Oldest non-pruned block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CURSOR:
+              description: Cursor for the next page
+              schema:
+                type: string
+              required: true
+        '400': *ref_2
+  /accounts/{address}/events/{event_handle}/{field_name}:
+    get:
+      security:
+        - api_key: []
+      tags:
+        - Aptos
+      description: address와 creation_number를 이용해 특정 이벤트를 반환합니다.
+      summary: Get events by event handle
+      operationId: aptos_getEventsByEventHandle
+      parameters:
+        - *ref_0
+        - name: event_handle
+          in: path
+          required: true
+          schema:
+            type: string
+            default: 0x1::Account::AccountSentEvent
+            pattern: ^0x[0-9a-zA-Z:_<>]+$
+          description: 특정 event handle을 조회하기 위한 event handle struct의 이름
+        - name: field_name
+          in: path
+          required: true
+          schema:
+            type: string
+            default: amount
+          description: 조회할 event를 특정하기 위한 event_handle 내의 field 이름
+        - *ref_4
+        - *ref_5
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items: *ref_24
+              example:
+                - version: '221901708'
+                  guid:
+                    creation_number: '0'
+                    account_address: >-
+                      0xacca9ab2d7e46a4ecc3171ab7d86306a6189311142c4ece077bd50327c34e5f6
+                  sequence_number: '0'
+                  type: 0x1::account::CoinRegisterEvent
+                  data:
+                    type_info:
+                      account_address: '0x1'
+                      module_name: '0x6170746f735f636f696e'
+                      struct_name: '0x4170746f73436f696e'
+                - version: '223495356'
+                  guid:
+                    creation_number: '0'
+                    account_address: >-
+                      0xacca9ab2d7e46a4ecc3171ab7d86306a6189311142c4ece077bd50327c34e5f6
+                  sequence_number: '1'
+                  type: 0x1::account::CoinRegisterEvent
+                  data:
+                    type_info:
+                      account_address: >-
+                        0x4def3d3dee27308886f0a3611dd161ce34f977a9a5de4e80b237225923492a2a
+                      module_name: '0x636f696e'
+                      struct_name: '0x54'
           headers:
             X-APTOS-BLOCK-HEIGHT:
               description: Current block height of the chain
