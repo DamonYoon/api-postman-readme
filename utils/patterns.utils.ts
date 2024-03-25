@@ -33,5 +33,10 @@ export const Patterns = {
 		address: "^0[xX]?[0-9a-fA-F]{0,64}$", // 0x로 시작하는 최대 64자리 16진수 문자열, 0x는 생략 가능
 		resourceType: "^0x[0-9a-zA-Z:_<>]+$",
 		primitiveType: "^(bool|u8|u64|u128|address|signer|vector<.+>|0x[0-9a-zA-Z:_<, >]+)$",
+		byte32HexaDecimal: "^0[xX][0-9a-fA-F]{64}$",
+		uint32String: "^d{1,10}$",
+		uint64String: "^d{1,20}$",
+		hexaDecimalWithPrefix: "^0[xX][0-9a-fA-F]{64}$",
+		hexaDecimalWithoutPrefix: "^[0-9a-fA-F]{64}$",
 	},
 };

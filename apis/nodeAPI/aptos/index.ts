@@ -6,6 +6,10 @@ import { getVersionAndId } from "../../../scripts";
 import accountPaths from "./src/accounts";
 import blockPaths from "./src/blocks";
 import eventsPaths from "./src/events";
+import generalPaths from "./src/general";
+import tablesPaths from "./src/tables";
+import transactionsPaths from "./src/transactions";
+import viewPaths from "./src/view";
 
 const APTOS_VERSION = "v1";
 
@@ -21,7 +25,7 @@ const oasDocs: OpenAPIV3.Document = {
 	},
 	servers: [
 		{
-			url: `${NODE_API_BASE_URL}/${APTOS_VERSION}`,
+			url: `${NODE_API_BASE_URL}${APTOS_VERSION}`,
 			variables: {
 				protocol: {
 					enum: ["aptos"],
@@ -47,6 +51,10 @@ const oasDocs: OpenAPIV3.Document = {
 		...accountPaths,
 		...blockPaths,
 		...eventsPaths,
+		...generalPaths,
+		...tablesPaths,
+		...transactionsPaths,
+		...viewPaths,
 	},
 };
 

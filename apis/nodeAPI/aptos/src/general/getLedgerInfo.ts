@@ -2,10 +2,9 @@ import { OpenAPIV3 } from "openapi-types";
 import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
-import * as schemas from "../../resources/schemas";
 
-const summary = "Get events by creation number";
-const endpoint = "getEventsByCreationNumber";
+const summary = "Get ledger info";
+const endpoint = "getLedgerInfo";
 const operationId = "aptos_" + endpoint;
 
 const info: OpenAPIV3.PathItemObject = {
@@ -16,21 +15,13 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Aptos"],
-		description: `address와 creation_number를 이용해 특정 이벤트를 반환합니다.`,
+		description: `최신 렛저 정보를 가져옵니다. 체인 ID, 역할 유형, 렛저 버전, 에포크 등의 데이터를 포함합니다.`,
 		summary,
 		operationId,
-		parameters: [
-			Requests.PathParams.address,
-			Requests.PathParams.creationNumber,
-			Requests.QueryParams.limit,
-			Requests.QueryParams.start,
-		],
+		parameters: [],
 		responses: {
 			"200": Responses.Success200({
-				schema: {
-					type: "array",
-					items: schemas.event,
-				},
+				schema: Responses.Params.ledgerInfo,
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,
