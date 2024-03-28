@@ -54,7 +54,7 @@ const oasDocs: OpenAPIV3.Document = {
 		...generalPaths,
 		...tablesPaths,
 		...transactionsPaths,
-		...viewPaths,
+		// ...viewPaths,
 	},
 };
 

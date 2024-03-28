@@ -2,6 +2,7 @@ import { OpenAPIV3 } from "openapi-types";
 import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
+import Schemas from "../../resources/schemas";
 
 const summary = "Get blocks by version";
 const endpoint = "getBlocksByVersion";
@@ -23,7 +24,7 @@ const info: OpenAPIV3.PathItemObject = {
 			"200": Responses.Success200({
 				schema: {
 					type: "array",
-					items: Responses.Params.block,
+					items: Schemas.block,
 				},
 				example: Examples[endpoint],
 			}),

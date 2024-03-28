@@ -2,6 +2,7 @@ import { OpenAPIV3 } from "openapi-types";
 import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
+import Schemas from "../../resources/schemas";
 
 const summary = "Submit transaction";
 const endpoint = "submitTransaction";
@@ -19,12 +20,20 @@ const info: OpenAPIV3.PathItemObject = {
 		summary,
 		operationId,
 		parameters: [Requests.Headers.acceptBSC],
+		requestBody: {
+			required: true,
+			content: {
+				"application/json": {
+					schema: {
+						additionalProperties: false,
+						allOf: [Requests.BodyParams.transaction],
+					},
+				},
+			},
+		},
 		responses: {
 			"200": Responses.Success200({
-				schema: {
-					type: "array",
-					items: {},
-				},
+				schema: Schemas.TransactionTypes.pendingTransactionBase,
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,

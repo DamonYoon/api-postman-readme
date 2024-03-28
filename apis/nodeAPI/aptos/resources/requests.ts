@@ -1,5 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 import { Patterns } from "../../../../utils/patterns.utils";
+import Schemas from "./schemas";
 
 namespace Requests {
 	export namespace Headers {
@@ -143,6 +144,30 @@ namespace Requests {
 			},
 			description: "테이블이 저장된 위치를 가리키는 포인터 값.",
 		};
+
+		export const transactionHash: OpenAPIV3.ParameterObject = {
+			name: "txn_hash",
+			in: "path",
+			required: true,
+			schema: {
+				type: "string",
+				pattern: Patterns.Aptos.hexaDecimalWithPrefix,
+				default: "0xf9a029e3221f9df86e5542f7f649e4acbfb3680423b218c91cdd895f6b62ab6b",
+			},
+			description: "조회하고자 하는 트랜잭션의 해시 값.",
+		};
+
+		export const transactionVersion: OpenAPIV3.ParameterObject = {
+			name: "txn_version",
+			in: "path",
+			required: true,
+			schema: {
+				type: "string",
+				pattern: Patterns.Aptos.uint64String,
+				default: "525078522",
+			},
+			description: "조회하고자 하는 트랜잭션의 버전 값.",
+		};
 	}
 
 	/** Query Parameters **/
@@ -226,43 +251,81 @@ namespace Requests {
 
 		export const transaction: OpenAPIV3.SchemaObject = {
 			type: "object",
-			required: [],
+			required: [
+				"sender",
+				"sequence_number",
+				"max_gas_amount",
+				"gas_unit_price",
+				"expiration_timestamp_secs",
+				"payload",
+				"signature",
+			],
 			properties: {
 				sender: {
 					type: "string",
 					description: "트랜잭션을 발생시킨 계정의 주소.",
 					pattern: Patterns.Aptos.address,
-					default: "0x1",
+					default: "0x1234567890abcdef",
 				},
 				sequence_number: {
-					type: "integer",
+					type: "string",
+					pattern: Patterns.Aptos.uint64String,
 					description: "트랜잭션 발생 순서.",
-					default: 1,
+					default: "1234567890",
 				},
 				max_gas_amount: {
-					type: "integer",
+					type: "string",
+					pattern: Patterns.Aptos.uint64String,
 					description: "트랜잭션 발생 시 사용할 최대 gas 양.",
-					default: 1000000,
+					default: "1000000",
 				},
 				gas_unit_price: {
-					type: "integer",
+					type: "string",
+					pattern: Patterns.Aptos.uint64String,
 					description: "트랜잭션 발생 시 사용할 gas의 가격.",
-					default: 0,
+					default: "1",
 				},
 				expiration_timestamp_secs: {
-					type: "integer",
+					type: "string",
+					pattern: Patterns.Aptos.uint64String,
 					description: "트랜잭션 발생 시 사용할 gas의 가격.",
-					default: 0,
+					default: "1634567890",
 				},
 				payload: {
 					type: "object",
 					description: "트랜잭션 발생 시 사용할 gas의 가격.",
-					default: {},
+					oneOf: [
+						Schemas.Payload.entryFunction,
+						Schemas.Payload.moduleBundle,
+						Schemas.Payload.multisig,
+						Schemas.Payload.script,
+					],
+					default: {
+						entryFunction: {
+							module_address: "0x1234567890abcdef",
+							module_name: "moduleName",
+							function_name: "functionName",
+							type_arguments: ["0x1::Type::Argument"],
+							arguments: ["arg1", "arg2"],
+						},
+					},
 				},
 				signature: {
-					type: "string",
+					type: "object",
 					description: "트랜잭션 발생 시 사용할 gas의 가격.",
-					default: "0x1",
+					oneOf: [
+						Schemas.TransactionSignature.ed25519,
+						Schemas.TransactionSignature.multiEd25519,
+						Schemas.TransactionSignature.multiAgent,
+						Schemas.TransactionSignature.feePayer,
+						Schemas.TransactionSignature.account,
+					],
+					default: {
+						ed25519: {
+							public_key: "0x1234567890abcdef",
+							signature: "0x1234567890abcdef",
+						},
+					},
 				},
 			},
 		};

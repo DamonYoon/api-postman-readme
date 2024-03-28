@@ -60,7 +60,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  sequence_number: &ref_17
+                  sequence_number:
                     type: integer
                     pattern: ^d{1,20}$
                     description: A string containing a 64-bit unsigned integer.
@@ -1167,7 +1167,7 @@ paths:
             type: integer
             default: 160155267
           description: 조회하고자 하는 블록의 번호.
-        - &ref_25
+        - &ref_28
           name: with_transactions
           in: query
           required: false
@@ -1183,7 +1183,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: &ref_26
+                items: &ref_29
                   type: object
                   description: >-
                     This contains the information about a transactions along
@@ -1225,53 +1225,65 @@ paths:
                     transactions:
                       type: array
                       description: The transactions in the block.
-                      items:
+                      items: &ref_30
                         type: object
                         oneOf:
-                          - type: object
+                          - &ref_36
+                            title: Pending Transaction
+                            type: object
                             description: A transaction
-                            required: []
+                            required:
+                              - type
+                              - hash
+                              - sender
+                              - sequence_number
+                              - max_gas_amount
+                              - gas_unit_price
+                              - expiration_timestamp_secs
+                              - payload
+                              - signature
                             properties:
                               type:
                                 type: string
                                 description: The type of the transaction
                                 example: pending_transaction
-                              hash:
+                              hash: &ref_35
                                 type: string
                                 description: The hash of the transaction
-                              sender:
+                              sender: &ref_17
                                 type: string
                                 description: >-
                                   The sender of the transaction. The format is a
                                   hex encoded 32 byte Aptos account address.
-                              sequence_number:
+                              sequence_number: &ref_18
                                 type: string
                                 pattern: ^d{1,20}$
                                 description: >-
                                   The sequence number of the transaction. The
                                   format is a 64-bit unsigned integer.
-                              max_gas_amount:
+                              max_gas_amount: &ref_19
                                 type: string
                                 pattern: ^d{1,20}$
                                 description: >-
                                   The maximum gas amount of the transaction. The
                                   format is a 64-bit unsigned integer.
-                              gas_unit_price:
+                              gas_unit_price: &ref_20
                                 type: string
                                 pattern: ^d{1,20}$
                                 description: >-
                                   The gas unit price of the transaction. The
                                   format is a 64-bit unsigned integer.
-                              expiration_timestamp_secs:
+                              expiration_timestamp_secs: &ref_21
                                 type: string
                                 pattern: ^d{1,20}$
                                 description: >-
                                   The expiration timestamp of the transaction.
                                   The format is a 64-bit unsigned integer.
-                              payload:
+                              payload: &ref_22
                                 type: object
                                 oneOf:
                                   - &ref_9
+                                    title: Entry Function Payload
                                     type: object
                                     description: The payload of the entry function
                                     required:
@@ -1300,7 +1312,8 @@ paths:
                                         description: The arguments of the payload
                                         items:
                                           type: string
-                                  - &ref_18
+                                  - &ref_24
+                                    title: Script Payload
                                     type: object
                                     description: The payload of the script
                                     required:
@@ -1317,7 +1330,8 @@ paths:
                                         properties:
                                           bytecode: *ref_7
                                           abi: *ref_8
-                                  - &ref_19
+                                  - &ref_25
+                                    title: Module Bundle Payload
                                     type: object
                                     description: The payload of the module bundle
                                     required:
@@ -1331,7 +1345,8 @@ paths:
                                       modules:
                                         type: array
                                         items: *ref_3
-                                  - &ref_20
+                                  - &ref_26
+                                    title: Multisig Payload
                                     type: object
                                     description: The payload of the multisig
                                     required:
@@ -1343,11 +1358,12 @@ paths:
                                         description: The type of the payload
                                         example: multisig_payload
                                       transactionPayload: *ref_9
-                              signature:
+                              signature: &ref_23
                                 type: object
                                 description: The signature of the transaction
                                 oneOf:
                                   - &ref_12
+                                    title: Ed25519 Signature
                                     type: object
                                     description: The Ed25519 signature
                                     required:
@@ -1374,6 +1390,7 @@ paths:
                                           fulfilled with two hex digits per byte.
                                         pattern: ^0[xX][0-9a-fA-F]+$
                                   - &ref_13
+                                    title: Multi Ed25519 Signature
                                     type: object
                                     description: A Ed25519 multi-sig signature
                                     required:
@@ -1411,7 +1428,8 @@ paths:
                                           hex-encoded string prefixed with 0x and
                                           fulfilled with two hex digits per byte
                                         pattern: ^0[xX][0-9a-fA-F]+$
-                                  - &ref_21
+                                  - &ref_32
+                                    title: Multi Agent Signature
                                     type: object
                                     description: A multi-agent signature
                                     required:
@@ -1429,6 +1447,7 @@ paths:
                                           - *ref_12
                                           - *ref_13
                                           - &ref_14
+                                            title: Single Key Signature
                                             type: object
                                             description: A single key signature
                                             required:
@@ -1443,6 +1462,7 @@ paths:
                                               public_key: *ref_10
                                               signature: *ref_11
                                           - &ref_15
+                                            title: Multi Key Signature
                                             type: object
                                             description: A multi-key signature
                                             required:
@@ -1493,7 +1513,8 @@ paths:
                                             - *ref_13
                                             - *ref_14
                                             - *ref_15
-                                  - &ref_22
+                                  - &ref_33
+                                    title: Fee Payer Signature
                                     type: object
                                     description: The fee payer of the transaction
                                     required:
@@ -1544,7 +1565,8 @@ paths:
                                           - *ref_13
                                           - *ref_14
                                           - *ref_15
-                                  - &ref_23
+                                  - &ref_34
+                                    title: Account Signature
                                     type: object
                                     description: The signature of the transaction
                                     oneOf:
@@ -1552,7 +1574,8 @@ paths:
                                       - *ref_13
                                       - *ref_14
                                       - *ref_15
-                          - type: object
+                          - title: User Transaction
+                            type: object
                             description: A user transaction
                             required:
                               - type
@@ -1620,46 +1643,17 @@ paths:
                                       description: >-
                                         Move module id is a string
                                         representation of Move module.
-                              sender: *ref_16
-                              sequence_number: *ref_17
-                              max_gas_amount:
-                                type: string
-                                pattern: ^d{1,20}$
-                                description: >-
-                                  The maximum gas amount of the transaction. The
-                                  format is a 64-bit unsigned integer.
-                              gas_unit_price:
-                                type: string
-                                pattern: ^d{1,20}$
-                                description: >-
-                                  The gas unit price of the transaction. The
-                                  format is a 64-bit unsigned integer.
-                              expiration_timestamp_secs:
-                                type: string
-                                pattern: ^d{1,20}$
-                                description: >-
-                                  The expiration timestamp of the transaction.
-                                  The format is a 64-bit unsigned integer.
-                              payload:
-                                type: object
-                                oneOf:
-                                  - *ref_9
-                                  - *ref_18
-                                  - *ref_19
-                                  - *ref_20
-                              signature:
-                                type: object
-                                description: The signature of the transaction
-                                oneOf:
-                                  - *ref_12
-                                  - *ref_13
-                                  - *ref_21
-                                  - *ref_22
-                                  - *ref_23
+                              sender: *ref_17
+                              sequence_number: *ref_18
+                              max_gas_amount: *ref_19
+                              gas_unit_price: *ref_20
+                              expiration_timestamp_secs: *ref_21
+                              payload: *ref_22
+                              signature: *ref_23
                               events:
                                 type: array
                                 description: The events of the transaction
-                                items: &ref_24
+                                items: &ref_27
                                   type: object
                                   properties:
                                     guid:
@@ -1686,7 +1680,8 @@ paths:
                                 type: string
                                 pattern: ^d{1,20}$
                                 description: The timestamp of the transaction
-                          - type: object
+                          - title: Genesis Transaction
+                            type: object
                             description: A genesis transaction
                             required:
                               - type
@@ -1759,14 +1754,15 @@ paths:
                                 type: object
                                 oneOf:
                                   - *ref_9
-                                  - *ref_18
-                                  - *ref_19
-                                  - *ref_20
+                                  - *ref_24
+                                  - *ref_25
+                                  - *ref_26
                               events:
                                 type: array
                                 description: The events of the transaction
-                                items: *ref_24
-                          - type: object
+                                items: *ref_27
+                          - title: Block Metadata Transaction
+                            type: object
                             required:
                               - type
                               - version
@@ -1852,7 +1848,7 @@ paths:
                               events:
                                 type: array
                                 description: The events of the transaction
-                                items: *ref_24
+                                items: *ref_27
                               previous_block_votes_bitvec:
                                 type: string
                                 description: The previous block votes bitvec
@@ -1868,7 +1864,8 @@ paths:
                                 type: string
                                 pattern: ^d{1,20}$
                                 description: The timestamp of the transaction
-                          - type: object
+                          - title: State Checkpoint Transaction
+                            type: object
                             required:
                               - type
                               - version
@@ -2126,7 +2123,7 @@ paths:
             type: integer
             default: 514117590
           description: 조회하고자 하는 버전의 정보.
-        - *ref_25
+        - *ref_28
       responses:
         '200':
           description: Successful Response
@@ -2134,7 +2131,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: *ref_26
+                items: *ref_29
               example:
                 block_height: '6822'
                 block_hash: >-
@@ -2329,7 +2326,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: *ref_24
+                items: *ref_27
               example:
                 - version: '218787635'
                   guid:
@@ -2471,7 +2468,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: *ref_24
+                items: *ref_27
               example:
                 - version: '221901708'
                   guid:
@@ -2788,7 +2785,8 @@ paths:
       summary: Get raw table item
       operationId: aptos_getRawTableItem
       parameters:
-        - in: header
+        - &ref_31
+          in: header
           name: accept
           required: true
           description: >-
@@ -2876,16 +2874,21 @@ paths:
                 type: string
               required: true
         '400': *ref_2
-  transactions/by_hash/{txn_hash}:
+  /transactions:
     get:
       security:
         - api_key: []
       tags:
         - Aptos
-      description: ''
-      summary: Get transaction by hash
-      operationId: aptos_getTransactionByHash
-      parameters: []
+      description: >-
+        온체인에 commit된 트랜잭션을 반환합니다. 특정 트랜잭션이 필요한 경우, limit과 start를 이용하여 설정할 수 있으며
+        version이 pruned된 경우, 410에러가 반환됩니다. 만약 Pending 중인 트랜잭션을 조회하고 싶은 경우,
+        /transaction/by_hash 를 이용하여 조회할 수 있습니다.
+      summary: Get transactions
+      operationId: aptos_getTransactions
+      parameters:
+        - *ref_4
+        - *ref_5
       responses:
         '200':
           description: Successful Response
@@ -2893,7 +2896,263 @@ paths:
             application/json:
               schema:
                 type: array
-                items: {}
+                items: *ref_30
+              example:
+                - version: '223509841'
+                  hash: >-
+                    0x67c6d8698c3f41dc4fee191668301b753b57f8c4f2368c4795ee28ef1f283b81
+                  state_change_hash: >-
+                    0xafb6e14fe47d850fd0a7395bcfb997ffacf4715e0f895cc162c218e4a7564bc6
+                  event_root_hash: >-
+                    0x414343554d554c41544f525f504c414345484f4c4445525f4841534800000000
+                  state_checkpoint_hash: >-
+                    0x4bbcd8d72e714d2e019f669e119d73169f7d378950ba34b27900fb9199cc73ec
+                  gas_used: '0'
+                  success: true
+                  vm_status: Executed successfully
+                  accumulator_root_hash: >-
+                    0x5232557c436793e73468483a5488d0d3825b08792050ef06e3a03dfb002d2b40
+                  changes: []
+                  timestamp: '1691977636550021'
+                  type: state_checkpoint_transaction
+          headers:
+            X-APTOS-BLOCK-HEIGHT:
+              description: Current block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CHAIN-ID:
+              description: Chain ID of the current chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-EPOCH:
+              description: Current epoch of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-OLDEST-VERSION:
+              description: Oldest non-pruned ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-TIMESTAMPUSEC:
+              description: Current timestamp of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-VERSION:
+              description: Current ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-OLDEST-BLOCK-HEIGHT:
+              description: Oldest non-pruned block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CURSOR:
+              description: Cursor for the next page
+              schema:
+                type: string
+              required: true
+        '400': *ref_2
+    post:
+      security:
+        - api_key: []
+      tags:
+        - Aptos
+      description: 트랜잭션을 실행하기 위해 서명된 트랜잭션을 Submit 합니다. JSON/BCS 두 가지 종류의 format을 지원합니다.
+      summary: Submit transaction
+      operationId: aptos_submitTransaction
+      parameters:
+        - *ref_31
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              allOf:
+                - type: object
+                  required:
+                    - sender
+                    - sequence_number
+                    - max_gas_amount
+                    - gas_unit_price
+                    - expiration_timestamp_secs
+                    - payload
+                    - signature
+                  properties:
+                    sender:
+                      type: string
+                      description: 트랜잭션을 발생시킨 계정의 주소.
+                      pattern: ^0[xX]?[0-9a-fA-F]{0,64}$
+                      default: '0x1234567890abcdef'
+                    sequence_number:
+                      type: string
+                      pattern: ^d{1,20}$
+                      description: 트랜잭션 발생 순서.
+                      default: '1234567890'
+                    max_gas_amount:
+                      type: string
+                      pattern: ^d{1,20}$
+                      description: 트랜잭션 발생 시 사용할 최대 gas 양.
+                      default: '1000000'
+                    gas_unit_price:
+                      type: string
+                      pattern: ^d{1,20}$
+                      description: 트랜잭션 발생 시 사용할 gas의 가격.
+                      default: '1'
+                    expiration_timestamp_secs:
+                      type: string
+                      pattern: ^d{1,20}$
+                      description: 트랜잭션 발생 시 사용할 gas의 가격.
+                      default: '1634567890'
+                    payload:
+                      type: object
+                      description: 트랜잭션 발생 시 사용할 gas의 가격.
+                      oneOf:
+                        - *ref_9
+                        - *ref_25
+                        - *ref_26
+                        - *ref_24
+                      default:
+                        entryFunction:
+                          module_address: '0x1234567890abcdef'
+                          module_name: moduleName
+                          function_name: functionName
+                          type_arguments:
+                            - 0x1::Type::Argument
+                          arguments:
+                            - arg1
+                            - arg2
+                    signature:
+                      type: object
+                      description: 트랜잭션 발생 시 사용할 gas의 가격.
+                      oneOf:
+                        - *ref_12
+                        - *ref_13
+                        - *ref_32
+                        - *ref_33
+                        - *ref_34
+                      default:
+                        ed25519:
+                          public_key: '0x1234567890abcdef'
+                          signature: '0x1234567890abcdef'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                required:
+                  - hash
+                  - sender
+                  - sequence_number
+                  - max_gas_amount
+                  - gas_unit_price
+                  - expiration_timestamp_secs
+                  - payload
+                  - signature
+                properties:
+                  hash: *ref_35
+                  sender: *ref_17
+                  sequence_number: *ref_18
+                  max_gas_amount: *ref_19
+                  gas_unit_price: *ref_20
+                  expiration_timestamp_secs: *ref_21
+                  payload: *ref_22
+                  signature: *ref_23
+              example:
+                hash: string
+                sender: >-
+                  0x88fbd33f54e1126269769780feb24480428179f552e2313fbe571b72e62a1ca1
+                sequence_number: '32425224034'
+                max_gas_amount: '32425224034'
+                gas_unit_price: '32425224034'
+                expiration_timestamp_secs: '32425224034'
+                payload:
+                  type: entry_function_payload
+                  function: 0x1::aptos_coin::transfer
+                  type_arguments:
+                    - string
+                  arguments:
+                    - null
+                signature:
+                  type: ed25519_signature
+                  public_key: >-
+                    0x88fbd33f54e1126269769780feb24480428179f552e2313fbe571b72e62a1ca1 
+                  signature: >-
+                    0x88fbd33f54e1126269769780feb24480428179f552e2313fbe571b72e62a1ca1 
+          headers:
+            X-APTOS-BLOCK-HEIGHT:
+              description: Current block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CHAIN-ID:
+              description: Chain ID of the current chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-EPOCH:
+              description: Current epoch of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-OLDEST-VERSION:
+              description: Oldest non-pruned ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-TIMESTAMPUSEC:
+              description: Current timestamp of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-VERSION:
+              description: Current ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-OLDEST-BLOCK-HEIGHT:
+              description: Oldest non-pruned block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CURSOR:
+              description: Cursor for the next page
+              schema:
+                type: string
+              required: true
+        '400': *ref_2
+  /transactions/by_hash/{txn_hash}:
+    get:
+      security:
+        - api_key: []
+      tags:
+        - Aptos
+      description: >-
+        트랜잭션 해시를 이용해 특정 트랜잭션 데이터를 반환합니다. Hash가 주어지면 서버에서는 Storage(on-chain,
+        committed)에서 트랜잭션을 우선 조회하며 on-chain에서 발견되지 않으면 mempool에서 조회합니다.
+      summary: Get transaction by hash
+      operationId: aptos_getTransactionByHash
+      parameters:
+        - name: txn_hash
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^0[xX][0-9a-fA-F]{64}$
+            default: '0xf9a029e3221f9df86e5542f7f649e4acbfb3680423b218c91cdd895f6b62ab6b'
+          description: 조회하고자 하는 트랜잭션의 해시 값.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_36
               example:
                 version: '223495386'
                 hash: >-
@@ -3131,6 +3390,218 @@ paths:
                       user: >-
                         0x979e9463b315e84e13b2971d6420641d611a92ab79ce78a87131e0c3e8191135
                 timestamp: '1691976514691520'
+                type: user_transaction
+          headers:
+            X-APTOS-BLOCK-HEIGHT:
+              description: Current block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CHAIN-ID:
+              description: Chain ID of the current chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-EPOCH:
+              description: Current epoch of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-OLDEST-VERSION:
+              description: Oldest non-pruned ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-TIMESTAMPUSEC:
+              description: Current timestamp of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-LEDGER-VERSION:
+              description: Current ledger version of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-OLDEST-BLOCK-HEIGHT:
+              description: Oldest non-pruned block height of the chain
+              schema:
+                type: integer
+              required: true
+            X-APTOS-CURSOR:
+              description: Cursor for the next page
+              schema:
+                type: string
+              required: true
+        '400': *ref_2
+  /transactions/by_version/{txn_version}:
+    get:
+      security:
+        - api_key: []
+      tags:
+        - Aptos
+      description: 트랜잭션의 버전을 이용하여 특정 트랜잭션을 식별해 반환합니다. 만약 버전이 pruned된 경우, 410에러가 반환됩니다.
+      summary: Get transaction by version
+      operationId: aptos_getTransactionByVersion
+      parameters:
+        - name: txn_version
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^d{1,20}$
+            default: '525078522'
+          description: 조회하고자 하는 트랜잭션의 버전 값.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: *ref_36
+              example:
+                version: '29922'
+                hash: >-
+                  0xf374950a69877a0dd384deab129f3f4ac1e12da0d3c2c54456baa1728ce63dc5
+                state_change_hash: >-
+                  0x53e89fd58b9d241b98c0c4208b408df51dfe5352600cd593d37452aec2a79d79
+                event_root_hash: >-
+                  0x2ea43d37a2189b01593ee5bfce303ac18a37fe1fa91e64c94a7b3966f1975194
+                state_checkpoint_hash: null
+                gas_used: '6'
+                success: true
+                vm_status: Executed successfully
+                accumulator_root_hash: >-
+                  0x64677b587ceae2dc01cb2977965b9b5410e4210575f46cffaac606fcad21912d
+                changes:
+                  - address: >-
+                      0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                    state_key_hash: >-
+                      0x91afcb92bc1270b77ec4143d34548fabd364e7da3433ebf222b54411a405b080
+                    data:
+                      type: 0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>
+                      data:
+                        coin:
+                          value: '118399997567'
+                        deposit_events:
+                          counter: '2'
+                          guid:
+                            id:
+                              addr: >-
+                                0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                              creation_num: '2'
+                        frozen: false
+                        withdraw_events:
+                          counter: '5'
+                          guid:
+                            id:
+                              addr: >-
+                                0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                              creation_num: '3'
+                    type: write_resource
+                  - address: >-
+                      0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                    state_key_hash: >-
+                      0xca1854bdbf1777aa26cc9c88dc54b65a43db4dc0e546a3e9978d9f9284d32ce1
+                    data:
+                      type: 0x1::account::Account
+                      data:
+                        authentication_key: >-
+                          0x0e865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                        coin_register_events:
+                          counter: '1'
+                          guid:
+                            id:
+                              addr: >-
+                                0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                              creation_num: '0'
+                        guid_creation_num: '4'
+                        key_rotation_events:
+                          counter: '0'
+                          guid:
+                            id:
+                              addr: >-
+                                0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                              creation_num: '1'
+                        rotation_capability_offer:
+                          for:
+                            vec: []
+                        sequence_number: '5'
+                        signer_capability_offer:
+                          for:
+                            vec: []
+                    type: write_resource
+                  - address: >-
+                      0xf8bb20f81bd1e2aefce2f2edd28fe3e552b12b0a9d2490380aef09bb006e96c3
+                    state_key_hash: >-
+                      0x87d7b4977f853c87d98cac71ac3bc42603b4f3b5004c42ac97097aa2a2b3ba4d
+                    data:
+                      type: 0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>
+                      data:
+                        coin:
+                          value: '118400000575'
+                        deposit_events:
+                          counter: '5'
+                          guid:
+                            id:
+                              addr: >-
+                                0xf8bb20f81bd1e2aefce2f2edd28fe3e552b12b0a9d2490380aef09bb006e96c3
+                              creation_num: '2'
+                        frozen: false
+                        withdraw_events:
+                          counter: '0'
+                          guid:
+                            id:
+                              addr: >-
+                                0xf8bb20f81bd1e2aefce2f2edd28fe3e552b12b0a9d2490380aef09bb006e96c3
+                              creation_num: '3'
+                    type: write_resource
+                  - state_key_hash: >-
+                      0x6e4b28d40f98a106a65163530924c0dcb40c1349d3aa915d108b4d6cfc1ddb19
+                    handle: >-
+                      0x1b854694ae746cdbd8d44186ca4929b2b337df21d1c74633be19b2710552fdca
+                    key: >-
+                      0x0619dc29a0aac8fa146714058e8dd6d2d0f3bdf5f6331907bf91f3acd81e6935
+                    value: '0x802bc789f49103000100000000000000'
+                    data: null
+                    type: write_table_item
+                sender: >-
+                  0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                sequence_number: '4'
+                max_gas_amount: '2000000'
+                gas_unit_price: '100'
+                expiration_timestamp_secs: '1691128035'
+                payload:
+                  function: 0x1::coin::transfer
+                  type_arguments:
+                    - 0x1::aptos_coin::AptosCoin
+                  arguments:
+                    - >-
+                      0xf8bb20f81bd1e2aefce2f2edd28fe3e552b12b0a9d2490380aef09bb006e96c3
+                    - '1'
+                  type: entry_function_payload
+                signature:
+                  public_key: >-
+                    0x5cb436a262556746f579d6cff8185d35ca178b442a31fedff4c9f8243919ecdb
+                  signature: >-
+                    0xd73c051b9142fbcc4828137147585d17639bcc727e11e33c0dc4219c8895b1e4a0a9f4ee1adc78e5f6bdd46dc37661e3f6768c4d8b4d0ba4d7e495e157652b05
+                  type: ed25519_signature
+                events:
+                  - guid:
+                      creation_number: '3'
+                      account_address: >-
+                        0xe865640bdff70a128f1a97e76ca7892b6a93ffe10422dcd22a296f92031b5d4
+                    sequence_number: '4'
+                    type: 0x1::coin::WithdrawEvent
+                    data:
+                      amount: '1'
+                  - guid:
+                      creation_number: '2'
+                      account_address: >-
+                        0xf8bb20f81bd1e2aefce2f2edd28fe3e552b12b0a9d2490380aef09bb006e96c3
+                    sequence_number: '4'
+                    type: 0x1::coin::DepositEvent
+                    data:
+                      amount: '1'
+                timestamp: '1691128005638384'
                 type: user_transaction
           headers:
             X-APTOS-BLOCK-HEIGHT:

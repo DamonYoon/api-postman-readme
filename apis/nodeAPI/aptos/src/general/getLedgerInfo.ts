@@ -1,7 +1,7 @@
 import { OpenAPIV3 } from "openapi-types";
-import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
+import Schemas from "../../resources/schemas";
 
 const summary = "Get ledger info";
 const endpoint = "getLedgerInfo";
@@ -21,7 +21,7 @@ const info: OpenAPIV3.PathItemObject = {
 		parameters: [],
 		responses: {
 			"200": Responses.Success200({
-				schema: Responses.Params.ledgerInfo,
+				schema: Schemas.ledgerInfo,
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,

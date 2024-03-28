@@ -2,7 +2,7 @@ import { OpenAPIV3 } from "openapi-types";
 import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
-import * as schemas from "../../resources/schemas";
+import Schemas from "../../resources/schemas";
 
 const summary = "Get account module";
 const endpoint = "getAccountModule";
@@ -22,7 +22,7 @@ const info: OpenAPIV3.PathItemObject = {
 		parameters: [Requests.PathParams.address, Requests.PathParams.module_name, Requests.QueryParams.ledgerVersion],
 		responses: {
 			"200": Responses.Success200({
-				schema: schemas.module,
+				schema: Schemas.module,
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,

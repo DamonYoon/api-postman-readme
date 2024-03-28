@@ -2,7 +2,7 @@ import { OpenAPIV3 } from "openapi-types";
 import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
-import * as schemas from "../../resources/schemas";
+import Schemas from "../../resources/schemas";
 
 const summary = "Get events by event handle";
 const endpoint = "getEventsByEventHandle";
@@ -30,7 +30,7 @@ const info: OpenAPIV3.PathItemObject = {
 			"200": Responses.Success200({
 				schema: {
 					type: "array",
-					items: schemas.event,
+					items: Schemas.event,
 				},
 				example: Examples[endpoint],
 			}),
