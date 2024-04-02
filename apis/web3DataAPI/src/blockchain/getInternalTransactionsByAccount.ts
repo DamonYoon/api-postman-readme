@@ -5,7 +5,7 @@ import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const summary = "Get Internal Transactions by Account";
+const summary = "Get Internal Transactions By Account";
 const endpoint = "getInternalTransactionsByAccount";
 const isPublic = true;
 const tags = ["Blockchain API"];

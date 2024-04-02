@@ -5,9 +5,9 @@ import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
 
-const summary = "Get Transactions by Hashes";
+const summary = "Get Transactions By Hashes";
 const endpoint = "getTransactionsByHashes";
-const isPublic = false; //TODO: 개발 진행상황 확인 필요
+const isPublic = true;
 const tags = ["Blockchain API"];
 
 const info: OpenAPIV3.PathItemObject = {
@@ -19,7 +19,8 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		//TODO: 최대 조회 가능한 트랜잭션 수량 확인 필요
-		description: `여러 트랜잭션의 정보를 조회합니다. 최대 ${Constants.INPUT_ITEM_MAX}개의 트랜잭션을 조회할 수 있습니다. 
+		// description: `여러 트랜잭션의 정보를 조회합니다. 최대 ${Constants.INPUT_ITEM_MAX}개의 트랜잭션을 조회할 수 있습니다.
+		description: `여러 트랜잭션의 정보를 조회합니다. 최대 1000개의 트랜잭션을 조회할 수 있습니다. 
 
 > 🚧 decodeInput 사용 시 주의사항
 >

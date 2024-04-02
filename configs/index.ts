@@ -1,1 +1,1 @@
-export { default } from "./api.configs";
+export {} from "./readme.config";
