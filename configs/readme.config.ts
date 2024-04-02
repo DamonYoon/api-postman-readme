@@ -1,21 +1,23 @@
 import { ReadmeConfig } from "../types";
 import API_DOCS_TITLES from "../utils/titles.utils";
 
+const MAIN_VERSION = "1.0.1";
+
 export const README_CONFIGS: ReadmeConfig[] = [
 	{
 		version: "1.0.2",
 		apiDefinitions: [
 			{
 				title: API_DOCS_TITLES.WEB3_DATA_API,
-				id: "65fa8c319a046700577794d3",
+				id: "660b962df43fa500628e79db",
 			},
 			{
 				title: API_DOCS_TITLES.EVENT_STREAM,
-				id: "65fa8c319a046700577794d4",
+				id: "660b962df43fa500628e79dc",
 			},
 			{
 				title: API_DOCS_TITLES.NODE_API,
-				id: "65fa8c319a046700577794d5",
+				id: "660b962df43fa500628e79dd",
 			},
 		],
 	},
@@ -50,3 +52,14 @@ export const README_CONFIGS: ReadmeConfig[] = [
 		],
 	},
 ];
+
+const mainApiDefinitions = README_CONFIGS.find((config) => config.version === MAIN_VERSION)?.apiDefinitions;
+
+if (!mainApiDefinitions) {
+	throw new Error("API definitions not found");
+}
+
+export const MAIN_API_CONFIGS = {
+	version: MAIN_VERSION,
+	apiDefinitions: mainApiDefinitions,
+};

@@ -33,7 +33,7 @@ const info: OpenAPIV3.PathItemObject = {
 		},
 		responses: {
 			"200": Responses.Success200({
-				schema: Schemas.TransactionTypes.pendingTransactionBase,
+				schema: Schemas.TransactionTypes.pendingTransaction,
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,

@@ -18,11 +18,11 @@ const paths: OpenAPIV3.PathsObject = {
 	},
 	[`/${TRANSACTIONS}/by_hash/{txn_hash}`]: getTransactionByHash,
 	[`/${TRANSACTIONS}/by_version/{txn_version}`]: getTransactionByVersion,
-	// [`/accounts/{address}/transactions`]: getAccountTransactions,
-	// [`/${TRANSACTIONS}/batch`]: submitBatchTransactions,
-	// [`/${TRANSACTIONS}/simulate`]: simulateTransaction,
-	// [`/${TRANSACTIONS}/encode_submission`]: encodeSubmission,
-	// [`/${TRANSACTIONS}/estimate_gas_price`]: estimateGasPrice,
+	[`/accounts/{address}/transactions`]: getAccountTransactions,
+	[`/${TRANSACTIONS}/batch`]: submitBatchTransactions,
+	[`/${TRANSACTIONS}/simulate`]: simulateTransaction,
+	[`/${TRANSACTIONS}/encode_submission`]: encodeSubmission,
+	[`/estimate_gas_price`]: estimateGasPrice,
 };
 
 export default paths;

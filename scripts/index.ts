@@ -4,12 +4,11 @@ import * as fs from "fs/promises";
 import { exec } from "child_process";
 import dotenv from "dotenv";
 import { ApiInfo } from "../types";
-import API_CONFIGS from "../configs/api.configs";
-import { README_CONFIGS } from "../configs/readme.config";
+import { MAIN_API_CONFIGS, README_CONFIGS } from "../configs/readme.config";
 dotenv.config();
 
-export function getVersionAndId(title: string) {
-	const { version } = API_CONFIGS;
+export function getMainVersionAndId(title: string) {
+	const { version } = MAIN_API_CONFIGS;
 	const apiConfig = README_CONFIGS.find((config) => config.version === version)?.apiDefinitions.find(
 		(config) => config.title === title
 	);

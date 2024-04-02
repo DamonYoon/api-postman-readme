@@ -6,11 +6,11 @@ import webhookUpdate from "./src/webhook/update";
 import webhookDelete from "./src/webhook/delete";
 import { ApiInfo } from "../../types";
 import API_DOCS_TITLES from "../../utils/titles.utils";
-import { getVersionAndId } from "../../scripts";
+import { getMainVersionAndId } from "../../scripts";
 
 const title = API_DOCS_TITLES.EVENT_STREAM;
 
-const { version, id } = getVersionAndId(title);
+const { version, id } = getMainVersionAndId(title);
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",

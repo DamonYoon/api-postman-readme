@@ -49,7 +49,7 @@ namespace Requests {
 			schema: {
 				type: "string",
 				pattern: Patterns.Aptos.address,
-				default: "0x1",
+				default: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
 			},
 			description: "조회하고자 하는 대상 계정의 주소. hexadecimal prefix가 없는 계정 주소도 검색 가능합니다.",
 		};
@@ -72,7 +72,7 @@ namespace Requests {
 			required: true,
 			schema: {
 				type: "string",
-				default: "coin",
+				default: "asset",
 			},
 			description: "조회하고자 하는 특정 모듈의 이름.",
 		};
@@ -215,6 +215,39 @@ namespace Requests {
 			description:
 				"조회할 블록의 데이터에 트랜잭션에 대한 데이터 포함 여부를 확인하는 파라미터. true로 설정 시 해당 블록 안에 있는 모든 트랜잭션에 대한 데이터를 포함합니다.",
 		};
+
+		export const estimate_gas_price: OpenAPIV3.ParameterObject = {
+			name: "estimate_gas_price",
+			in: "query",
+			required: false,
+			schema: {
+				type: "boolean",
+			},
+			description:
+				"Gas Unit Price 설정에 대한 Boolean 타입의 필드. True로 설정 시 추정된 가격의 Gas Unit Price가 사용됩니다.",
+		};
+
+		export const estimate_max_gas: OpenAPIV3.ParameterObject = {
+			name: "estimate_max_gas",
+			in: "query",
+			required: false,
+			schema: {
+				type: "boolean",
+			},
+			description:
+				"최대 가스 사용량 설정에 대한 Boolean 타입의 필드. True로 설정 시 가능한 최대치의 Max Gas Amount를 사용합니다.",
+		};
+
+		export const estimate_prioritized_gas_uint_price: OpenAPIV3.ParameterObject = {
+			name: "estimate_prioritized_gas_uint_price",
+			in: "query",
+			required: false,
+			schema: {
+				type: "boolean",
+			},
+			description:
+				"트랜잭션 가스 소모량 설정에 대한 Boolean 타입의 필드. True로 설정 시 측정치보다 높은 가격으로 트랜잭션을 실행합니다.",
+		};
 	}
 
 	export namespace BodyParams {
@@ -249,7 +282,8 @@ namespace Requests {
 			},
 		};
 
-		export const transaction: OpenAPIV3.SchemaObject = {
+		export const transactionWithoutSignature: OpenAPIV3.SchemaObject = {
+			title: "TransactionWithoutSignature",
 			type: "object",
 			required: [
 				"sender",
@@ -258,7 +292,6 @@ namespace Requests {
 				"gas_unit_price",
 				"expiration_timestamp_secs",
 				"payload",
-				"signature",
 			],
 			properties: {
 				sender: {
@@ -310,6 +343,15 @@ namespace Requests {
 						},
 					},
 				},
+			},
+		};
+
+		export const transaction: OpenAPIV3.SchemaObject = {
+			title: "Transaction",
+			type: "object",
+			required: [...transactionWithoutSignature.required!, "signature"],
+			properties: {
+				...transactionWithoutSignature.properties,
 				signature: {
 					type: "object",
 					description: "트랜잭션 발생 시 사용할 gas의 가격.",
@@ -328,6 +370,11 @@ namespace Requests {
 					},
 				},
 			},
+		};
+
+		export const transactionBatch: OpenAPIV3.SchemaObject = {
+			type: "array",
+			items: transaction,
 		};
 	}
 }

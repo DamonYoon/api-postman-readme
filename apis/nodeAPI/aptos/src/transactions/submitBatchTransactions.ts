@@ -2,6 +2,7 @@ import { OpenAPIV3 } from "openapi-types";
 import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import Examples from "../../resources/examples";
+import Schemas from "../../resources/schemas";
 
 const summary = "Submit batch transactions";
 const endpoint = "submitBatchTransactions";
@@ -15,15 +16,33 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags: ["Aptos"],
-		description: ``,
+		description: `여러 개의 트랜잭션을 모아 submit 합니다. 모든 트랜잭션이 성공할 경우, 202 코드가 반환되며 일부 실패한 트랜잭션이 있거나 모든 트랜잭션이 실패했을 경우에는 실패한 트랜잭션과 206 코드가 반환됩니다.`,
 		summary,
 		operationId,
-		parameters: [],
+		requestBody: {
+			required: true,
+			content: {
+				"application/json": {
+					schema: {
+						additionalProperties: false,
+						allOf: [
+							{
+								type: "array",
+								description: "트랜잭션의 배열",
+								items: Requests.BodyParams.transaction,
+							},
+						],
+					},
+				},
+			},
+		},
 		responses: {
 			"200": Responses.Success200({
 				schema: {
-					type: "array",
-					items: {},
+					type: "object",
+					properties: {
+						transaction_failures: Schemas.transactionFailures,
+					},
 				},
 				example: Examples[endpoint],
 			}),

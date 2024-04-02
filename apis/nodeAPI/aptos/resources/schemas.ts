@@ -339,6 +339,20 @@ namespace Schemas {
 		};
 	}
 
+	export const secondarySigners: OpenAPIV3.SchemaObject = {
+		type: "array",
+		description: "The other involved parties' signatures",
+		items: {
+			type: "object",
+			oneOf: [
+				AccountSignature.ed25519,
+				AccountSignature.multiEd25519,
+				AccountSignature.singleKey,
+				AccountSignature.multiKey,
+			],
+		},
+	};
+
 	export namespace TransactionSignature {
 		export const ed25519: OpenAPIV3.SchemaObject = SignatureTypes.ed25519;
 
@@ -373,19 +387,7 @@ namespace Schemas {
 						pattern: Patterns.Aptos.address,
 					},
 				},
-				secondary_signers: {
-					type: "array",
-					description: "The other involved parties' signatures",
-					items: {
-						type: "object",
-						oneOf: [
-							AccountSignature.ed25519,
-							AccountSignature.multiEd25519,
-							AccountSignature.singleKey,
-							AccountSignature.multiKey,
-						],
-					},
-				},
+				secondary_signers: secondarySigners,
 			},
 		};
 
@@ -394,7 +396,6 @@ namespace Schemas {
 			type: "object",
 			description: "The fee payer of the transaction",
 			required: [
-				"type",
 				"sender",
 				"secondary_signer_addresses",
 				"secondary_signers",
@@ -510,7 +511,7 @@ namespace Schemas {
 	};
 
 	export namespace TransactionTypes {
-		export const transactionBaseInfo: OpenAPIV3.SchemaObject = {
+		export const TransactionMetadata: OpenAPIV3.SchemaObject = {
 			type: "object",
 			required: [
 				"sender",
@@ -564,81 +565,21 @@ namespace Schemas {
 			},
 		};
 
-		export const pendingTransactionBase: OpenAPIV3.SchemaObject = {
-			required: [
-				"hash",
-				"sender",
-				"sequence_number",
-				"max_gas_amount",
-				"gas_unit_price",
-				"expiration_timestamp_secs",
-				"payload",
-				"signature",
-			],
-			properties: {
-				hash: {
-					type: "string",
-					description: "The hash of the transaction",
-				},
-				...transactionBaseInfo.properties,
-			},
-		};
-
-		export const pendingTransaction: OpenAPIV3.SchemaObject = {
-			title: "Pending Transaction",
+		export const TransactionOutcomeDetails: OpenAPIV3.SchemaObject = {
 			type: "object",
-			description: "A transaction",
 			required: [
-				"type",
-				"hash",
-				"sender",
-				"sequence_number",
-				"max_gas_amount",
-				"gas_unit_price",
-				"expiration_timestamp_secs",
-				"payload",
-				"signature",
-			],
-			properties: {
-				type: {
-					type: "string",
-					description: "The type of the transaction",
-					example: "pending_transaction",
-				},
-				...pendingTransactionBase.properties,
-			},
-		};
-
-		export const userTransaction: OpenAPIV3.SchemaObject = {
-			title: "User Transaction",
-			type: "object",
-			description: "A user transaction",
-			required: [
-				"type",
 				"version",
 				"hash",
 				"state_change_hash",
-				"event_checkpoint_hash",
+				"event_root_hash",
+				"state_checkpoint_hash",
 				"gas_used",
 				"success",
 				"vm_status",
+				"accumulator_root_hash",
 				"changes",
-				"sender",
-				"sequence_number",
-				"max_gas_amount",
-				"gas_unit_price",
-				"expiration_timestamp_secs",
-				"payload",
-				"signature",
-				"events",
-				"timestamp",
 			],
 			properties: {
-				type: {
-					type: "string",
-					description: "The type of the transaction",
-					example: "user_transaction",
-				},
 				version: {
 					type: "string",
 					description: "The version of the transaction",
@@ -651,9 +592,17 @@ namespace Schemas {
 					type: "string",
 					description: "The state change hash of the transaction",
 				},
-				event_checkpoint_hash: {
+				event_root_hash: {
 					type: "string",
-					description: "The event checkpoint hash of the transaction",
+					description: "The event root hash of the transaction",
+				},
+				state_checkpoint_hash: {
+					type: "string",
+					description: "The state checkpoint hash of the transaction",
+				},
+				accumulator_root_hash: {
+					type: "string",
+					description: "The accumulator root hash of the transaction",
 				},
 				gas_used: {
 					type: "string",
@@ -690,7 +639,31 @@ namespace Schemas {
 						},
 					},
 				},
-				...transactionBaseInfo.properties,
+			},
+		};
+
+		export const pendingTransaction: OpenAPIV3.SchemaObject = {
+			title: "Pending Transaction",
+			type: "object",
+			description: "A transaction",
+			required: ["type", "hash", ...TransactionMetadata.required!],
+			properties: {
+				hash: {
+					type: "string",
+					description: "The hash of the transaction",
+				},
+				...TransactionMetadata.properties,
+			},
+		};
+
+		export const userTransaction: OpenAPIV3.SchemaObject = {
+			title: "User Transaction",
+			type: "object",
+			description: "A user transaction",
+			required: [...TransactionOutcomeDetails.required!, ...TransactionMetadata.required!, "events", "timestamp"],
+			properties: {
+				...TransactionOutcomeDetails.properties,
+				...TransactionMetadata.properties,
 				events: {
 					type: "array",
 					description: "The events of the transaction",
@@ -708,89 +681,23 @@ namespace Schemas {
 			title: "Genesis Transaction",
 			type: "object",
 			description: "A genesis transaction",
-			required: [
-				"type",
-				"version",
-				"hash",
-				"state_change_hash",
-				"event_root_hash",
-				"state_checkpoint_hash",
-				"gas_used",
-				"success",
-				"vm_status",
-				"accumulator_root_hash",
-				"changes",
-				"payload",
-				"events",
-			],
+			required: [...TransactionOutcomeDetails.required!, "events", "payload"],
 			properties: {
-				type: {
-					type: "string",
-					description: "The type of the transaction",
-					example: "genesis_transaction",
-				},
-				version: {
-					type: "string",
-					description: "The version of the transaction",
-				},
-				hash: {
-					type: "string",
-					description: "The hash of the transaction",
-				},
-				state_change_hash: {
-					type: "string",
-					description: "The state change hash of the transaction",
-				},
-				event_root_hash: {
-					type: "string",
-					description: "The event root hash of the transaction",
-				},
-				state_checkpoint_hash: {
-					type: "string",
-					description: "The state checkpoint hash of the transaction",
-				},
-				gas_used: {
-					type: "string",
-					pattern: Patterns.Aptos.uint64String,
-					description: "The gas used by the transaction",
-				},
-				success: {
-					type: "boolean",
-					description: "The success of the transaction",
-				},
-				vm_status: {
-					type: "string",
-					description: "The VM status of the transaction, can tell useful information in a failure",
-				},
-				accumulator_root_hash: {
-					type: "string",
-					description: "The accumulator root hash of the transaction",
-				},
-				changes: {
-					type: "array",
-					description: "The changes of the transaction",
-					items: {
-						type: "object",
-						properties: {
-							type: {
-								type: "string",
-								description: "The type of the change",
-							},
-							address: address,
-							state_key_hash: {
-								type: "string",
-								description: "The state key hash.",
-							},
-							module: {
-								type: "string",
-								description: "Move module id is a string representation of Move module.",
-							},
-						},
-					},
-				},
+				...TransactionOutcomeDetails.properties,
 				payload: {
 					type: "object",
-					oneOf: [Payload.entryFunction, Payload.script, Payload.moduleBundle, Payload.multisig],
+					description: "A write set payload, used only for genesis transactions",
+					properties: {
+						type: {
+							type: "string",
+							description: "The type of the payload",
+							example: "write_set_payload",
+						},
+						write_set: {
+							type: "object",
+							description: "The write set of the transaction",
+						},
+					},
 				},
 				events: {
 					type: "array",
@@ -804,91 +711,18 @@ namespace Schemas {
 			title: "Block Metadata Transaction",
 			type: "object",
 			required: [
-				"type",
-				"version",
-				"hash",
-				"state_change_hash",
-				"event_root_hash",
-				"state_checkpoint_hash",
-				"gas_used",
-				"success",
-				"vm_status",
-				"accumulator_root_hash",
-				"changes",
+				...TransactionOutcomeDetails.required!,
+				"events",
 				"id",
 				"epoch",
 				"round",
-				"events",
 				"previous_block_votes_bitvec",
 				"proposer",
 				"failed_proposer_indices",
 				"timestamp",
 			],
 			properties: {
-				type: {
-					type: "string",
-					description: "The type of the transaction",
-					example: "block_metadata_transaction",
-				},
-				version: {
-					type: "string",
-					description: "The version of the transaction",
-				},
-				hash: {
-					type: "string",
-					description: "The hash of the transaction",
-				},
-				state_change_hash: {
-					type: "string",
-					description: "The state change hash of the transaction",
-				},
-				event_root_hash: {
-					type: "string",
-					description: "The event root hash of the transaction",
-				},
-				state_checkpoint_hash: {
-					type: "string",
-					description: "The state checkpoint hash of the transaction",
-				},
-				gas_used: {
-					type: "string",
-					pattern: Patterns.Aptos.uint64String,
-					description: "The gas used by the transaction",
-				},
-				success: {
-					type: "boolean",
-					description: "The success of the transaction",
-				},
-				vm_status: {
-					type: "string",
-					description: "The VM status of the transaction, can tell useful information in a failure",
-				},
-				accumulator_root_hash: {
-					type: "string",
-					description: "The accumulator root hash of the transaction",
-				},
-				changes: {
-					type: "array",
-					description: "The changes of the transaction",
-					items: {
-						type: "object",
-						properties: {
-							type: {
-								type: "string",
-								description: "The type of the change",
-							},
-							address: address,
-							state_key_hash: {
-								type: "string",
-								description: "The state key hash.",
-							},
-							module: {
-								type: "string",
-								description: "Move module id is a string representation of Move module.",
-							},
-						},
-					},
-				},
+				...TransactionOutcomeDetails.properties,
 				id: {
 					type: "string",
 					description: "The ID of the transaction",
@@ -932,85 +766,9 @@ namespace Schemas {
 		export const stateCheckpointTransaction: OpenAPIV3.SchemaObject = {
 			title: "State Checkpoint Transaction",
 			type: "object",
-			required: [
-				"type",
-				"version",
-				"hash",
-				"state_change_hash",
-				"event_root_hash",
-				"state_checkpoint_hash",
-				"gas_used",
-				"success",
-				"vm_status",
-				"accumulator_root_hash",
-				"changes",
-				"timestamp",
-			],
+			required: [...TransactionOutcomeDetails.required!, "timestamp"],
 			properties: {
-				type: {
-					type: "string",
-					description: "The type of the transaction",
-					example: "block_metadata_transaction",
-				},
-				version: {
-					type: "string",
-					description: "The version of the transaction",
-				},
-				hash: {
-					type: "string",
-					description: "The hash of the transaction",
-				},
-				state_change_hash: {
-					type: "string",
-					description: "The state change hash of the transaction",
-				},
-				event_root_hash: {
-					type: "string",
-					description: "The event root hash of the transaction",
-				},
-				state_checkpoint_hash: {
-					type: "string",
-					description: "The state checkpoint hash of the transaction",
-				},
-				gas_used: {
-					type: "string",
-					pattern: Patterns.Aptos.uint64String,
-					description: "The gas used by the transaction",
-				},
-				success: {
-					type: "boolean",
-					description: "The success of the transaction",
-				},
-				vm_status: {
-					type: "string",
-					description: "The VM status of the transaction, can tell useful information in a failure",
-				},
-				accumulator_root_hash: {
-					type: "string",
-					description: "The accumulator root hash of the transaction",
-				},
-				changes: {
-					type: "array",
-					description: "The changes of the transaction",
-					items: {
-						type: "object",
-						properties: {
-							type: {
-								type: "string",
-								description: "The type of the change",
-							},
-							address: address,
-							state_key_hash: {
-								type: "string",
-								description: "The state key hash.",
-							},
-							module: {
-								type: "string",
-								description: "Move module id is a string representation of Move module.",
-							},
-						},
-					},
-				},
+				...TransactionOutcomeDetails.properties,
 				timestamp: {
 					type: "string",
 					pattern: Patterns.Aptos.uint64String,
@@ -1023,11 +781,66 @@ namespace Schemas {
 	export const transaction: OpenAPIV3.SchemaObject = {
 		type: "object",
 		oneOf: [
-			TransactionTypes.pendingTransaction,
-			TransactionTypes.userTransaction,
-			TransactionTypes.genesisTransaction,
-			TransactionTypes.blockMetadataTransaction,
-			TransactionTypes.stateCheckpointTransaction,
+			{
+				type: "object",
+				allOf: [
+					{
+						type: "string",
+						description: "The type of the transaction",
+						example: "pending_transaction",
+					},
+					TransactionTypes.pendingTransaction,
+				],
+				required: ["type", ...TransactionTypes.pendingTransaction.required!],
+			},
+			{
+				type: "object",
+				allOf: [
+					{
+						type: "string",
+						description: "The type of the transaction",
+						example: "user_transaction",
+					},
+					TransactionTypes.userTransaction,
+				],
+				required: ["type", ...TransactionTypes.userTransaction.required!],
+			},
+			{
+				type: "object",
+				allOf: [
+					{
+						type: "string",
+						description: "The type of the transaction",
+						example: "genesis_transaction",
+					},
+					TransactionTypes.genesisTransaction,
+				],
+				required: ["type", ...TransactionTypes.genesisTransaction.required!],
+			},
+			{
+				type: "object",
+				allOf: [
+					{
+						type: "string",
+						description: "The type of the transaction",
+						example: "block_metadata_transaction",
+					},
+					TransactionTypes.blockMetadataTransaction,
+				],
+				required: ["type", ...TransactionTypes.blockMetadataTransaction.required!],
+			},
+			{
+				type: "object",
+				allOf: [
+					{
+						type: "string",
+						description: "The type of the transaction",
+						example: "state_checkpoint_transaction",
+					},
+					TransactionTypes.stateCheckpointTransaction,
+				],
+				required: ["type", ...TransactionTypes.stateCheckpointTransaction.required!],
+			},
 		],
 	};
 
@@ -1173,6 +986,62 @@ namespace Schemas {
 				type: "string",
 				description:
 					"Git hash of the build of the API endpoint. Can be used to determine the exact software version used by the API endpoint.",
+			},
+		},
+	};
+
+	export const error: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: ["message", "error_code"],
+		properties: {
+			message: {
+				type: "string",
+			},
+			error_code: {
+				type: "string",
+				description: `These codes provide more granular error information beyond just the HTTP status code of the response.
+
+Allowed values: account_not_found, resource_not_found, module_not_found, struct_field_not_found, version_not_found, transaction_not_found, table_item_not_found, block_not_found, state_value_not_found, version_pruned, block_pruned, invalid_input, invalid_transaction_update, sequence_number_too_old, vm_error, health_check_failed, mempool_is_full, internal_error, web_framework_error, bcs_not_supported, api_disabled`,
+			},
+			vm_error_code: {
+				type: "integer",
+				description: "A code providing VM error details when submitting transactions to the VM.",
+			},
+		},
+	};
+
+	export const transactionFailures: OpenAPIV3.SchemaObject = {
+		title: "Transaction Failures",
+		type: "array",
+		description: "The failures of the transaction",
+		required: ["error", "transaction_index"],
+		items: {
+			type: "object",
+			properties: {
+				error: error,
+				transaction_index: {
+					type: "integer",
+					description: "The index of the transaction",
+				},
+			},
+		},
+	};
+
+	export const gasEstimateObject: OpenAPIV3.SchemaObject = {
+		type: "object",
+		required: ["gas_estimate"],
+		properties: {
+			deprioritized_gas_estimate: {
+				type: "integer",
+				description: "The deprioritized estimate for the gas unit price",
+			},
+			gas_estimate: {
+				type: "integer",
+				description: "The current estimate for the gas unit price",
+			},
+			prioritized_gas_estimate: {
+				type: "integer",
+				description: "The prioritized estimate for the gas unit price",
 			},
 		},
 	};
