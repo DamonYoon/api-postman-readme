@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 import { Patterns } from "../../../../utils/patterns.utils";
-import Schemas, * as schemas from "./schemas";
+import Schemas from "./schemas";
 
 type Success200Function = (option: OpenAPIV3.MediaTypeObject) => OpenAPIV3.ResponseObject;
 
