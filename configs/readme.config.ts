@@ -5,6 +5,23 @@ const MAIN_VERSION = "1.0.1";
 
 export const README_CONFIGS: ReadmeConfig[] = [
 	{
+		version: "1.0.3",
+		apiDefinitions: [
+			{
+				title: API_DOCS_TITLES.WEB3_DATA_API,
+				id: "660cbc6fbb0204004cd1fd44",
+			},
+			{
+				title: API_DOCS_TITLES.EVENT_STREAM,
+				id: "660cbc6fbb0204004cd1fd45",
+			},
+			{
+				title: API_DOCS_TITLES.NODE_API,
+				id: "660cbc6fbb0204004cd1fd46",
+			},
+		],
+	},
+	{
 		version: "1.0.2",
 		apiDefinitions: [
 			{

@@ -1,6 +1,5 @@
 import * as path from "path";
 import { convertTsToYaml, getApiInfo } from ".";
-import { MAIN_API_CONFIGS } from "../configs/readme.config";
 
 const versionPattern = /^(main|\d+\.\d+\.\d+)$/;
 
@@ -13,13 +12,11 @@ function validateInputs(tsFilePathInput?: string, versionInput?: string): [strin
 		throw new Error("Error: A version is required as the second argument.");
 	}
 
-	const effectiveVersion = versionInput === "main" ? MAIN_API_CONFIGS.version : versionInput;
-
-	if (!versionPattern.test(effectiveVersion)) {
+	if (!versionPattern.test(versionInput)) {
 		throw new Error("The version must be 'main' or in the format of x.x.x.");
 	}
 
-	return [tsFilePathInput, effectiveVersion];
+	return [tsFilePathInput, versionInput];
 }
 
 async function main() {

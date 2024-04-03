@@ -31,12 +31,23 @@ export async function getApiInfo(tsFilePath: string): Promise<ApiInfo> {
 
 export async function convertTsToYaml(apiInfo: ApiInfo, version: string, outputDir: string) {
 	try {
-		apiInfo.oasDocs.info.version = version;
+		const effectiveVersion = version === "main" ? MAIN_API_CONFIGS.version : version;
+
+		apiInfo.oasDocs.info.version = effectiveVersion;
 
 		const yamlData = yaml.dump({ ...apiInfo.oasDocs }); // yaml로 변환
 
-		const baseFileName = `${apiInfo.oasDocs.info.version.replace(/\./g, "_")}_${apiInfo.title.replace(/ /g, "_")}`;
-		const outputPath = path.join(outputDir, `${baseFileName}.yaml`);
+		const outputDirPath = path.join(outputDir, `v${version}`);
+
+		// if output directory does not exist, create it
+		await fs.mkdir(outputDirPath, { recursive: true });
+
+		const nowDate = new Date().toISOString().split("T")[0];
+		const nowDateYYYYMMDD = nowDate ? nowDate.replace(/-/g, "") : "UnknownDate";
+
+		const baseFileName = `${nowDateYYYYMMDD}_${apiInfo.title.replace(/ /g, "_")}`;
+
+		const outputPath = path.join(outputDirPath, `${baseFileName}.yaml`);
 
 		await fs.writeFile(outputPath, yamlData, "utf8");
 		console.log(`${outputPath} file created successfully`);
