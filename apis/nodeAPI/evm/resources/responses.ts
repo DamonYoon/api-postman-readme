@@ -1,15 +1,73 @@
 import { OpenAPIV3 } from "openapi-types";
+import { Patterns } from "../../../../utils/patterns.utils";
+import Schemas, * as schemas from "./schemas";
 
-interface Success200Interface {
-	(option: OpenAPIV3.MediaTypeObject): OpenAPIV3.ResponseObject;
-}
+type Success200Function = (option: OpenAPIV3.MediaTypeObject) => OpenAPIV3.ResponseObject;
 
 namespace Responses {
 	/* Success Response Objects */
-	export const Success200: Success200Interface = (option) => ({
+	export const Success200: Success200Function = (option) => ({
 		description: "Successful Response",
 		content: {
 			"application/json": option,
+		},
+		headers: {
+			"X-APTOS-BLOCK-HEIGHT": {
+				description: "Current block height of the chain",
+				schema: {
+					type: "integer",
+				},
+				required: true,
+			},
+			"X-APTOS-CHAIN-ID": {
+				description: "Chain ID of the current chain",
+				schema: {
+					type: "integer",
+				},
+				required: true,
+			},
+			"X-APTOS-EPOCH": {
+				description: "Current epoch of the chain",
+				schema: {
+					type: "integer",
+				},
+				required: true,
+			},
+			"X-APTOS-LEDGER-OLDEST-VERSION": {
+				description: "Oldest non-pruned ledger version of the chain",
+				schema: {
+					type: "integer",
+				},
+				required: true,
+			},
+			"X-APTOS-LEDGER-TIMESTAMPUSEC": {
+				description: "Current timestamp of the chain",
+				schema: {
+					type: "integer",
+				},
+				required: true,
+			},
+			"X-APTOS-LEDGER-VERSION": {
+				description: "Current ledger version of the chain",
+				schema: {
+					type: "integer",
+				},
+				required: true,
+			},
+			"X-APTOS-OLDEST-BLOCK-HEIGHT": {
+				description: "Oldest non-pruned block height of the chain",
+				schema: {
+					type: "integer",
+				},
+				required: true,
+			},
+			"X-APTOS-CURSOR": {
+				description: "Cursor for the next page",
+				schema: {
+					type: "string",
+				},
+				required: true,
+			},
 		},
 	});
 
@@ -18,114 +76,7 @@ namespace Responses {
 		description: "Bad Request",
 		content: {
 			"application/json": {
-				schema: {
-					type: "object",
-					properties: {
-						code: {
-							type: "string",
-						},
-						message: {
-							type: "string",
-						},
-					},
-					example: {
-						code: "INVALID_PARAMETER",
-						message:
-							"Invalid parameter: { PARAMETER1_NAME = PARAMETER1_VALUE, PARAMETER2_NAME = PARAMETER2_VALUE, ... }",
-					},
-				},
-			},
-		},
-	};
-
-	export const Error401: OpenAPIV3.ResponseObject = {
-		description: "Unauthorized",
-		content: {
-			"application/json": {
-				schema: {
-					type: "object",
-					properties: {
-						code: {
-							type: "string",
-						},
-						message: {
-							type: "string",
-						},
-					},
-					example: {
-						code: "AUTHENTICATION_FAILED",
-						message: "Authentication failed",
-					},
-				},
-			},
-		},
-	};
-
-	export const Error403: OpenAPIV3.ResponseObject = {
-		description: "Forbidden",
-		content: {
-			"application/json": {
-				schema: {
-					type: "object",
-					properties: {
-						code: {
-							type: "string",
-						},
-						message: {
-							type: "string",
-						},
-					},
-					example: {
-						code: "PERMISSION_DENIED",
-						message: "Permission denied",
-					},
-				},
-			},
-		},
-	};
-
-	export const Error404: OpenAPIV3.ResponseObject = {
-		description: "Not Found",
-		content: {
-			"application/json": {
-				schema: {
-					type: "object",
-					properties: {
-						code: {
-							type: "string",
-						},
-						message: {
-							type: "string",
-						},
-					},
-					example: {
-						code: "RESOURCE_NOT_FOUND",
-						message: "Resource not found: { RESOURCE1_NAME = RESOURCE1_VALUE, RESOURCE2_NAME = RESOURCE2_VALUE, ... }",
-					},
-				},
-			},
-		},
-	};
-
-	export const Error429: OpenAPIV3.ResponseObject = {
-		description: "Too Many Requests",
-		content: {
-			"application/json": {
-				schema: {
-					type: "object",
-					properties: {
-						code: {
-							type: "string",
-						},
-						message: {
-							type: "string",
-						},
-					},
-					example: {
-						code: "TOO_MANY_REQUESTS",
-						message: "Too many requests",
-					},
-				},
+				schema: Schemas.error,
 			},
 		},
 	};

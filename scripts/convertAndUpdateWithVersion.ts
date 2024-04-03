@@ -41,7 +41,7 @@ async function main() {
 		const apiInfo = await getApiInfo(tsFilePath);
 
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
-		const outputPath = await convertTsToYaml(apiInfo, version, outputDir);
+		const outputPath = await convertTsToYaml(apiInfo, version, outputDir, tsFilePath);
 
 		const apiDefinitionId = findApiDefinitionId(version, apiInfo.title);
 		await updateToReadme(outputPath, apiDefinitionId);

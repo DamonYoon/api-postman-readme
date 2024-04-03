@@ -29,13 +29,15 @@ export async function getApiInfo(tsFilePath: string): Promise<ApiInfo> {
 	return apiInfo;
 }
 
-export async function convertTsToYaml(apiInfo: ApiInfo, version: string, outputDir: string) {
+export async function convertTsToYaml(apiInfo: ApiInfo, version: string, outputDir: string, tsFilePath: string) {
 	try {
 		const effectiveVersion = version === "main" ? MAIN_API_CONFIGS.version : version;
 
 		apiInfo.oasDocs.info.version = effectiveVersion;
 
 		const yamlData = yaml.dump({ ...apiInfo.oasDocs }); // yaml로 변환
+
+		const folderName = path.basename(path.dirname(tsFilePath));
 
 		const outputDirPath = path.join(outputDir, `v${version}`);
 
@@ -45,7 +47,7 @@ export async function convertTsToYaml(apiInfo: ApiInfo, version: string, outputD
 		const nowDate = new Date().toISOString().split("T")[0];
 		const nowDateYYYYMMDD = nowDate ? nowDate.replace(/-/g, "") : "UnknownDate";
 
-		const baseFileName = `${nowDateYYYYMMDD}_${apiInfo.title.replace(/ /g, "_")}`;
+		const baseFileName = `${nowDateYYYYMMDD}_${folderName}`;
 
 		const outputPath = path.join(outputDirPath, `${baseFileName}.yaml`);
 

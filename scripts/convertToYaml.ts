@@ -28,7 +28,7 @@ async function main() {
 		const apiInfo = await getApiInfo(tsFilePath);
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
 
-		await convertTsToYaml(apiInfo, versionInput, outputDir);
+		await convertTsToYaml(apiInfo, versionInput, outputDir, tsFilePath);
 		console.log("API documentation has been successfully generated.");
 	} catch (err) {
 		if (err instanceof Error) {
