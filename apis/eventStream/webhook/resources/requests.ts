@@ -1,5 +1,5 @@
 import { OpenAPIV3 } from "openapi-types";
-import { Patterns } from "../../../utils/patterns.utils";
+import { Patterns } from "../../../../utils/patterns.utils";
 
 namespace Requests {
 	/** Path Parameters **/

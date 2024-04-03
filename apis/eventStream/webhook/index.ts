@@ -1,12 +1,12 @@
 import { OpenAPIV3 } from "openapi-types";
-import { WEB3_DATA_API_BASE_URL } from "../../utils/urls.utils";
-import webhookCreate from "./src/webhook/create";
-import webhookGet from "./src/webhook/get";
-import webhookUpdate from "./src/webhook/update";
-import webhookDelete from "./src/webhook/delete";
-import { ApiInfo } from "../../types";
-import API_DOCS_TITLES from "../../utils/titles.utils";
-import { getMainVersionAndId } from "../../scripts";
+import { WEB3_DATA_API_BASE_URL } from "../../../utils/urls.utils";
+import webhookCreate from "./src/create";
+import webhookGet from "./src/get";
+import webhookUpdate from "./src/update";
+import webhookDelete from "./src/delete";
+import { ApiInfo } from "../../../types";
+import API_DOCS_TITLES from "../../../utils/titles.utils";
+import { getMainVersionAndId } from "../../../scripts";
 
 const title = API_DOCS_TITLES.EVENT_STREAM;
 
