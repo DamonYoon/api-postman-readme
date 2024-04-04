@@ -4,13 +4,12 @@ import webhookCreate from "./src/create";
 import webhookGet from "./src/get";
 import webhookUpdate from "./src/update";
 import webhookDelete from "./src/delete";
-import { ApiInfo } from "../../../types";
 import API_DOCS_TITLES from "../../../utils/titles.utils";
-import { getMainVersionAndId } from "../../../scripts";
+import { MAIN_API_CONFIGS } from "../../../configs/readme.config";
 
 const title = API_DOCS_TITLES.EVENT_STREAM;
 
-const { version, id } = getMainVersionAndId(title);
+const version = MAIN_API_CONFIGS.version;
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
@@ -44,10 +43,4 @@ const oasDocs: OpenAPIV3.Document = {
 	},
 };
 
-const apiInfo: ApiInfo = {
-	title,
-	id,
-	oasDocs,
-};
-
-export default apiInfo;
+export default oasDocs;

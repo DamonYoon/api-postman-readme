@@ -1,20 +1,19 @@
 import { OpenAPIV3 } from "openapi-types";
 import { NODE_API_BASE_URL } from "../../../utils/urls.utils";
-import { ApiInfo } from "../../../types";
 import API_DOCS_TITLES from "../../../utils/titles.utils";
-import { getMainVersionAndId } from "../../../scripts";
 import accountPaths from "./src/accounts";
 import blockPaths from "./src/blocks";
 import eventsPaths from "./src/events";
 import generalPaths from "./src/general";
 import tablesPaths from "./src/tables";
 import transactionsPaths from "./src/transactions";
+import { MAIN_API_CONFIGS } from "../../../configs/readme.config";
 
 const APTOS_VERSION = "v1";
 
 const title = API_DOCS_TITLES.NODE_API;
 
-const { version, id } = getMainVersionAndId(title);
+const version = MAIN_API_CONFIGS.version;
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
@@ -56,10 +55,4 @@ const oasDocs: OpenAPIV3.Document = {
 	},
 };
 
-const apiInfo: ApiInfo = {
-	title,
-	id,
-	oasDocs,
-};
-
-export default apiInfo;
+export default oasDocs;

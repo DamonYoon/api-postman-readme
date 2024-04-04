@@ -1,5 +1,5 @@
 import * as path from "path";
-import { convertTsToYaml, getApiInfo, updateToReadme } from ".";
+import { convertTsToYaml, getOasDocs, updateToReadme } from ".";
 import { README_CONFIGS } from "../configs/readme.config";
 
 const versionPattern = /^(main|\d+\.\d+\.\d+)$/;
@@ -38,12 +38,12 @@ async function main() {
 		const [tsFilePathInput, version] = validateInputs(process.argv[2], process.argv[3]);
 
 		const tsFilePath = path.resolve(currentWorkingDir, tsFilePathInput);
-		const apiInfo = await getApiInfo(tsFilePath);
+		const oasDocs = await getOasDocs(tsFilePath);
 
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
-		const outputPath = await convertTsToYaml(apiInfo, version, outputDir, tsFilePath);
+		const outputPath = await convertTsToYaml(oasDocs, version, outputDir, tsFilePath);
 
-		const apiDefinitionId = findApiDefinitionId(version, apiInfo.title);
+		const apiDefinitionId = findApiDefinitionId(version, oasDocs.info.title);
 		await updateToReadme(outputPath, apiDefinitionId);
 
 		console.log("Documentation has been successfully updated.");

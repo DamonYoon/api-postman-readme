@@ -5,13 +5,12 @@ import nativePaths from "./src/native";
 import tokenPaths from "./src/token";
 import blockchainPaths from "./src/blockchain";
 import statsPaths from "./src/stats";
-import { ApiInfo } from "../../types";
 import API_DOCS_TITLES from "../../utils/titles.utils";
-import { getMainVersionAndId } from "../../scripts";
+import { MAIN_API_CONFIGS } from "../../configs/readme.config";
 
 const title = API_DOCS_TITLES.WEB3_DATA_API;
 
-const { version, id } = getMainVersionAndId(title);
+const version = MAIN_API_CONFIGS.version;
 
 const oasDocs: OpenAPIV3.Document = {
 	openapi: "3.1.0",
@@ -42,10 +41,4 @@ const oasDocs: OpenAPIV3.Document = {
 	},
 };
 
-const apiInfo: ApiInfo = {
-	title,
-	id,
-	oasDocs,
-};
-
-export default apiInfo;
+export default oasDocs;

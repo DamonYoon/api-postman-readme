@@ -38,11 +38,19 @@ const info: OpenAPIV3.PathItemObject = {
 							{
 								type: "object",
 								properties: {
-									block: { ...Requests.block, default: "latest" },
+									transactionHashes: {
+										type: "array",
+										items: {
+											...Requests.transactionHash,
+										},
+										minItems: 1,
+										maxItems: 1000,
+										description: "조회할 트랜잭션의 해시값을 배열로 입력합니다.",
+										default: ["0x1632ac1627903e586c8ea0b1c134908c34ee95e84face9a303abd63686eb2022"],
+									},
 								},
-								required: ["block"],
+								required: ["transactionHashes"],
 							},
-							Requests.PaginationSet,
 							{
 								type: "object",
 								properties: {
@@ -57,20 +65,23 @@ const info: OpenAPIV3.PathItemObject = {
 		},
 		responses: {
 			"200": Responses.Success200({
-				schema: DataDomains.Pagination({
-					allOf: [
-						DataDomains.TransactionWithReceipt,
-						{
-							type: "object",
-							properties: {
-								logs: {
-									...DataDomains.Log,
-									...DataDomains.DecodedLog,
+				schema: {
+					type: "array",
+					items: {
+						allOf: [
+							DataDomains.TransactionWithReceipt,
+							{
+								type: "object",
+								properties: {
+									logs: {
+										...DataDomains.Log,
+										...DataDomains.DecodedLog,
+									},
 								},
 							},
-						},
-					],
-				}),
+						],
+					},
+				},
 				example: Examples[endpoint],
 			}),
 			"400": Responses.Error400,

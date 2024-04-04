@@ -1,7 +1,7 @@
 import { ReadmeConfig } from "../types";
 import API_DOCS_TITLES from "../utils/titles.utils";
 
-const MAIN_VERSION = "1.0.1";
+const MAIN_VERSION = "1.0.2";
 
 export const README_CONFIGS: ReadmeConfig[] = [
 	{
@@ -9,15 +9,15 @@ export const README_CONFIGS: ReadmeConfig[] = [
 		apiDefinitions: [
 			{
 				title: API_DOCS_TITLES.WEB3_DATA_API,
-				id: "660cbc6fbb0204004cd1fd44",
+				id: "660e3287ba096500188ecc1e",
 			},
 			{
 				title: API_DOCS_TITLES.EVENT_STREAM,
-				id: "660cbc6fbb0204004cd1fd45",
+				id: "660e3287ba096500188ecc1f",
 			},
 			{
 				title: API_DOCS_TITLES.NODE_API,
-				id: "660cbc6fbb0204004cd1fd46",
+				id: "660e3287ba096500188ecc20",
 			},
 		],
 	},

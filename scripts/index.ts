@@ -5,6 +5,7 @@ import { exec } from "child_process";
 import dotenv from "dotenv";
 import { ApiInfo } from "../types";
 import { MAIN_API_CONFIGS, README_CONFIGS } from "../configs/readme.config";
+import { OpenAPIV3 } from "openapi-types";
 dotenv.config();
 
 export function getMainVersionAndId(title: string) {
@@ -20,22 +21,27 @@ export function getMainVersionAndId(title: string) {
 	return { version, id };
 }
 
-export async function getApiInfo(tsFilePath: string): Promise<ApiInfo> {
+export async function getOasDocs(tsFilePath: string): Promise<OpenAPIV3.Document> {
 	if (!tsFilePath.endsWith(".ts")) {
 		throw new Error("A valid TypeScript file path with a .ts extension must be provided as an argument.");
 	}
 	const module = await require(tsFilePath);
-	const apiInfo = module.default;
-	return apiInfo;
+	const oasDocs: OpenAPIV3.Document = module.default;
+	return oasDocs;
 }
 
-export async function convertTsToYaml(apiInfo: ApiInfo, version: string, outputDir: string, tsFilePath: string) {
+export async function convertTsToYaml(
+	oasDocs: OpenAPIV3.Document,
+	version: string,
+	outputDir: string,
+	tsFilePath: string
+) {
 	try {
-		const effectiveVersion = version === "main" ? MAIN_API_CONFIGS.version : version;
+		const inputVersion = version === "main" ? MAIN_API_CONFIGS.version : version;
 
-		apiInfo.oasDocs.info.version = effectiveVersion;
+		oasDocs.info.version = inputVersion;
 
-		const yamlData = yaml.dump({ ...apiInfo.oasDocs }); // yaml로 변환
+		const yamlData = yaml.dump({ ...oasDocs }); // yaml로 변환
 
 		const folderName = path.basename(path.dirname(tsFilePath));
 
@@ -46,8 +52,9 @@ export async function convertTsToYaml(apiInfo: ApiInfo, version: string, outputD
 
 		const nowDate = new Date().toISOString().split("T")[0];
 		const nowDateYYYYMMDD = nowDate ? nowDate.replace(/-/g, "") : "UnknownDate";
+		const timestamp = Math.floor(new Date().getTime() / 1000); // Unix timestamp in seconds
 
-		const baseFileName = `${nowDateYYYYMMDD}_${folderName}`;
+		const baseFileName = `${nowDateYYYYMMDD}_${folderName}_${timestamp}`;
 
 		const outputPath = path.join(outputDirPath, `${baseFileName}.yaml`);
 

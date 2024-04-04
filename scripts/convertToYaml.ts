@@ -1,5 +1,5 @@
 import * as path from "path";
-import { convertTsToYaml, getApiInfo } from ".";
+import { convertTsToYaml, getOasDocs } from ".";
 
 const versionPattern = /^(main|\d+\.\d+\.\d+)$/;
 
@@ -25,7 +25,7 @@ async function main() {
 		const [tsFilePathInput, versionInput] = validateInputs(process.argv[2], process.argv[3]);
 
 		const tsFilePath = path.resolve(currentWorkingDir, tsFilePathInput);
-		const apiInfo = await getApiInfo(tsFilePath);
+		const apiInfo = await getOasDocs(tsFilePath);
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
 
 		await convertTsToYaml(apiInfo, versionInput, outputDir, tsFilePath);
