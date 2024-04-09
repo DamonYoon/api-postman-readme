@@ -3,10 +3,59 @@ import * as path from "path";
 import * as fs from "fs/promises";
 import { exec } from "child_process";
 import dotenv from "dotenv";
-import { ApiInfo } from "../types";
 import { MAIN_API_CONFIGS, README_CONFIGS } from "../configs/readme.config";
 import { OpenAPIV3 } from "openapi-types";
 dotenv.config();
+
+export function delay(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Processes items in batches, awaiting completion of one batch before starting the next.
+ * @param items - The items to process.
+ * @param callback - The callback function to process each item.
+ * @param batchSize - The number of items to process in each batch.
+ * @param delay - The delay in milliseconds between batches.
+ * @returns {Promise<void>}
+ */
+export async function batchProcess<T>({
+	items,
+	callback,
+	batchSize,
+	delay,
+}: {
+	items: T[];
+	callback: (item: T) => Promise<void>;
+	batchSize: number;
+	delay: number;
+}): Promise<void> {
+	let index = 0;
+
+	while (index < items.length) {
+		const batch = items.slice(index, index + batchSize);
+
+		// Promise.allSettled를 사용하여 배치 내 모든 작업이 완료될 때까지 기다림
+		await Promise.allSettled(
+			batch.map((item) =>
+				callback(item).catch((error) => {
+					if (error.response) {
+						console.error("API Error Response Data:", error.response.data);
+					}
+					console.error("Error deleting API specifications:", error.message);
+				})
+			)
+		);
+
+		index += batchSize;
+		console.log(`Processed batch up to index ${index} of ${items.length}`);
+
+		// 마지막 배치가 아니라면 딜레이를 적용
+		if (index < items.length) {
+			await new Promise((resolve) => setTimeout(resolve, delay));
+		}
+	}
+}
 
 export function getMainVersionAndId(title: string) {
 	const { version } = MAIN_API_CONFIGS;

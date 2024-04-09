@@ -14,3 +14,21 @@ export interface ReadmeConfig {
 	version: string;
 	apiDefinitions: ApiDefinition[];
 }
+
+export interface ReadmeApiSpec {
+	title: string;
+	source: string | null;
+	_id: string | null;
+	version: string | null;
+	lastSynced: string | null;
+	category: {
+		title: string | null;
+		slug: string | null;
+		order: number;
+		_id: string | null;
+		type: string | null;
+		id: string | null;
+	} | null;
+	type: string | null;
+	id: string | null;
+}

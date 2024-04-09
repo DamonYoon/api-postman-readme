@@ -36,6 +36,35 @@ const oasDocs: OpenAPIV3.Document = {
 			},
 		},
 	],
+	tags: [
+		{
+			name: "Ethereum",
+			externalDocs: {
+				url: "https://developer.nodit.io/reference/eth_getproof",
+			},
+		},
+		{
+			name: "Polygon",
+			externalDocs: {
+				url: "https://developer.nodit.io/reference/polygon_eth_getproof",
+			},
+		},
+		{
+			name: "Arbitrum",
+			externalDocs: {
+				url: "https://developer.nodit.io/reference/arbitrum_eth_getproof",
+			},
+		},
+		{
+			name: "Optimism",
+			externalDocs: {
+				url: "https://developer.nodit.io/reference/optimism_eth_getproof",
+			},
+		},
+		{
+			name: "Aptos",
+		},
+	],
 	components: {
 		securitySchemes: {
 			api_key: {
