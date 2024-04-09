@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"convert": "ts-node ./scripts/convertToYaml.ts",
-		"update": "ts-node ./scripts/updateToReadmeWithId.ts",
-		"convert-and-update": "ts-node ./scripts/convertAndUpdateWithVersion.ts",
+		"convert": "ts-node ./scripts/convert.ts",
+		"update": "ts-node ./scripts/update.ts",
+		"convert-and-update": "ts-node ./scripts/convertAndUpdate.ts",
 		"delete-evm": "ts-node ./scripts/deleteEvmApis.ts"
 	},
 	"keywords": [],

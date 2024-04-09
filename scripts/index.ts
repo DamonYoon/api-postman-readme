@@ -92,8 +92,8 @@ export async function convertTsToYaml(
 
 		const yamlData = yaml.dump({ ...oasDocs }); // yaml로 변환
 
+		const fileName = path.basename(tsFilePath).split(".")[0];
 		const folderName = path.basename(path.dirname(tsFilePath));
-
 		const outputDirPath = path.join(outputDir, `v${version}`);
 
 		// if output directory does not exist, create it
@@ -103,7 +103,11 @@ export async function convertTsToYaml(
 		const nowDateYYYYMMDD = nowDate ? nowDate.replace(/-/g, "") : "UnknownDate";
 		const timestamp = Math.floor(new Date().getTime() / 1000); // Unix timestamp in seconds
 
-		const baseFileName = `${nowDateYYYYMMDD}_${folderName}_${timestamp}`;
+		let baseFileName = `${nowDateYYYYMMDD}_${folderName}_${timestamp}`;
+
+		if (path.dirname(tsFilePath).includes("nodeAPI")) {
+			baseFileName = `${nowDateYYYYMMDD}_${folderName}_${fileName}_${timestamp}`;
+		}
 
 		const outputPath = path.join(outputDirPath, `${baseFileName}.yaml`);
 

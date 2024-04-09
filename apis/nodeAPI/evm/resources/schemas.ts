@@ -21,6 +21,47 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 			},
 		},
 	};
+
+	export namespace ServerVariables {
+		export const ethereum: {
+			[variable: string]: OpenAPIV3.ServerVariableObject;
+		} = {
+			protocol: {
+				enum: ["ethereum"],
+				default: "ethereum",
+			},
+			network: {
+				enum: ["mainnet", "sepolia", "holesky"],
+				default: "mainnet",
+			},
+		};
+
+		export const polygon: {
+			[variable: string]: OpenAPIV3.ServerVariableObject;
+		} = {
+			protocol: {
+				enum: ["polygon"],
+				default: "polygon",
+			},
+			network: {
+				enum: ["mainnet", "amoy"],
+				default: "mainnet",
+			},
+		};
+
+		export const arbitrum: {
+			[variable: string]: OpenAPIV3.ServerVariableObject;
+		} = {
+			protocol: {
+				enum: ["arbitrum"],
+				default: "arbitrum",
+			},
+			network: {
+				enum: ["mainnet"],
+				default: "mainnet",
+			},
+		};
+	}
 }
 
 export default Schemas;

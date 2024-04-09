@@ -9,15 +9,15 @@ export const README_CONFIGS: ReadmeConfig[] = [
 		apiDefinitions: [
 			{
 				title: API_DOCS_TITLES.WEB3_DATA_API,
-				id: "6613a7f4a960880062004d13",
+				id: "6614c91b17414f0037e49b3d",
 			},
 			{
 				title: API_DOCS_TITLES.EVENT_STREAM,
-				id: "6613a7f4a960880062004d14",
+				id: "6614c91b17414f0037e49b3e",
 			},
 			{
 				title: API_DOCS_TITLES.NODE_API,
-				id: "6613a7f4a960880062004d15",
+				id: "6614c91b17414f0037e49b3f",
 			},
 		],
 	},

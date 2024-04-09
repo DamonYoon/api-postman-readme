@@ -12,23 +12,23 @@ The docs ID and title should be written in [api configs](configs/api.configs.ts)
 ### 1. Convert to Yaml file from Ts file
 A version to edited is required. If you want to edit published version, you can enter "main" instead of the specific version.
 ```sh
-npm run convert -- ${filePath} ${version}
+npm run convert ${filePath} ${version}
 ```
 
 ### 2. Update Docs with API Definition ID
 
 ```sh
-npm run update -- ${filePath} ${id}
+npm run update ${filePath} ${id}
 ```
 
 ### 3. Convert and Update Docs with Docs Version
 A version to edited is required. If you want to edit published version, you can enter "main" instead of the specific version.
 ```sh
-npm run convert-and-update -- ${filePath} ${version}
+npm run convert-and-update ${filePath} ${version}
 ```
 
 ### 4. Delete EVM Node APIs with Docs Version
 A version to edited is required. If you want to edit published version, you can enter "main" instead of the specific version.
 ```sh
-npm run delete-evm -- ${version}
+npm run delete-evm ${version}
 ```
