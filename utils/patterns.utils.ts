@@ -8,20 +8,15 @@ export const Patterns = {
 	yyyymmddhh: "^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])-([01][0-9]|2[0-3])$", // YYYY-MM-DD-HH 형식의 날짜 문자열
 
 	// String
-	hexaDecimal: "^0[xX][0-9a-fA-F]+$", // 0x로 시작하는 16진수 문자열
-	hexaDecimal8: "^0[xX][0-9a-fA-F]{8}$", // 0x로 시작하는 8자리 16진수 문자열
-	hexaDecimal64: "^0[xX][0-9a-fA-F]{64}$", // 0x로 시작하는 64자리 16진수 문자열
-	hexaDecimal256: "^0[xX][0-9a-fA-F]{256}$", // 0x로 시작하는 256자리 16진수 문자열
-	hexaDecimal512: "^0[xX][0-9a-fA-F]{512}$", // 0x로 시작하는 512자리 16진수 문자열
-
 	decimalString: "^[0-9]+$", // 10진수 문자열
+	decimalStringLength: (length: number) => `^[0-9]{${length}}$`, // 10진수 문자열
+	hexaDecimal: "^0[xX][0-9a-fA-F]+$", // 0x로 시작하는 16진수 문자열
+	hexaDecimalLength: (length: number) => `^0[xX][0-9a-fA-F]{${length}}$`,
 	percentage: "^[0-9]+(?:\\.[0-9]+)?%$", // 10진수 문자열 또는 소수점을 포함하는 문자열
 
 	// Ethereum
 	ethereumAddress: "^0[xX][0-9a-fA-F]{40}$", // 0x로 시작하는 40자리 16진수 문자열
-	blockHash: "^0[xX][0-9a-fA-F]{64}$", // 0x로 시작하는 64자리 16진수 문자열
 	blockTag: "^(latest|earliest)$", // pending, latest, earliest
-	blockNumber: "^[0-9]+$", // 10진수 문자열
 	transactionHash: "^0[xX][0-9a-fA-F]{64}$", // 0x로 시작하는 64자리 16진수 문자열
 
 	// Pagination

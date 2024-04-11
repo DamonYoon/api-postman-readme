@@ -378,7 +378,7 @@ namespace DataDomains {
 			hash: {
 				type: "string",
 				description: "블록 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			number: {
 				type: "integer",
@@ -393,7 +393,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"블록의 부모 블록 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			nonce: {
 				type: "string",
@@ -405,19 +405,19 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"블록 상태의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			receiptsRoot: {
 				type: "string",
 				description:
 					"블록에 포함된 모든 트랜잭션의 receipt의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			transactionsRoot: {
 				type: "string",
 				description:
 					"블록에 포함된 모든 트랜잭션의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			miner: {
 				type: "string",
@@ -441,7 +441,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"작업증명(PoW)에서 블록의 유효성을 증명하는 데 사용되는 값입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.hexaDecimal64,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			gasLimit: {
 				type: "string",
@@ -471,7 +471,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"블록에 포함된 모든 트랜잭션의 로그 블룸을 나타내는 필드입니다. 0x로 시작하는 512자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.hexaDecimal512,
+				pattern: Patterns.hexaDecimalLength(512),
 			},
 			extraData: {
 				type: "string",
@@ -483,7 +483,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"블록에 포함된 모든 삼촌 블록의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.hexaDecimal64,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			transactionCount: {
 				type: "integer",
@@ -503,7 +503,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"블록에 포함된 모든 출금 트랜잭션의 루트 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			// withdrawalsCount: {
 			// 	type: "integer",
@@ -599,12 +599,12 @@ namespace DataDomains {
 			blockHash: {
 				type: "string",
 				description: "블록의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			blockNumber: {
 				type: "string",
 				description: "블록 번호를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockNumber,
+				pattern: Patterns.decimalString,
 			},
 			from: {
 				type: "string",
@@ -656,7 +656,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"트랜잭션에서 호출한 함수의 selector를 나타내는 필드입니다. 0x로 시작하는 8자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.hexaDecimal8,
+				pattern: Patterns.hexaDecimalLength(8),
 			},
 			nonce: {
 				type: "string",
@@ -730,7 +730,7 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"트랜잭션에 포함된 모든 로그 블룸을 나타내는 필드입니다. 0x로 시작하는 512자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.hexaDecimal512,
+				pattern: Patterns.hexaDecimalLength(512),
 			},
 			accessList: {
 				type: "array",
@@ -752,7 +752,7 @@ namespace DataDomains {
 								type: "string",
 								description:
 									"트랜잭션에서 접근한 컨트랙트의 storage key를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-								pattern: Patterns.hexaDecimal64,
+								pattern: Patterns.hexaDecimalLength(64),
 							},
 						},
 					},
@@ -801,12 +801,12 @@ namespace DataDomains {
 				type: "string",
 				description:
 					"로그를 생성한 블록의 해시를 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockHash,
+				pattern: Patterns.hexaDecimalLength(64),
 			},
 			blockNumber: {
 				type: "string",
 				description: "로그를 생성한 블록 번호를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockNumber,
+				pattern: Patterns.decimalString,
 			},
 			data: {
 				type: "string",
@@ -831,7 +831,7 @@ namespace DataDomains {
 				items: {
 					type: "string",
 					description: "로그의 토픽을 나타내는 필드입니다. 0x로 시작하는 64자리 16진수 문자열 형태로 제공됩니다.",
-					pattern: Patterns.hexaDecimal64,
+					pattern: Patterns.hexaDecimalLength(64),
 				},
 			},
 		},
@@ -966,7 +966,7 @@ namespace DataDomains {
 			blockNumber: {
 				type: "string",
 				description: "트랜잭션이 포함된 블록의 번호를 나타내는 필드입니다. 10진수 문자열 형태로 제공됩니다.",
-				pattern: Patterns.blockNumber,
+				pattern: Patterns.decimalString,
 			},
 			timeStamp: {
 				type: "integer",

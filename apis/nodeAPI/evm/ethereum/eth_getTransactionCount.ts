@@ -40,7 +40,7 @@ const oasDocs: OpenAPIV3.Document = {
 					},
 				],
 				tags: ["eth"],
-				description: `특정 계정 주소가 소유한 Native Token 자산 잔고를 반환합니다.`,
+				description: `특정 주소로부터 발행된 트랜잭션 수를 반환합니다.`,
 				summary: method,
 				operationId: method,
 				parameters: [],
