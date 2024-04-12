@@ -6,7 +6,7 @@ import { NODE_API_BASE_URL } from "../../../../utils/urls.utils";
 import Schemas from "../resources/schemas";
 import { MAIN_API_CONFIGS } from "../../../../configs/readme.config";
 
-const method = "eth_getCode";
+const method = "eth_getTransactionByBlockHashAndIndex";
 const protocol = "ethereum";
 const version = MAIN_API_CONFIGS.version;
 
@@ -39,8 +39,8 @@ const oasDocs: OpenAPIV3.Document = {
 						api_key: [],
 					},
 				],
-				tags: ["eth"],
-				description: `입력한 컨트랙트 주소의 코드를 반환합니다.`,
+				tags: [],
+				description: `블록 해시와 트랜잭션 인덱스를 입력하여 해당 트랜잭션의 정보를 조회합니다.`,
 				summary: method,
 				operationId: method,
 				parameters: [],
@@ -53,17 +53,14 @@ const oasDocs: OpenAPIV3.Document = {
 								params: {
 									type: "array",
 									items: {
-										oneOf: [Schemas.address, Schemas.blockIdentifier],
+										oneOf: [Schemas.blockHash, Schemas.transactionIndex],
 									},
-									minItems: 2,
-									maxItems: 2,
-									default: ["0xdac17f958d2ee523a2206206994597c13d831ec7", "latest"],
+									minItems: 1,
+									maxItems: 1,
+									default: ["0x59f63e3840e0f4a1659074c1a4021e881a268a52d31958688da1d66bfbf6d2ca", "0x0"],
 									description: `다음 파라미터들을 타입에 맞게 배열로 입력합니다.
-1. \`address\` - 조회 대상 주소를 40자리 16진수 문자열로 입력합니다.
-2. \`block identifier\` - 조회 대상 블록 식별자로 블록 넘버, 블록 해시, 블록 태그 중 하나를 입력할 수 있습니다. 
-	- 블록 넘버: 16진수 문자열 (ex. "0x1")
-	- 블록 해시: 64자리 16진수 문자열 (ex. "0x39008d07edf93c03bb9d1cfc80598fcf63f441ec86e9de3733fa6a484980ca48")]
-	- 블록 태그: enum 문자열 (ex. "latest", "earliest", "pending")`,
+1. \`block hash\`: 조회하고자 하는 블록 해시를 64자리 16진수 문자열 형식으로 입력합니다.
+2. \`transaction index\`: 조회하고자 하는 트랜잭션의 index를 16진수 문자열 형식으로 입력합니다.`,
 								},
 							}),
 						},

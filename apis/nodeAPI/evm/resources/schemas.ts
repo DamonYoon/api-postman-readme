@@ -1,5 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 import { Patterns } from "../../../../utils/patterns.utils";
+import Constants from "../../../../utils/constants.utils";
 
 namespace Schemas {
 	export const error: OpenAPIV3.SchemaObject = {
@@ -81,7 +82,7 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 		type: "string",
 		description: `주소는 20바이트 길이의 16진수 문자열로 표현되며, EVM 계열의 블록체인에서 사용되는 주소 형식입니다.`,
 		pattern: Patterns.ethereumAddress,
-		default: "0xc90d3Ac75D1D36dF0b0a229E73D8409FB7F3c4ab",
+		default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS,
 	};
 
 	export const storageHashes: OpenAPIV3.SchemaObject = {
@@ -116,7 +117,7 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 	export const blockTag: OpenAPIV3.SchemaObject = {
 		title: "Block Tag",
 		type: "string",
-		description: `블록 지정할 때 사용되는 태그입니다. 다음 중 하나를 사용할 수 있습니다.
+		description: `블록 태그는 다음 중 하나를 사용하여 블록을 지정할 수 있습니다.
 * \`earliest\`: 체인에서 사용 가능한 가장 오래된 블록을 나타냅니다.
 * \`finalized\`: 최근에 확정된 블록을 나타내며, 이는 더 이상 변경될 수 없는 안정적인 상태의 블록을 의미합니다. 이 용어는 주로 지분 증명(PoS) 블록체인에서 사용되며, 블록이 최종적으로 확정되었음을 나타냅니다.
 * \`safe\`: 네트워크에 의해 안전하게 간주되는 최근 블록을 나타냅니다. '안전'한 블록은 네트워크 재조직(reorgs)의 위험 없이 신뢰할 수 있는 것으로 간주됩니다.
@@ -126,20 +127,20 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 		default: "latest",
 	};
 
-	export const blockIdentifier: OpenAPIV3.SchemaObject = {
+	export const blockNumberOrTag: OpenAPIV3.SchemaObject = {
+		title: "Block Number or Tag",
+		type: "string",
+		description: `블록 지정을 위해 블록 넘버 또는 블록 태그 중 하나를 사용할 수 있습니다.`,
+		oneOf: [Schemas.blockNumber, Schemas.blockTag],
+		default: "0x12C1A00", // 19415000
+	};
+
+	export const blockNumberOrHashOrTag: OpenAPIV3.SchemaObject = {
 		title: "Block Identifier",
 		type: "string",
 		description: `블록 지정을 위해 블록 해시, Number 값(hex형식), 또는 다음 태그 중 하나를 사용할 수 있습니다.`,
 		oneOf: [Schemas.blockNumber, Schemas.blockHash, Schemas.blockTag],
 		default: "latest",
-	};
-
-	export const blockHashOrNumber: OpenAPIV3.SchemaObject = {
-		title: "Block Hash or Number",
-		type: "string",
-		description: `블록 지정을 위해 블록 해시 또는 Number 값을 사용할 수 있습니다.`,
-		oneOf: [Schemas.blockNumber, Schemas.blockHash],
-		default: "0x39008d07edf93c03bb9d1cfc80598fcf63f441ec86e9de3733fa6a484980ca48",
 	};
 
 	export const position: OpenAPIV3.SchemaObject = {
@@ -200,6 +201,70 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 * \`state\`: 계정의 스토리지 상태를 override할 키-값 쌍의 집합입니다. 각 키와 값은 hex 형식의 문자열로 표현됩니다.
 * \`stateDiff\`: 계정의 스토리지 상태 중 개별 슬롯을 override할 키-값 쌍의 집합입니다. 이는 state와 유사하지만, 특정 슬롯의 변경만을 목표로 할 때 사용됩니다.`,
 		default: {},
+	};
+
+	export const signedTransactionHash: OpenAPIV3.SchemaObject = {
+		title: "Signed Transaction Hash",
+		type: "string",
+		description: `서명된 트랜잭션 해시는 서명된 트랜잭션의 해시값을 나타냅니다. 서명된 트랜잭션 해시는 0x로 시작하는 16진수 문자열로 표현됩니다.
+서명된 트랜잭션 해시를 얻기 위해서는 아래의 단계를 따라야 합니다.
+1. 트랜잭션 데이터 생성합니다. 이 데이터에는 보낸이, 받는이, 가스 가격, 가스 한도, 이더리움의 양 등이 포함됩니다.
+2. 트랜잭션 데이터를 RLP(Recursive Length Prefix) 인코딩합니다.
+3. RLP 인코딩된 데이터를 Keccak-256 해시 함수에 넣어 해시값을 생성합니다.
+4. 생성된 해시값을 서명합니다. 서명된 해시값은 서명된 트랜잭션 해시입니다.`,
+		pattern: Patterns.hexaDecimal,
+		default: "0x59f63e3840e0f4a1659074c1a4021e881a268a52d31958688da1d66bfbf6d2ca",
+	};
+
+	export const fromBlock: OpenAPIV3.SchemaObject = {
+		title: "From Block",
+		type: "string",
+		description: `블록 조회 범위의 시작 블록 지정을 위해 블록 넘버와 블록 태그 중 하나를 입력할 수 있습니다. ${Schemas.blockTag.description}`,
+		oneOf: [Schemas.blockNumber, Schemas.blockTag],
+		default: "0x12C1A00", // 19415000
+	};
+
+	export const toBlock: OpenAPIV3.SchemaObject = {
+		title: "To Block",
+		type: "string",
+		description: `블록 조회 범위의 종료 블록 지정을 위해 블록 넘버와 블록 태그 중 하나를 입력할 수 있습니다. ${Schemas.blockTag.description}`,
+		oneOf: [Schemas.blockNumber, Schemas.blockTag],
+		default: "latest",
+	};
+
+	export const topics: OpenAPIV3.SchemaObject = {
+		title: "Topics",
+		type: "array",
+		minimum: 1,
+		maximum: 4,
+		items: {
+			type: "string",
+			description: "트랜잭션 로그의 토픽 필터링을 위한 토픽을 32바이트 길이의 16진수 문자열로 입력합니다.",
+		},
+		description: `Topics는 트랜잭션 로그의 토픽 필터링을 위한 토픽 배열입니다. 각 토픽은 32바이트 길이의 16진수 문자열로 표현됩니다.`,
+		default: [
+			"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+			`0x000000000000000000000000${Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS.slice(2)}`,
+		],
+	};
+
+	export const filterId: OpenAPIV3.SchemaObject = {
+		title: "Filter ID",
+		type: "string",
+		description: `필터 ID는 필터를 생성할 때 반환되는 고유 식별자입니다. 필터 ID는 16진수 문자열로 표현됩니다.`,
+		pattern: Patterns.hexaDecimalLength(32),
+		default: "0xaf35d60b70eb3b54018456a0d365ea49",
+	};
+
+	export const eventType: OpenAPIV3.SchemaObject = {
+		title: "Event Type",
+		type: "string",
+		description: `이벤트 타입은 이벤트를 구독할 때 사용하는 타입을 나타냅니다. 다음 중 하나를 사용할 수 있습니다.
+* \`newHeads\`: 새로운 블록이 생성될 때마다 이벤트를 수신합니다.
+* \`logs\`: "logs"를 구독하는 경우, 두 번째 파라미터로 필터 옵션을 객체 형태로 제공할 수 있습니다. 이 객체는 fromBlock, toBlock, address, topics 필드를 포함할 수 있습니다.
+* \`newPendingTransactions\`: 새로운 Pending 트랜잭션이 생성될 때마다 이벤트를 수신합니다.`,
+		pattern: Patterns.eventType,
+		default: "newHeads",
 	};
 }
 

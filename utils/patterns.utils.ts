@@ -18,6 +18,7 @@ export const Patterns = {
 	ethereumAddress: "^0[xX][0-9a-fA-F]{40}$", // 0x로 시작하는 40자리 16진수 문자열
 	blockTag: "^(latest|earliest)$", // pending, latest, earliest
 	transactionHash: "^0[xX][0-9a-fA-F]{64}$", // 0x로 시작하는 64자리 16진수 문자열
+	eventType: "^(newHeads|logs|newPendingTransactions|syncing)$",
 
 	// Pagination
 	page: "^(?:[1-9][0-9]?|100)$", //	1 이상 100 이하의 숫자

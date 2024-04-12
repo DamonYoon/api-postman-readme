@@ -45,7 +45,7 @@ const info: OpenAPIV3.PathItemObject = {
 										},
 										minItems: 1,
 										maxItems: 1000,
-										description: "조회할 트랜잭션의 해시값을 배열로 입력합니다.",
+										description: "조회할 트랜잭션 해시를 배열로 입력합니다.",
 										default: ["0x1632ac1627903e586c8ea0b1c134908c34ee95e84face9a303abd63686eb2022"],
 									},
 								},

@@ -6,7 +6,7 @@ import { NODE_API_BASE_URL } from "../../../../utils/urls.utils";
 import Schemas from "../resources/schemas";
 import { MAIN_API_CONFIGS } from "../../../../configs/readme.config";
 
-const method = "eth_getBlockByNumber";
+const method = "eth_getFilterChanges";
 const protocol = "ethereum";
 const version = MAIN_API_CONFIGS.version;
 
@@ -39,8 +39,8 @@ const oasDocs: OpenAPIV3.Document = {
 						api_key: [],
 					},
 				],
-				tags: ["eth"],
-				description: `블록 넘버를 입력하여 특정 블록의 정보를 조회합니다.`,
+				tags: [],
+				description: `필터 ID를 입력하여 필터 결과를 조회합니다. eth_newFilter, eth_newBlockFilter, eth_newPendingTransactionFilter 메서드를 통해 생성된 필터 ID를 입력합니다.`,
 				summary: method,
 				operationId: method,
 				parameters: [],
@@ -53,14 +53,13 @@ const oasDocs: OpenAPIV3.Document = {
 								params: {
 									type: "array",
 									items: {
-										oneOf: [Schemas.blockNumber, Schemas.includeTransactions],
+										oneOf: [Schemas.filterId],
 									},
-									minItems: 2,
-									maxItems: 2,
-									default: ["0x1076B5A", false],
+									minItems: 1,
+									maxItems: 1,
+									default: ["0xaf35d60b70eb3b54018456a0d365ea49"],
 									description: `다음 파라미터들을 타입에 맞게 배열로 입력합니다.
-1. \`block number\`: 조회하고자 하는 블록 넘버를 16진수 문자열 형식으로 입력합니다.
-2. \`includeTransactions\` : 블록 조회시 해당 블록에 포함된 모든 트랜잭션 정보를 함께 조회할지 여부를 Boolean 형식으로 입력합니다. true로 입력한 경우 모든 트랜잭션을 포함하며, false로 입력하는 경우 포함하지 않습니다.`,
+1. \`filter ID\`: 미리 생성한 필터 ID를 입력합니다.`,
 								},
 							}),
 						},
