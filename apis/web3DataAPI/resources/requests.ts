@@ -147,7 +147,7 @@ page 파라미터와 cursor 파라미터는 동시에 사용할 수 없습니다
 		type: "string",
 		description: `조회 시작 블록을 지정하는 파라미터입니다. 이 파라미터의 기본 값은 0이며, 블록 번호(10진수 문자열), 블록 해시(0x로 시작하는 64자리 16진수 문자열) 또는 블록 태그("earliest")를 입력할 수 있습니다.
 
-toBlock 없이 fromBlock만 제공되는 경우, fromBlock에 입력한 시점부터 최근 block까지의 결과가 조회됩니다. fromBlock은 toBlock보다 크거나 같아야 합니다. fromBlock과 toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다.`,
+toBlock 없이 fromBlock만 제공되는 경우, fromBlock에 입력한 시점부터 최근 block까지의 결과가 조회됩니다. fromBlock은 toBlock보다 작거나 같아야 합니다. fromBlock과 toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다.`,
 		pattern: Patterns.hexaDecimal || Patterns.hexaDecimalLength(64) || "earliest",
 		default: "19415000",
 	};
@@ -156,7 +156,7 @@ toBlock 없이 fromBlock만 제공되는 경우, fromBlock에 입력한 시점�
 		type: "string",
 		description: `조회 종료 블록을 지정하는 파라미터입니다. 이 파라미터의 기본 값은 "latest"이며, 블록 번호(10진수 문자열), 블록 해시(0x로 시작하는 64자리 16진수 문자열) 또는 블록 태그("latest")를 입력할 수 있습니다. 
 
-fromBlock 없이 toBlock만 제공되는 경우, 최초 block부터 toBlock까지의 결과가 조회됩니다. toBlock은 fromBlock보다 작거나 같아야 합니다. fromBlock과 toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다.`,
+fromBlock 없이 toBlock만 제공되는 경우, 최초 block부터 toBlock까지의 결과가 조회됩니다. toBlock은 fromBlock보다 크거나 같아야 합니다. fromBlock과 toBlock에 동일한 값이 입력된 경우, 입력된 블록 한 개의 결과만 조회됩니다.`,
 		pattern: Patterns.hexaDecimal || Patterns.hexaDecimalLength(64) || "latest",
 		default: "latest",
 	};

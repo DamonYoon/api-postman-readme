@@ -19,7 +19,7 @@ const info: OpenAPIV3.PathItemObject = {
 		],
 		tags,
 		description:
-			"특정 Account가 보유한 ERC20 토큰의 목록을 조회합니다. 조회 결과에는 각 토큰의 보유 수량과 토큰 컨트랙트의 메타데이터가 포함됩니다.",
+			"특정 Account가 보유한 네이티브 토큰의 잔고를 조회합니다. 선택한 프로토콜에 따라 토큰의 종류가 다를 수 있습니다. (e.g., Ethereum의 경우, ETH 잔고를 조회할 수 있습니다.)",
 		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],

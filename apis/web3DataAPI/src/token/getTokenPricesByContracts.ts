@@ -18,7 +18,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags,
-		description: `특정 ERC20 컨트랙트의 메타데이터를 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
+		description: `입력한 Token Contract에서 발행한 Token의 온체인 마켓 가격을 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
 		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],

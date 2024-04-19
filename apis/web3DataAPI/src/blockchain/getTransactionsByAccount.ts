@@ -38,7 +38,6 @@ const info: OpenAPIV3.PathItemObject = {
 								properties: {
 									accountAddress: { ...Requests.accountAddress, default: Constants.VITALIK_BUTERIN_ACCOUNT_ADDRESS },
 									relation: Requests.relation,
-									contractAddresses: Requests.contractAddresses,
 									fromBlock: Requests.fromBlock,
 									toBlock: Requests.toBlock,
 									fromDate: Requests.fromDate,
