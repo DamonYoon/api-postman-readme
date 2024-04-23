@@ -12,14 +12,15 @@ const version = MAIN_API_CONFIGS.version;
 
 interface XReadme {
 	"x-readme": {
-		"code-samples": {
+		"code-samples"?: {
 			language: string;
 			code?: string;
 			name: string;
 			install?: string;
 			correspondingExample?: string;
 		}[];
-		"samples-languages": string[];
+		"samples-languages"?: string[];
+		"explorer-enabled"?: boolean;
 	};
 }
 
@@ -58,20 +59,21 @@ const oasDocs: OpenAPIV3.Document<XReadme> = {
 				operationId: method,
 				parameters: [],
 				"x-readme": {
+					"samples-languages": [],
+					"explorer-enabled": false,
 					"code-samples": [
 						{
 							language: "curl",
 							name: "WSS Subscribe",
 							install: "npm install -g wscat",
-							code: `# Connect to the WebSocket server
-$ wscat -c wss://${protocol}-mainnet.nodit.io/2vuwVWC9mbbLvjz62todRS08YUDzHzf_ 
+							code: `# Set network and your api key in the URL to connect
+$ wscat -c wss://${protocol}-{network}.nodit.io/{your-api-key} 
 
 # Send a request
 > '{"jsonrpc":"2.0","method":"${method}","id":1,"params":["newHeads"]}'`,
 							// correspondingExample: "TestExample",
 						},
 					],
-					"samples-languages": ["curl"],
 				},
 				requestBody: {
 					required: true,

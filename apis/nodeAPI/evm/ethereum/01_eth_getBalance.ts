@@ -7,7 +7,9 @@ import Schemas from "../resources/schemas";
 import { MAIN_API_CONFIGS } from "../../../../configs/readme.config";
 
 const method = "eth_getBalance";
-const protocol = "ethereum";
+// get protocol from directory name (e.g., ethereum)
+// const protocol = "ethereum";
+const protocol = __dirname.split("/").slice(-2)[0];
 const version = MAIN_API_CONFIGS.version;
 
 const oasDocs: OpenAPIV3.Document = {

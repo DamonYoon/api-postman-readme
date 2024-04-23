@@ -26,7 +26,7 @@ const info: OpenAPIV3.PathItemObject = {
 			Requests.QueryParams.start,
 		],
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: {
 					type: "array",
 					items: Schemas.module,

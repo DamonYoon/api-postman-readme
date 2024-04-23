@@ -21,7 +21,7 @@ const info: OpenAPIV3.PathItemObject = {
 		operationId,
 		parameters: [Requests.PathParams.transactionVersion],
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: Schemas.TransactionTypes.pendingTransaction,
 				example: Examples[endpoint],
 			}),

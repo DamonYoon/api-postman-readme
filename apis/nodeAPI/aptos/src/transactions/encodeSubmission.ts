@@ -39,7 +39,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: {
 					type: "string",
 					description: "인코딩된 트랜잭션",

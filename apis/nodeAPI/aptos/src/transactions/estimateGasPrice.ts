@@ -20,7 +20,7 @@ const info: OpenAPIV3.PathItemObject = {
 		summary,
 		operationId,
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: Schemas.gasEstimateObject,
 				example: Examples[endpoint],
 			}),

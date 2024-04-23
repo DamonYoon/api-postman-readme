@@ -20,7 +20,7 @@ const info: OpenAPIV3.PathItemObject = {
 		operationId,
 		parameters: [],
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: Schemas.ledgerInfo,
 				example: Examples[endpoint],
 			}),

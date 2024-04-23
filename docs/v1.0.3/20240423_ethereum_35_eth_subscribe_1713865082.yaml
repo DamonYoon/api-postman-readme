@@ -1,0 +1,122 @@
+openapi: 3.1.0
+info:
+  title: ethereum-eth_subscribe
+  version: 1.0.3
+servers:
+  - url: https://{protocol}-{network}.nodit.io/
+    variables:
+      protocol:
+        enum:
+          - ethereum
+        default: ethereum
+      network:
+        enum:
+          - mainnet
+          - sepolia
+          - holesky
+        default: mainnet
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-API-KEY
+      in: header
+paths:
+  /:
+    post:
+      security:
+        - api_key: []
+      tags: []
+      description: >-
+        특정 이벤트가 발생할 때마다 실시간으로 알림을 받을 수 있습니다. 이벤트 타입은 newHeads, logs,
+        newPendingTransactions 중 하나를 선택할 수 있습니다.
+      summary: eth_subscribe
+      operationId: eth_subscribe
+      parameters: []
+      x-readme:
+        samples-languages: []
+        explorer-enabled: false
+        code-samples:
+          - language: curl
+            name: WSS Subscribe
+            install: npm install -g wscat
+            code: >-
+              # Set network and your api key in the URL to connect
+
+              $ wscat -c wss://ethereum-{network}.nodit.io/{your-api-key} 
+
+
+              # Send a request
+
+              >
+              '{"jsonrpc":"2.0","method":"eth_subscribe","id":1,"params":["newHeads"]}'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - jsonrpc
+                - method
+              properties:
+                id:
+                  type: integer
+                  default: 1
+                jsonrpc:
+                  type: string
+                  default: '2.0'
+                method:
+                  type: string
+                  default: eth_subscribe
+                params:
+                  type: array
+                  minItems: 1
+                  maxItems: 2
+                  items:
+                    type: string
+                  default:
+                    - newHeads
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              example:
+                id: 1
+                jsonrpc: '2.0'
+                result: '0x9cef478923ff08bf67fde6c64013158d'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                  - error_code
+                properties:
+                  message:
+                    type: string
+                  error_code:
+                    type: string
+                    description: >-
+                      These codes provide more granular error information beyond
+                      just the HTTP status code of the response.
+
+
+                      Allowed values: account_not_found, resource_not_found,
+                      module_not_found, struct_field_not_found,
+                      version_not_found, transaction_not_found,
+                      table_item_not_found, block_not_found,
+                      state_value_not_found, version_pruned, block_pruned,
+                      invalid_input, invalid_transaction_update,
+                      sequence_number_too_old, vm_error, health_check_failed,
+                      mempool_is_full, internal_error, web_framework_error,
+                      bcs_not_supported, api_disabled
+                  vm_error_code:
+                    type: integer
+                    description: >-
+                      A code providing VM error details when submitting
+                      transactions to the VM.

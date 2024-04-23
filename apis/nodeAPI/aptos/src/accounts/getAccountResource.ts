@@ -21,7 +21,7 @@ const info: OpenAPIV3.PathItemObject = {
 		operationId,
 		parameters: [Requests.PathParams.address, Requests.PathParams.resource_type, Requests.QueryParams.ledgerVersion],
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: Schemas.resource,
 				example: Examples[endpoint],
 			}),

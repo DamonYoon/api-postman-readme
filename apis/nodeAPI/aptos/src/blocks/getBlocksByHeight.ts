@@ -21,7 +21,7 @@ const info: OpenAPIV3.PathItemObject = {
 		operationId,
 		parameters: [Requests.PathParams.blockHeight, Requests.QueryParams.withTransactions],
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: {
 					type: "array",
 					items: Schemas.block,

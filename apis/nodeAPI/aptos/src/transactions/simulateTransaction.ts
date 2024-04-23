@@ -36,7 +36,7 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		},
 		responses: {
-			"200": Responses.Success200({
+			"200": Responses.SuccessAptos200({
 				schema: {
 					type: "array",
 					items: Schemas.TransactionTypes.userTransaction,
