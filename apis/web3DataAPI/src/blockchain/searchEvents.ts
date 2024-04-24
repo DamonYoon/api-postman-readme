@@ -4,6 +4,7 @@ import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
+import { throughputLimitInfoMessage } from "../../resources/callouts";
 
 const summary = "Search Events";
 const endpoint = "searchEvents";
@@ -18,7 +19,9 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags,
-		description: `지정한 범위 내의 특정 event를 검색합니다.`,
+		description: `지정한 범위 내의 특정 event를 검색합니다.
+		
+${throughputLimitInfoMessage}`,
 		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],

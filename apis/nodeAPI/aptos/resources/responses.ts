@@ -1,12 +1,19 @@
 import { OpenAPIV3 } from "openapi-types";
-import { Patterns } from "../../../../utils/patterns.utils";
-import Schemas, * as schemas from "./schemas";
+import Schemas from "./schemas";
 
-type SuccessAptos200Function = (option: OpenAPIV3.MediaTypeObject) => OpenAPIV3.ResponseObject;
+type Success200Function = (option: OpenAPIV3.MediaTypeObject) => OpenAPIV3.ResponseObject;
 
 namespace Responses {
 	/* Success Response Objects */
-	export const SuccessAptos200: SuccessAptos200Function = (option) => ({
+	/* Success Response Objects */
+	export const Success200: Success200Function = (option) => ({
+		description: "Successful Response",
+		content: {
+			"application/json": option,
+		},
+	});
+
+	export const SuccessAptos200: Success200Function = (option) => ({
 		description: "Successful Response",
 		content: {
 			"application/json": option,

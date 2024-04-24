@@ -7,29 +7,31 @@ interface CommonFormatParams {
 	params?: OpenAPIV3.SchemaObject;
 }
 namespace Requests {
-	export function CommonFormat({ method, params }: CommonFormatParams): OpenAPIV3.SchemaObject {
-		const baseObject: OpenAPIV3.SchemaObject = {
-			type: "object",
-			required: ["id", "jsonrpc", "method"],
-			properties: {
-				id: {
-					type: "integer",
-					default: 1,
-				},
-				jsonrpc: {
-					type: "string",
-					default: "2.0",
-				},
-				method: {
-					type: "string",
-					default: method,
-				},
+	export const baseObject = (defaultMethod: string): OpenAPIV3.SchemaObject => ({
+		type: "object",
+		required: ["id", "jsonrpc", "method"],
+		properties: {
+			id: {
+				type: "integer",
+				default: 1,
 			},
-		};
+			jsonrpc: {
+				type: "string",
+				default: "2.0",
+			},
+			method: {
+				type: "string",
+				default: defaultMethod,
+			},
+		},
+	});
 
-		const returnObject = params ? { ...baseObject, properties: { ...baseObject.properties, params } } : baseObject;
-		return returnObject;
-	}
+	// export function CommonFormat({ method, params }: CommonFormatParams): OpenAPIV3.SchemaObject {
+	// 	const returnObject = params
+	// 		? { ...baseObject(method), properties: { ...baseObject(method).properties, params } }
+	// 		: baseObject(method);
+	// 	return returnObject;
+	// }
 	/** Path Parameters **/
 	export namespace PathParams {
 		export const protocol: OpenAPIV3.ParameterObject = {

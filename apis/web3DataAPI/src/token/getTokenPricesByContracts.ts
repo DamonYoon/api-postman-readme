@@ -4,6 +4,7 @@ import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
+import { throughputLimitInfoMessage } from "../../resources/callouts";
 
 const summary = "Get Token Prices by Contracts";
 const endpoint = "getTokenPricesByContracts";
@@ -18,7 +19,9 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags,
-		description: `입력한 Token Contract에서 발행한 Token의 온체인 마켓 가격을 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.`,
+		description: `입력한 Token Contract에서 발행한 Token의 온체인 마켓 가격을 조회합니다. 다수의 컨트랙트를 조회할 수 있으며, 최대 ${Constants.INPUT_ITEM_MAX}개의 컨트랙트를 조회할 수 있습니다.
+		
+${throughputLimitInfoMessage}`,
 		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],

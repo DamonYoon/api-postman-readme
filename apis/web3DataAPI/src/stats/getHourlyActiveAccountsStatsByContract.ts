@@ -4,6 +4,7 @@ import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
+import { onlyEthereumMainnetLuniverseMainnetInfoMessage } from "../../resources/callouts";
 
 const summary = "Get Hourly Active Accounts Stats By Contract";
 const endpoint = "getHourlyActiveAccountsStatsByContract";
@@ -24,9 +25,7 @@ const info: OpenAPIV3.PathItemObject = {
 >
 >  현재 시간별 통계 API에서 시간은 UTC 기준으로, 응답의 각 항목에는 date로부터 +1시간 내의 통계치가 제공됩니다. 시간별 통계의 경우 최근 1시간의 통계치 반영이 최대 40분까지 지연될 수 있으므로 최신 데이터 조회 시 고려가 필요합니다.
 		
-> 🚧 사용 시 네트워크를 확인하세요!
->
-> 이 API는 오직 Ethereum Mainnet, TheBalance Mainnet 에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요.`,
+${onlyEthereumMainnetLuniverseMainnetInfoMessage}`,
 		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],

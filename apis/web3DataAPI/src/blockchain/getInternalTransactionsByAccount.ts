@@ -4,6 +4,7 @@ import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
 import Constants from "../../../../utils/constants.utils";
+import { onlyEthereumMainnetInfoMessage, throughputLimitInfoMessage } from "../../resources/callouts";
 
 const summary = "Get Internal Transactions By Account";
 const endpoint = "getInternalTransactionsByAccount";
@@ -20,9 +21,10 @@ const info: OpenAPIV3.PathItemObject = {
 		tags,
 		description: `특정 Account와 관련된 internal transaction 리스트를 조회합니다.
 
-> 🚧 사용 시 네트워크를 확인하세요!
->
-> 이 API는 오직 Ethereum Mainnet에서만 지원되며, 다른 네트워크에서는 사용할 수 없습니다. 사용 시 네트워크를 확인해주세요.`,
+${onlyEthereumMainnetInfoMessage}
+
+${throughputLimitInfoMessage}
+`,
 		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],

@@ -3,6 +3,7 @@ import Requests from "../../resources/requests";
 import Responses from "../../resources/responses";
 import DataDomains from "../../resources/dataDomains";
 import Examples from "../../resources/examples";
+import { throughputLimitInfoMessage } from "../../resources/callouts";
 
 const summary = "Search NFT Contract Metadata By Keyword";
 const endpoint = "searchNftContractMetadataByKeyword";
@@ -17,7 +18,9 @@ const info: OpenAPIV3.PathItemObject = {
 			},
 		],
 		tags,
-		description: "NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.",
+		description: `NFT 컨트랙트의 name 혹은 symbol과 일치하는 컨트랙트 목록을 조회합니다.
+
+${throughputLimitInfoMessage}`,
 		summary,
 		operationId: endpoint,
 		parameters: [Requests.protocol, Requests.network],

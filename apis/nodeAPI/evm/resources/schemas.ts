@@ -23,59 +23,105 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 		},
 	};
 
-	export namespace ServerVariables {
-		export const ethereum: {
-			[variable: string]: OpenAPIV3.ServerVariableObject;
-		} = {
-			protocol: {
-				enum: ["ethereum"],
-				default: "ethereum",
-			},
-			network: {
-				enum: ["mainnet", "sepolia", "holesky"],
-				default: "mainnet",
-			},
+	export const ServerVariables: {
+		[key: string]: {
+			[key: string]: OpenAPIV3.ServerVariableObject;
 		};
+	} = {
+		all: {
+			"protocol-network": {
+				enum: [
+					"ethereum-mainnet",
+					"ethereum-sepolia",
+					"ethereum-holesky",
+					"polygon-mainnet",
+					"polygon-amoy",
+					"arbitrum-mainnet",
+					"arbitrum-sepolia",
+					"optimism-mainnet",
+					"optimism-sepolia",
+					"luniverse-mainnet",
+					"luniverse-testnet",
+				],
+				default: "ethereum-mainnet",
+			},
+		},
 
-		export const polygon: {
-			[variable: string]: OpenAPIV3.ServerVariableObject;
-		} = {
-			protocol: {
-				enum: ["polygon"],
-				default: "polygon",
+		ethereum: {
+			// protocol: {
+			// 	enum: ["ethereum"],
+			// 	default: "ethereum",
+			// },
+			// network: {
+			// 	enum: ["mainnet", "sepolia", "holesky"],
+			// 	default: "mainnet",
+			// },
+			"protocol-network": {
+				enum: ["ethereum-mainnet", "ethereum-sepolia", "ethereum-holesky"],
+				default: "ethereum-mainnet",
 			},
-			network: {
-				enum: ["mainnet", "amoy"],
-				default: "mainnet",
-			},
-		};
+		},
 
-		export const arbitrum: {
-			[variable: string]: OpenAPIV3.ServerVariableObject;
-		} = {
-			protocol: {
-				enum: ["arbitrum"],
-				default: "arbitrum",
+		polygon: {
+			// protocol: {
+			// 	enum: ["polygon"],
+			// 	default: "polygon",
+			// },
+			// network: {
+			// 	enum: ["mainnet", "amoy"],
+			// 	default: "mainnet",
+			// },
+			"protocol-network": {
+				enum: ["polygon-mainnet", "polygon-amoy"],
+				default: "polygon-mainnet",
 			},
-			network: {
-				enum: ["mainnet", "sepolia"],
-				default: "mainnet",
-			},
-		};
+		},
 
-		export const optimism: {
-			[variable: string]: OpenAPIV3.ServerVariableObject;
-		} = {
-			protocol: {
-				enum: ["optimism"],
-				default: "optimism",
+		arbitrum: {
+			// protocol: {
+			// 	enum: ["arbitrum"],
+			// 	default: "arbitrum",
+			// },
+			// network: {
+			// 	enum: ["mainnet", "sepolia"],
+			// 	default: "mainnet",
+			// },
+			"protocol-network": {
+				enum: ["arbitrum-mainnet", "arbitrum-sepolia"],
+				default: "arbitrum-mainnet",
 			},
-			network: {
-				enum: ["mainnet", "sepolia"],
-				default: "mainnet",
+		},
+
+		optimism: {
+			// protocol: {
+			// 	enum: ["optimism"],
+			// 	default: "optimism",
+			// },
+			// network: {
+			// 	enum: ["mainnet", "sepolia"],
+			// 	default: "mainnet",
+			// },
+			"protocol-network": {
+				enum: ["optimism-mainnet", "optimism-sepolia"],
+				default: "optimism-mainnet",
 			},
-		};
-	}
+		},
+
+		luniverse: {
+			// protocol: {
+			// 	enum: ["luniverse"],
+			// 	default: "luniverse",
+			// },
+			// network: {
+			// 	enum: ["mainnet", "testnet"],
+			// 	default: "mainnet",
+			// },
+			"protocol-network": {
+				enum: ["luniverse-mainnet", "luniverse-testnet"],
+				default: "luniverse-mainnet",
+			},
+		},
+	};
 
 	export const address: OpenAPIV3.SchemaObject = {
 		title: "Address",
