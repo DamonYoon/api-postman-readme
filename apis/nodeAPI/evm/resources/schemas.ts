@@ -176,7 +176,9 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 	export const blockNumberOrTag: OpenAPIV3.SchemaObject = {
 		title: "Block Number or Tag",
 		type: "string",
-		description: `블록 지정을 위해 블록 넘버 또는 블록 태그 중 하나를 사용할 수 있습니다.`,
+		description: `블록 지정을 위해 블록 넘버 또는 블록 태그 중 하나를 사용할 수 있습니다.
+* 블록 넘버: 16진수 문자열 (ex. "0x1") 
+* 블록 태그: enum 문자열 (ex. "latest", "earliest", "pending")`,
 		oneOf: [Schemas.blockNumber, Schemas.blockTag],
 		default: "0x12C1A00", // 19415000
 	};
@@ -184,7 +186,10 @@ Allowed values: account_not_found, resource_not_found, module_not_found, struct_
 	export const blockNumberOrHashOrTag: OpenAPIV3.SchemaObject = {
 		title: "Block Identifier",
 		type: "string",
-		description: `블록 지정을 위해 블록 해시, Number 값(hex형식), 또는 다음 태그 중 하나를 사용할 수 있습니다.`,
+		description: `블록 지정을 위해 블록 해시, 블록 넘버, 또는 블록 태그 중 하나를 사용할 수 있습니다.
+* 블록 넘버: 16진수 문자열 (ex. "0x1") 
+* 블록 해시: 64자리 16진수 문자열 (ex. "0x39008d07edf93c03bb9d1cfc80598fcf63f441ec86e9de3733fa6a484980ca48")]
+* 블록 태그: enum 문자열 (ex. "latest", "earliest", "pending")`,
 		oneOf: [Schemas.blockNumber, Schemas.blockHash, Schemas.blockTag],
 		default: "latest",
 	};

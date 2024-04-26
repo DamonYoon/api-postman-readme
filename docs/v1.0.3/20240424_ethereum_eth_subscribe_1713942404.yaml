@@ -4,19 +4,6 @@ info:
   version: 1.0.3
 servers:
   - url: wss://{protocol-network}.nodit.io/
-    variables:
-      protocol-network:
-        enum:
-          - ethereum-mainnet
-          - ethereum-sepolia
-          - ethereum-holesky
-        default: ethereum-mainnet
-components:
-  securitySchemes:
-    api_key:
-      type: apiKey
-      name: X-API-KEY
-      in: header
 paths:
   /:
     post:
