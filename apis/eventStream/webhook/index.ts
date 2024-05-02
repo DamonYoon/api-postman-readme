@@ -6,6 +6,8 @@ import webhookUpdate from "./src/update";
 import webhookDelete from "./src/delete";
 import API_DOCS_TITLES from "../../../utils/titles.utils";
 import { MAIN_API_CONFIGS } from "../../../configs/readme.config";
+import Constants from "../../../utils/constants.utils";
+import { ReadmeExtension } from "../../../types";
 
 const title = API_DOCS_TITLES.EVENT_STREAM;
 
@@ -28,7 +30,8 @@ const oasDocs: OpenAPIV3.Document = {
 				type: "apiKey",
 				name: "X-API-KEY",
 				in: "header",
-			},
+				"x-default": Constants.API_KEY.NODIT_DOCS_DEMO,
+			} as ReadmeExtension.securitySchemes,
 		},
 	},
 	paths: {

@@ -1,4 +1,8 @@
 namespace Constants {
+	export namespace API_KEY {
+		export const NODIT_DOCS_DEMO = "nodit-demo";
+	}
+
 	export const PAGE_MIN = 1;
 	export const PAGE_MAX = 100;
 	export const RPP_MIN = 1;

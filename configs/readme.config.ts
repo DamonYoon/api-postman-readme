@@ -5,19 +5,36 @@ const MAIN_VERSION = "1.0.2";
 
 export const README_CONFIGS: ReadmeConfig[] = [
 	{
+		version: "0.2.3",
+		apiDefinitions: [
+			{
+				title: API_DOCS_TITLES.WEB3_DATA_API,
+				id: "6632ea956a734b003c4fd399",
+			},
+			{
+				title: API_DOCS_TITLES.EVENT_STREAM,
+				id: "6632ea956a734b003c4fd39a",
+			},
+			{
+				title: API_DOCS_TITLES.NODE_API,
+				id: "6632ea956a734b003c4fd39b",
+			},
+		],
+	},
+	{
 		version: "1.0.3",
 		apiDefinitions: [
 			{
 				title: API_DOCS_TITLES.WEB3_DATA_API,
-				id: "6628cd21033de2006d6fb755",
+				id: "662b005c8a508f0043d54ac6",
 			},
 			{
 				title: API_DOCS_TITLES.EVENT_STREAM,
-				id: "6628cd21033de2006d6fb756",
+				id: "662b005c8a508f0043d54ac7",
 			},
 			{
 				title: API_DOCS_TITLES.NODE_API,
-				id: "6628cd21033de2006d6fb757",
+				id: "662b005c8a508f0043d54ac8",
 			},
 		],
 	},

@@ -8,6 +8,8 @@ import generalPaths from "./src/general";
 import tablesPaths from "./src/tables";
 import transactionsPaths from "./src/transactions";
 import { MAIN_API_CONFIGS } from "../../../configs/readme.config";
+import Constants from "../../../utils/constants.utils";
+import { ReadmeExtension } from "../../../types";
 
 const APTOS_VERSION = "v1";
 
@@ -25,13 +27,17 @@ const oasDocs: OpenAPIV3.Document = {
 		{
 			url: `${NODE_API_BASE_URL}${APTOS_VERSION}`,
 			variables: {
-				protocol: {
-					enum: ["aptos"],
-					default: "aptos",
-				},
-				network: {
-					enum: ["mainnet", "testnet"],
-					default: "mainnet",
+				// protocol: {
+				// 	enum: ["aptos"],
+				// 	default: "aptos",
+				// },
+				// network: {
+				// 	enum: ["mainnet", "testnet"],
+				// 	default: "mainnet",
+				// },
+				"protocol-network": {
+					enum: ["aptos-mainnet", "aptos-testnet"],
+					default: "aptos-mainnet",
 				},
 			},
 		},
@@ -71,7 +77,8 @@ const oasDocs: OpenAPIV3.Document = {
 				type: "apiKey",
 				name: "X-API-KEY",
 				in: "header",
-			},
+				"x-default": Constants.API_KEY.NODIT_DOCS_DEMO,
+			} as ReadmeExtension.securitySchemes,
 		},
 	},
 	paths: {

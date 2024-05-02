@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 import fs from "fs";
-import { ApiSpec } from "../../../../interfaces";
+import { ApiSpec } from "../../../../types";
 
 let paths: OpenAPIV3.PathsObject = {};
 const category = __dirname.split("/").pop(); // ger category from directory name

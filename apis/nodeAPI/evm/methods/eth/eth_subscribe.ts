@@ -1,10 +1,11 @@
 import { OpenAPIV3 } from "openapi-types";
 import Responses from "../../resources/responses";
-import Examples from "../../resources/examples";
 import { NODE_API_WS_BASE_URL } from "../../../../../utils/urls.utils";
 import Schemas from "../../resources/schemas";
 import { MAIN_API_CONFIGS } from "../../../../../configs/readme.config";
 import Requests from "../../resources/requests";
+import Constants from "../../../../../utils/constants.utils";
+import { ReadmeExtension } from "../../../../../types";
 
 // const method = "eth_subscribe";
 const fileName = __dirname.split("/").slice(-1)[0]?.split(".")[0];
@@ -44,7 +45,8 @@ const oasDocs: OpenAPIV3.Document<XReadme> = {
 				type: "apiKey",
 				name: "X-API-KEY",
 				in: "header",
-			},
+				"x-default": Constants.API_KEY.NODIT_DOCS_DEMO,
+			} as ReadmeExtension.securitySchemes,
 		},
 	},
 	paths: {
