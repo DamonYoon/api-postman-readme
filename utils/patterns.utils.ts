@@ -1,4 +1,7 @@
 export const Patterns = {
+	// Readme Docs Version
+	readmeDocsVersion: /^(main|\d+\.\d+\.\d+)$/,
+
 	// ISO
 	iso4217: "^[A-Z]{3}$", // ISO 4217 통화코드
 	iso8601: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,3})?Z$", // ISO 8601 날짜 문자열

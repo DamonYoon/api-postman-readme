@@ -1,4 +1,4 @@
-import { updateToReadme } from ".";
+import { updateToReadme } from "./helpers";
 
 const docsPath = process.argv[2];
 const id = process.argv[3];

@@ -45,3 +45,11 @@ declare namespace ReadmeExtension {
 		"x-default": string;
 	}
 }
+
+declare interface OasParams {
+	version: string;
+}
+
+declare interface EvmOasParams extends OasParams {
+	protocol: string;
+}

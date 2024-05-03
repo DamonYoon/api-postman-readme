@@ -3,7 +3,7 @@ import * as path from "path";
 import * as fs from "fs/promises";
 import { exec } from "child_process";
 import dotenv from "dotenv";
-import { MAIN_API_CONFIGS, README_CONFIGS } from "../configs/readme.config";
+import { MAIN_VERSION, README_CONFIGS } from "../configs/readme.config";
 import { OpenAPIV3 } from "openapi-types";
 dotenv.config();
 
@@ -57,25 +57,25 @@ export async function batchProcess<T>({
 	}
 }
 
-export function getMainVersionAndId(title: string) {
-	const { version } = MAIN_API_CONFIGS;
-	const apiConfig = README_CONFIGS.find((config) => config.version === version)?.apiDefinitions.find(
-		(config) => config.title === title
-	);
-	if (!apiConfig) {
-		throw new Error("API definitions not found. Please check the version or title of the API.");
-	}
-	const { id } = apiConfig;
-
-	return { version, id };
-}
-
-export async function getOasDocs(tsFilePath: string): Promise<OpenAPIV3.Document> {
+export async function getOasDocs(tsFilePath: string, version: string, protocol?: string): Promise<OpenAPIV3.Document> {
 	if (!tsFilePath.endsWith(".ts")) {
 		throw new Error("A valid TypeScript file path with a .ts extension must be provided as an argument.");
 	}
+
 	const module = await require(tsFilePath);
-	const oasDocs: OpenAPIV3.Document = module.default;
+	let oasDocs: OpenAPIV3.Document;
+	const isEvmApis = tsFilePath.includes("evm");
+
+	if (isEvmApis) {
+		oasDocs = module.default({
+			protocol: protocol,
+			version: version,
+		});
+	} else {
+		oasDocs = module.default({
+			version: version,
+		});
+	}
 	return oasDocs;
 }
 
@@ -86,10 +86,6 @@ export async function convertTsToYaml(
 	tsFilePath: string
 ) {
 	try {
-		const inputVersion = version === "main" ? MAIN_API_CONFIGS.version : version;
-
-		oasDocs.info.version = inputVersion;
-
 		const yamlData = yaml.dump({ ...oasDocs }); // yaml로 변환
 
 		const fileName = path.basename(tsFilePath).split(".")[0];
@@ -101,12 +97,12 @@ export async function convertTsToYaml(
 
 		const nowDate = new Date().toISOString().split("T")[0];
 		const nowDateYYYYMMDD = nowDate ? nowDate.replace(/-/g, "") : "UnknownDate";
-		const timestamp = Math.floor(new Date().getTime() / 1000); // Unix timestamp in seconds
+		// const timestamp = Math.floor(new Date().getTime() / 1000); // Unix timestamp in seconds
 
-		let baseFileName = `${nowDateYYYYMMDD}_${folderName}_${timestamp}`;
+		let baseFileName = `${nowDateYYYYMMDD}_${folderName}`;
 
-		if (path.dirname(tsFilePath).includes("nodeAPI")) {
-			baseFileName = `${nowDateYYYYMMDD}_${folderName}_${fileName}_${timestamp}`;
+		if (path.dirname(tsFilePath).includes("evm")) {
+			baseFileName = `${nowDateYYYYMMDD}_${oasDocs.info.title.split("-")[0]}_${fileName}`;
 		}
 
 		const outputPath = path.join(outputDirPath, `${baseFileName}.yaml`);
@@ -153,4 +149,16 @@ export async function updateToReadme(docsPath: string, id: string) {
 			console.error(`stderr: ${stderr}`);
 		}
 	});
+}
+
+export function findApiDefinitionId(version: string, title: string): string {
+	const apiDefinition = README_CONFIGS.find((config) => config.version === version)?.apiDefinitions.find(
+		(config) => config.title === title
+	);
+
+	if (!apiDefinition) {
+		throw new Error("Version not found in README_CONFIGS. Please check the version or config file.");
+	}
+
+	return apiDefinition.id;
 }

@@ -1,12 +1,39 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import { ReadmeApiSpec } from "../types";
+import FormData from "form-data";
+import fs from "fs";
 dotenv.config();
 
 const baseUrl = "https://dash.readme.com/api/v1";
 const readmeApiKey = process.env.README_API_KEY;
 
 class Readme {
+	// Upload API Spec(https://docs.readme.com/main/reference/uploadapispecification)
+	static async uploadSpecification({ filePath, version }: { filePath: string; version: string }) {
+		const formData = new FormData();
+
+		formData.append("spec", fs.createReadStream(filePath), "");
+
+		console.log(formData);
+
+		// const response = await axios.request({
+		// 	baseURL: baseUrl,
+		// 	url: "/api-specification",
+		// 	method: "POST",
+		// 	headers: {
+		// 		Accept: "application/json",
+		// 		Authorization: readmeApiKey,
+		// 		"x-readme-version": `${version}`,
+		// 		"content-type": "multipart/form-data; boundary=---011000010111000001101001",
+		// 		// ...formData.getHeaders(), // This spreads the headers required by the FormData, including 'content-type'.
+		// 	},
+		// 	data: formData,
+		// });
+
+		// return response.data;
+	}
+
 	// Get metadata(https://docs.readme.com/main/reference/getapispecification)
 	static async getMetadata({
 		page = 1,
@@ -24,7 +51,7 @@ class Readme {
 			headers: {
 				Accept: "application/json",
 				Authorization: readmeApiKey,
-				"x-readme-version": `v${version}`,
+				"x-readme-version": `${version}`,
 			},
 			params: {
 				page,

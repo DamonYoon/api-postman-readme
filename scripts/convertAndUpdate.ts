@@ -1,49 +1,51 @@
 import * as path from "path";
-import { convertTsToYaml, getOasDocs, updateToReadme } from ".";
-import { README_CONFIGS } from "../configs/readme.config";
+import { convertTsToYaml, findApiDefinitionId, getOasDocs, updateToReadme } from "./helpers";
+import { Patterns } from "../utils/patterns.utils";
+import { supportedMethods } from "../apis/nodeAPI/evm";
 
-const versionPattern = /^(main|\d+\.\d+\.\d+)$/;
-
-function validateInputs(tsFilePathInput?: string, versionInput?: string): [string, string] {
+function validateInputs(
+	tsFilePathInput?: string,
+	versionInput?: string,
+	protocolInput?: string
+): [string, string, string | undefined] {
 	if (!tsFilePathInput) {
-		throw new Error("A TypeScript file path is required as the first argument.");
+		throw new Error("Error: A TypeScript file path and version are required as the first and second arguments.");
 	}
 
 	if (!versionInput) {
-		throw new Error("A version is required as the second argument.");
+		throw new Error("Error: A version is required as the second argument.");
 	}
 
-	if (!versionPattern.test(versionInput)) {
-		throw new Error("The version must be 'main' or in the format of x.x.x.");
+	if (!Patterns.readmeDocsVersion.test(versionInput)) {
+		throw new Error("Error: The version must be 'main' or in the format of x.x.x.");
 	}
 
-	return [tsFilePathInput, versionInput];
-}
+	const isEvmApis = tsFilePathInput.includes("evm");
+	if (isEvmApis) {
+		if (!protocolInput) throw new Error("Error: A protocol is required as the third argument for EVM API");
 
-function findApiDefinitionId(version: string, title: string): string {
-	const apiDefinition = README_CONFIGS.find((config) => config.version === version)?.apiDefinitions.find(
-		(config) => config.title === title
-	);
-
-	if (!apiDefinition) {
-		throw new Error("Version not found in README_CONFIGS. Please check the version or config file.");
+		const supportedNetworks = Object.keys(supportedMethods);
+		if (!supportedNetworks.includes(protocolInput)) {
+			throw new Error(`Error: ${protocolInput} is not supported. `);
+		}
 	}
 
-	return apiDefinition.id;
+	return [tsFilePathInput, versionInput, protocolInput];
 }
 
 async function main() {
 	try {
 		const currentWorkingDir = process.cwd();
-		const [tsFilePathInput, version] = validateInputs(process.argv[2], process.argv[3]);
+		const [tsFilePathInput, versionInput, protocolInput] = validateInputs(...process.argv.slice(2));
 
 		const tsFilePath = path.resolve(currentWorkingDir, tsFilePathInput);
-		const oasDocs = await getOasDocs(tsFilePath);
+
+		const oasDocs = await getOasDocs(tsFilePath, versionInput, protocolInput);
 
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
-		const outputPath = await convertTsToYaml(oasDocs, version, outputDir, tsFilePath);
+		const outputPath = await convertTsToYaml(oasDocs, versionInput, outputDir, tsFilePath);
 
-		const apiDefinitionId = findApiDefinitionId(version, oasDocs.info.title);
+		const apiDefinitionId = findApiDefinitionId(versionInput, oasDocs.info.title);
 		await updateToReadme(outputPath, apiDefinitionId);
 
 		console.log("Documentation has been successfully updated.");

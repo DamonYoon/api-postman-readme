@@ -6,42 +6,41 @@ import tokenPaths from "./src/token";
 import blockchainPaths from "./src/blockchain";
 import statsPaths from "./src/stats";
 import API_DOCS_TITLES from "../../utils/titles.utils";
-import { MAIN_API_CONFIGS } from "../../configs/readme.config";
 import Constants from "../../utils/constants.utils";
-import { ReadmeExtension } from "../../types";
+import { OasParams, ReadmeExtension } from "../../types";
 
 const title = API_DOCS_TITLES.WEB3_DATA_API;
 
-const version = MAIN_API_CONFIGS.version;
-
-const oasDocs: OpenAPIV3.Document = {
-	openapi: "3.1.0",
-	info: {
-		title,
-		version,
-	},
-	servers: [
-		{
-			url: WEB3_DATA_API_BASE_URL,
+function oasDocs({ version }: OasParams): OpenAPIV3.Document {
+	return {
+		openapi: "3.1.0",
+		info: {
+			title,
+			version,
 		},
-	],
-	components: {
-		securitySchemes: {
-			api_key: {
-				type: "apiKey",
-				name: "X-API-KEY",
-				in: "header",
-				"x-default": Constants.API_KEY.NODIT_DOCS_DEMO,
-			} as ReadmeExtension.securitySchemes,
+		servers: [
+			{
+				url: WEB3_DATA_API_BASE_URL,
+			},
+		],
+		components: {
+			securitySchemes: {
+				api_key: {
+					type: "apiKey",
+					name: "X-API-KEY",
+					in: "header",
+					"x-default": Constants.API_KEY.NODIT_DOCS_DEMO,
+				} as ReadmeExtension.securitySchemes,
+			},
 		},
-	},
-	paths: {
-		...nftPaths,
-		...nativePaths,
-		...tokenPaths,
-		...blockchainPaths,
-		...statsPaths,
-	},
-};
+		paths: {
+			...nftPaths,
+			...nativePaths,
+			...tokenPaths,
+			...blockchainPaths,
+			...statsPaths,
+		},
+	};
+}
 
 export default oasDocs;

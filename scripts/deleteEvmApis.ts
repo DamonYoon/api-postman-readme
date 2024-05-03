@@ -1,9 +1,9 @@
-import { batchProcess } from ".";
-import { README_CONFIGS, MAIN_API_CONFIGS } from "../configs/readme.config";
+import { batchProcess } from "./helpers";
+import { README_CONFIGS, MAIN_VERSION } from "../configs/readme.config";
 import { ApiDefinition, ReadmeApiSpec } from "../types";
+import { Patterns } from "../utils/patterns.utils";
 import Readme from "./readme";
 
-const versionPattern = /^(main|\d+\.\d+\.\d+)$/;
 const batchSize = 10;
 const delay = 500;
 
@@ -12,11 +12,11 @@ function validateInputs(versionInput?: string): string {
 		throw new Error("Error: A version is required as the second argument.");
 	}
 
-	if (versionInput === "main" || versionInput === MAIN_API_CONFIGS.version) {
+	if (versionInput === "main" || versionInput === MAIN_VERSION) {
 		throw new Error("The main version cannot be deleted.");
 	}
 
-	if (!versionPattern.test(versionInput)) {
+	if (!Patterns.readmeDocsVersion.test(versionInput)) {
 		throw new Error("The version must be in the format of x.x.x.");
 	}
 
@@ -68,20 +68,22 @@ async function main() {
 			`Deleting API specifications for version ${versionInput}... To be deleted Total Count: ${targeApiSpecs.length}`
 		);
 
+		/** Deleting without delay: 삭제 도중에 계속 에러 발생함 */
+		// await Promise.allSettled(
+		// 	targeApiSpecs.map((spec) =>
+		// 		Readme.deleteApiSpec(spec).catch((error) => {
+		// 			console.error(`Error deleting ${spec.id} API specification:`, error);
+		// 		})
+		// 	)
+		// );
+
+		/** Deleting with delay: 여전히 에러 발생하지만, 수가 더 적음 */
 		await batchProcess({
 			items: targeApiSpecs,
 			callback: Readme.deleteApiSpec,
 			batchSize,
 			delay,
 		});
-
-		// await Promise.allSettled(
-		// 	targeApiSpecs.map((spec) =>
-		// 		Readme.deleteApiSpec(spec).catch((error) => {
-		// 			console.error("Error deleting API specification:", error);
-		// 		})
-		// 	)
-		// );
 
 		console.log(
 			`✅ Successfully deleted API specifications for version ${versionInput}! Deleted Total Count: ${targeApiSpecs.length}`
