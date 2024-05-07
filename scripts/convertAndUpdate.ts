@@ -1,7 +1,8 @@
 import * as path from "path";
-import { convertTsToYaml, findApiDefinitionId, getOasDocs, updateToReadme } from "./helpers";
+import { convertTsToYaml, findApiDefinitionId, getOasDocs } from "../utils/helpers.utils";
 import { Patterns } from "../utils/patterns.utils";
 import { supportedMethods } from "../apis/nodeAPI/evm";
+import Readme from "../utils/readme.utils";
 
 function validateInputs(
 	tsFilePathInput?: string,
@@ -9,7 +10,7 @@ function validateInputs(
 	protocolInput?: string
 ): [string, string, string | undefined] {
 	if (!tsFilePathInput) {
-		throw new Error("Error: A TypeScript file path and version are required as the first and second arguments.");
+		throw new Error("Error: A TypeScript file path is required as the first argument.");
 	}
 
 	if (!versionInput) {
@@ -45,10 +46,16 @@ async function main() {
 		const outputDir = path.resolve(currentWorkingDir, "./docs");
 		const outputPath = await convertTsToYaml(oasDocs, versionInput, outputDir, tsFilePath);
 
-		const apiDefinitionId = findApiDefinitionId(versionInput, oasDocs.info.title);
-		await updateToReadme(outputPath, apiDefinitionId);
+		const apiDefinitionId = await findApiDefinitionId(versionInput, oasDocs.info.title);
 
-		console.log("Documentation has been successfully updated.");
+		const result = await Readme.updateSpecification({
+			filePath: outputPath,
+			id: apiDefinitionId,
+		});
+
+		console.log(result);
+
+		console.log(`✅ Successfully update API specification  (ID: ${result._id})!`);
 	} catch (error) {
 		console.error(`Error: ${error instanceof Error ? error.message : "An unknown error occurred."}`);
 		process.exit(1);

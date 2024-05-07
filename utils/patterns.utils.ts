@@ -1,6 +1,7 @@
 export const Patterns = {
 	// Readme Docs Version
 	readmeDocsVersion: /^(main|\d+\.\d+\.\d+)$/,
+	readmeDocsId: /^[0-9a-fA-F]{24}$/,
 
 	// ISO
 	iso4217: "^[A-Z]{3}$", // ISO 4217 통화코드

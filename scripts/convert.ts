@@ -1,7 +1,7 @@
 import * as path from "path";
-import { convertTsToYaml, getOasDocs } from "./helpers";
+import { convertTsToYaml, getOasDocs } from "../utils/helpers.utils";
 import { Patterns } from "../utils/patterns.utils";
-import { supportedMethods } from "../apis/nodeAPI/evm";
+import { supportedProtocols } from "../apis/nodeAPI/evm";
 
 function validateInputs(
 	tsFilePathInput?: string,
@@ -9,7 +9,7 @@ function validateInputs(
 	protocolInput?: string
 ): [string, string, string | undefined] {
 	if (!tsFilePathInput) {
-		throw new Error("Error: A TypeScript file path and version are required as the first and second arguments.");
+		throw new Error("Error: A TypeScript file path is required as the first argument.");
 	}
 
 	if (!versionInput) {
@@ -24,8 +24,7 @@ function validateInputs(
 	if (isEvmApis) {
 		if (!protocolInput) throw new Error("Error: A protocol is required as the third argument for EVM API");
 
-		const supportedNetworks = Object.keys(supportedMethods);
-		if (!supportedNetworks.includes(protocolInput)) {
+		if (!supportedProtocols.includes(protocolInput)) {
 			throw new Error(`Error: ${protocolInput} is not supported. `);
 		}
 	}

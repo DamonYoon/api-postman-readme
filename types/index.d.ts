@@ -2,7 +2,7 @@ import { OpenAPIV3 } from "openapi-types";
 import API_DOCS_TITLES from "../utils/titles.utils";
 
 declare interface ApiDefinition {
-	title: API_DOCS_TITLES;
+	title: string;
 	id: string;
 }
 
@@ -15,22 +15,50 @@ declare interface ReadmeConfig {
 	apiDefinitions: ApiDefinition[];
 }
 
+declare interface ReadmeApiSpecResponse {
+	_id: string;
+	title: string;
+}
+
 declare interface ReadmeApiSpec {
 	title: string;
-	source: string | null;
-	_id: string | null;
-	version: string | null;
-	lastSynced: string | null;
+	source: string;
+	_id: string;
+	version: string;
+	lastSynced: string;
+	type: string;
+	id: string;
 	category: {
-		title: string | null;
-		slug: string | null;
+		title: string;
+		slug: string;
 		order: number;
-		_id: string | null;
-		type: string | null;
-		id: string | null;
-	} | null;
-	type: string | null;
-	id: string | null;
+		_id: string;
+		type: string;
+		id: string;
+	};
+}
+
+declare interface CategoryInfo {
+	title: string;
+	slug: string;
+	order: number;
+	reference: boolean;
+	_id: string;
+	project: string;
+	version: string;
+	createdAt: string;
+	_v: number;
+	type: string;
+	id: string;
+}
+
+declare interface DocForCategoryInfo {
+	_id: string;
+	title: string;
+	slug: string;
+	order: number;
+	hidden: boolean;
+	children: DocForCategoryInfo[];
 }
 
 declare interface ApiSpec {

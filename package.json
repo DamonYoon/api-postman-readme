@@ -5,8 +5,12 @@
 	"main": "index.js",
 	"scripts": {
 		"convert": "ts-node ./scripts/convert.ts",
-		"update": "ts-node ./scripts/update.ts",
 		"convert-update": "ts-node ./scripts/convertAndUpdate.ts",
+		"create": "ts-node ./scripts/create.ts",
+		"update": "ts-node ./scripts/update.ts",
+		"validate": "ts-node ./scripts/validate.ts",
+		"create-evm": "ts-node ./scripts/createEvmApis.ts",
+		"update-evm": "ts-node ./scripts/updateEvmApis.ts",
 		"delete-evm": "ts-node ./scripts/deleteEvmApis.ts"
 	},
 	"keywords": [],

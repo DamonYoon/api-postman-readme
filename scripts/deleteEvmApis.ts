@@ -1,15 +1,16 @@
-import { batchProcess } from "./helpers";
+import { batchProcess, createSlugFromTitle } from "../utils/helpers.utils";
 import { README_CONFIGS, MAIN_VERSION } from "../configs/readme.config";
 import { ApiDefinition, ReadmeApiSpec } from "../types";
 import { Patterns } from "../utils/patterns.utils";
-import Readme from "./readme";
+import Readme from "../utils/readme.utils";
+import { SupportedProtocols, supportedProtocols } from "../apis/nodeAPI/evm";
 
 const batchSize = 10;
 const delay = 500;
 
-function validateInputs(versionInput?: string): string {
+function validateInputs(versionInput?: string, protocolInput?: SupportedProtocols): [string, SupportedProtocols] {
 	if (!versionInput) {
-		throw new Error("Error: A version is required as the second argument.");
+		throw new Error("Error: A version is required as the first argument.");
 	}
 
 	if (versionInput === "main" || versionInput === MAIN_VERSION) {
@@ -20,7 +21,15 @@ function validateInputs(versionInput?: string): string {
 		throw new Error("The version must be in the format of x.x.x.");
 	}
 
-	return versionInput;
+	if (!protocolInput) {
+		throw new Error("Error: A protocol is required as the second argument.");
+	}
+
+	if (protocolInput !== "all" && !supportedProtocols.includes(protocolInput)) {
+		throw new Error("Error: Only supported protocol is allowed.");
+	}
+
+	return [versionInput, protocolInput];
 }
 
 async function getAllApiSpecs({
@@ -57,36 +66,45 @@ function getExcludedApis(version: string): ApiDefinition[] {
 
 async function main() {
 	try {
-		const versionInput = validateInputs(process.argv[2]);
+		const [versionInput, protocolInput] = validateInputs(...process.argv.slice(2));
 
 		const apiSpecs = await getAllApiSpecs({ page: 1, perPage: 100, version: versionInput, allSpecs: [] });
 		const excludeApiTitles = getExcludedApis(versionInput);
-		const targeApiSpecs = apiSpecs.filter(
-			(spec) => !excludeApiTitles.some((exclude) => exclude.title === spec.title || exclude.id === spec.id)
-		);
+
+		const excludeIds = new Set(excludeApiTitles.map((exclude) => exclude.id));
+		const excludeTitles = new Set(excludeApiTitles.map((exclude) => exclude.title));
+
+		const targetApiSpecs = apiSpecs
+			.filter((spec) => !(excludeIds.has(spec.id) || excludeTitles.has(spec.title)))
+			.filter((spec) => protocolInput === "all" || spec.title.split("-")[0]?.includes(protocolInput));
+
 		console.log(
-			`Deleting API specifications for version ${versionInput}... To be deleted Total Count: ${targeApiSpecs.length}`
+			`Deleting API specifications for version ${versionInput}... To be deleted Total Count: ${targetApiSpecs.length}`
 		);
 
-		/** Deleting without delay: 삭제 도중에 계속 에러 발생함 */
+		// /** Deleting without delay: 삭제 도중에 계속 에러 발생함 */
 		// await Promise.allSettled(
-		// 	targeApiSpecs.map((spec) =>
-		// 		Readme.deleteApiSpec(spec).catch((error) => {
-		// 			console.error(`Error deleting ${spec.id} API specification:`, error);
-		// 		})
+		// 	targetApiSpecs.map((spec) =>
+		// 		Promise.all([
+		// 			Readme.deleteApiSpec(spec),
+		// 			Readme.deleteCategory({ slug: createSlugFromTitle(spec.title), version: versionInput }),
+		// 		])
 		// 	)
 		// );
 
 		/** Deleting with delay: 여전히 에러 발생하지만, 수가 더 적음 */
 		await batchProcess({
-			items: targeApiSpecs,
-			callback: Readme.deleteApiSpec,
+			items: targetApiSpecs,
+			callback: async (items) => {
+				await Readme.deleteApiSpec(items);
+				await Readme.deleteCategory({ slug: createSlugFromTitle(items.title), version: versionInput });
+			},
 			batchSize,
 			delay,
 		});
 
 		console.log(
-			`✅ Successfully deleted API specifications for version ${versionInput}! Deleted Total Count: ${targeApiSpecs.length}`
+			`✅ Successfully deleted API specifications for version ${versionInput}! Deleted Total Count: ${targetApiSpecs.length}`
 		);
 	} catch (error: any) {
 		if (error.response) {

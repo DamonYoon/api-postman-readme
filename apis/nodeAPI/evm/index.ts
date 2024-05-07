@@ -5,3 +5,6 @@ export const supportedMethods = {
 	optimism: ["eth", "net", "web3", "debug", "optimism"],
 	luniverse: ["eth", "net", "web3", "debug"],
 };
+
+export const supportedProtocols = Object.keys(supportedMethods);
+export type SupportedProtocols = keyof typeof supportedMethods | "all";

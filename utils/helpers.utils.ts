@@ -5,6 +5,7 @@ import { exec } from "child_process";
 import dotenv from "dotenv";
 import { MAIN_VERSION, README_CONFIGS } from "../configs/readme.config";
 import { OpenAPIV3 } from "openapi-types";
+import Readme from "./readme.utils";
 dotenv.config();
 
 export function delay(ms: number): Promise<void> {
@@ -151,10 +152,23 @@ export async function updateToReadme(docsPath: string, id: string) {
 	});
 }
 
-export function findApiDefinitionId(version: string, title: string): string {
+export function createSlugFromTitle(title: string): string {
+	return title.split(" ").join("-");
+}
+
+export async function findApiDefinitionId(version: string, title: string): Promise<string> {
 	const apiDefinition = README_CONFIGS.find((config) => config.version === version)?.apiDefinitions.find(
 		(config) => config.title === title
 	);
+
+	const slug = createSlugFromTitle(title);
+
+	const response = await Readme.getDocsForCategory({
+		slug,
+		version,
+	});
+
+	console.log(response);
 
 	if (!apiDefinition) {
 		throw new Error("Version not found in README_CONFIGS. Please check the version or config file.");
