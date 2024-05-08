@@ -153,7 +153,7 @@ export async function updateToReadme(docsPath: string, id: string) {
 }
 
 export function createSlugFromTitle(title: string): string {
-	return title.split(" ").join("-");
+	return title.toLowerCase().split(" ").join("-");
 }
 
 export async function findApiDefinitionId(version: string, title: string): Promise<string> {

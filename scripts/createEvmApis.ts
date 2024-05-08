@@ -1,13 +1,13 @@
 import * as path from "path";
 import { Patterns } from "../utils/patterns.utils";
 import Readme from "../utils/readme.utils";
-import { supportedMethods, supportedProtocols } from "../apis/nodeAPI/evm";
+import { supportedMethodsForProtocol, supportedProtocols } from "../apis/nodeAPI/evm";
 import { readFile, readdir } from "fs/promises";
 
 function validateInputs(
 	versionInput?: string,
-	protocolInput?: keyof typeof supportedMethods | "all"
-): [string, keyof typeof supportedMethods | "all"] {
+	protocolInput?: keyof typeof supportedMethodsForProtocol | "all"
+): [string, keyof typeof supportedMethodsForProtocol | "all"] {
 	if (!versionInput) {
 		throw new Error("Error: A unique ID for API is required as the second argument.");
 	}
@@ -33,10 +33,10 @@ async function readOASFiles({
 	basePath,
 }: {
 	version: string;
-	protocol: keyof typeof supportedMethods;
+	protocol: keyof typeof supportedMethodsForProtocol;
 	basePath: string;
 }) {
-	const methods = supportedMethods[protocol];
+	const methods = supportedMethodsForProtocol[protocol];
 	let totalCount = 0;
 	for (const method of methods) {
 		const methodPath = path.join(basePath, method);
@@ -64,12 +64,15 @@ async function readOASFiles({
 
 async function main() {
 	try {
-		const currentWorkingDir = process.cwd();
-		const evmMethodPath = "./apis/nodeAPI/evm/methods/"; // OAS 파일이 위치한 기본 경로를 설정
-		const folderPath = path.join(currentWorkingDir, evmMethodPath);
+		const evmMethodPath = "./apis/nodeAPI/evm/methods/";
 
 		const [versionInput, protocolInput] = validateInputs(...process.argv.slice(2));
-		if (protocolInput !== "all") readOASFiles({ version: versionInput, protocol: protocolInput, basePath: folderPath });
+		if (protocolInput !== "all")
+			readOASFiles({ version: versionInput, protocol: protocolInput, basePath: evmMethodPath });
+		if (protocolInput === "all") {
+			for (const protocol in supportedMethodsForProtocol) {
+			}
+		}
 
 		// console.log(`✅ Successfully created API specification  (ID: ${versionInput})!`);
 	} catch (error: any) {

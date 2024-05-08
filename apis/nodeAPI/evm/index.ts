@@ -1,4 +1,4 @@
-export const supportedMethods = {
+export const supportedMethodsForProtocol = {
 	ethereum: ["eth", "net", "web3", "trace", "debug"],
 	polygon: ["eth", "net", "web3", "debug", "bor"],
 	arbitrum: ["eth", "net", "web3", "debug"],
@@ -6,5 +6,5 @@ export const supportedMethods = {
 	luniverse: ["eth", "net", "web3", "debug"],
 };
 
-export const supportedProtocols = Object.keys(supportedMethods);
-export type SupportedProtocols = keyof typeof supportedMethods | "all";
+export const supportedProtocols = Object.keys(supportedMethodsForProtocol);
+export type SupportedProtocols = keyof typeof supportedMethodsForProtocol | "all";

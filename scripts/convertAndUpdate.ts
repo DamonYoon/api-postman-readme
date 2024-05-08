@@ -1,7 +1,7 @@
 import * as path from "path";
 import { convertTsToYaml, findApiDefinitionId, getOasDocs } from "../utils/helpers.utils";
 import { Patterns } from "../utils/patterns.utils";
-import { supportedMethods } from "../apis/nodeAPI/evm";
+import { supportedMethodsForProtocol } from "../apis/nodeAPI/evm";
 import Readme from "../utils/readme.utils";
 
 function validateInputs(
@@ -25,7 +25,7 @@ function validateInputs(
 	if (isEvmApis) {
 		if (!protocolInput) throw new Error("Error: A protocol is required as the third argument for EVM API");
 
-		const supportedNetworks = Object.keys(supportedMethods);
+		const supportedNetworks = Object.keys(supportedMethodsForProtocol);
 		if (!supportedNetworks.includes(protocolInput)) {
 			throw new Error(`Error: ${protocolInput} is not supported. `);
 		}
